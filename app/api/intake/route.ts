@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { CONTACT_EMAIL } from "@/lib/contact";
 
 type Intent = "sample" | "partner";
 
@@ -57,7 +58,12 @@ export async function POST(request: Request) {
 
   const webhook = process.env.INTAKE_WEBHOOK;
   if (!webhook) {
-    return NextResponse.json({ ok: true, delivered: false, reason: "sink_unconfigured" });
+    return NextResponse.json({
+      ok: true,
+      delivered: false,
+      reason: "sink_unconfigured",
+      email: CONTACT_EMAIL,
+    });
   }
 
   try {

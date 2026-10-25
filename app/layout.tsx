@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 import { Grain } from "@/components/Grain";
+import { CONTACT_EMAIL } from "@/lib/contact";
 import "./globals.css";
 
 const ibm = IBM_Plex_Mono({
@@ -14,6 +15,10 @@ export const metadata: Metadata = {
   title: "Neo Norma",
   description:
     "Verifiable RL environments for clinical oncology, genomics, and wet-lab biology. Harbor and Docker native, with deterministic Python verifiers.",
+  authors: [{ name: "Neo Norma", url: `mailto:${CONTACT_EMAIL}` }],
+  other: {
+    contact: CONTACT_EMAIL,
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

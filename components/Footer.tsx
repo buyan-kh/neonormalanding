@@ -1,3 +1,7 @@
+import { CONTACT_EMAIL } from "@/lib/contact";
+
+const linkClass = "underline decoration-[#EFECE6]/40 underline-offset-4 hover:decoration-[#EFECE6]";
+
 export function Footer() {
   return (
     <footer className="border-t border-[#EFECE6]/70">
@@ -7,19 +11,14 @@ export function Footer() {
           <p className="mt-2 text-[#9E9A90]">Neo Norma // San Francisco, CA</p>
         </div>
         <nav className="flex flex-col gap-2 sm:flex-row sm:gap-4" aria-label="Contact">
-          <a href="https://x.com/buyan_kh" className="underline decoration-[#EFECE6]/40 underline-offset-4 hover:decoration-[#EFECE6]" target="_blank" rel="noreferrer">
+          <a href={`mailto:${CONTACT_EMAIL}`} className={linkClass}>
+            {CONTACT_EMAIL}
+          </a>
+          <a href="https://x.com/buyan_kh" className={linkClass} target="_blank" rel="noreferrer">
             X @buyan_kh
           </a>
-          <a
-            href="https://www.linkedin.com/in/buyankh"
-            className="underline decoration-[#EFECE6]/40 underline-offset-4 hover:decoration-[#EFECE6]"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href="https://www.linkedin.com/in/buyankh" className={linkClass} target="_blank" rel="noreferrer">
             linkedin.com/in/buyankh
-          </a>
-          <a href="#request" className="underline decoration-[#EFECE6]/40 underline-offset-4 hover:decoration-[#EFECE6]">
-            Email intake
           </a>
         </nav>
       </div>

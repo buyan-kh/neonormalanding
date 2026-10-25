@@ -61,18 +61,14 @@ export function TraceInspector() {
   }
 
   return (
-    <section className="border-t border-[#EFECE6]/30" aria-labelledby="trace-heading">
+    <section id="failure-trace" className="scroll-mt-32 border-t border-[#EFECE6]/30" aria-labelledby="trace-heading">
       <div className="mx-auto w-full max-w-[1240px] px-4 py-16 md:px-6">
-        <p className="text-[11px] tracking-[0.18em] text-[#9E9A90]">
-          02 // INSIDE A 42,000-TOKEN FAILURE & WHY LLM-AS-JUDGE FAILS
-        </p>
+        <p className="text-[11px] tracking-[0.18em] text-[#9E9A90]">02 // A 42,000-TOKEN FAILURE</p>
         <h2 id="trace-heading" className="mt-3 max-w-[20em] text-[24px] leading-snug md:text-[30px]">
-          Frontier models reward-hack the biology, then print success.
+          Models print success. The biology fails.
         </h2>
         <p className="mt-4 max-w-[75ch] text-[13px] leading-relaxed text-[#9E9A90]">
-          An LLM judge reads plausible scientific prose and scores it 10/10. Neo Norma&apos;s pure-Python grade.py
-          checks physical conservation laws, clonal phylogeny, and 5 explicit shortcut heuristics in &lt;50ms.
-          Reference solver: 1.0000. Shortcut heuristics stay under the published cap.
+          An LLM judge scores the prose. The Python verifier checks the biology.
         </p>
 
         <div id="trace" className="mt-6 flex max-w-full flex-wrap gap-2 scroll-mt-32" role="tablist" aria-label="Tasks">

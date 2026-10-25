@@ -19,22 +19,21 @@ export function Hero() {
         Verifiable RL Environments for Clinical Oncology, Genomics & Wet-Lab Biology.
       </h1>
       <p className="mt-4 max-w-[68ch] text-[13px] leading-relaxed text-[#9E9A90] md:text-sm">
-        Frontier labs already trained on the public internet. Raw hospital CSVs and single-step bio questions are
-        dead. We compile noisy longitudinal EHR, wet-lab assays, imaging, and sequencing reads into multi-stage RLVR
-        sandboxes that break frontier models at 25,000 to 90,000 reasoning tokens.
+        Frontier labs already trained on the public internet. We compile noisy clinical and wet-lab records into
+        RLVR (Reinforcement Learning with Verifiable Rewards) tasks that break frontier models.
       </p>
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <a
           href="#sample"
           className="inline-flex items-center justify-center bg-[#EFECE6] px-3 py-2 text-[12px] text-[#070707] hover:bg-white"
         >
-          [Request 5-Task Lab Evaluation Sample -&gt;]
+          [Request 5-Task Sample -&gt;]
         </a>
         <a
           href="#partner"
           className="inline-flex items-center justify-center border border-[#EFECE6] px-3 py-2 text-[12px] text-[#EFECE6] hover:bg-[#EFECE6] hover:text-[#070707]"
         >
-          [Partner on Clinical / Wet-Lab Data (50/50 Rev Share) -&gt;]
+          [Data Partners (50/50) -&gt;]
         </a>
       </div>
 

@@ -25,9 +25,9 @@ export function Scorecard() {
         <h2 className="mt-3 max-w-[20em] text-[24px] leading-snug md:text-[30px]">
           Verified runs across gpt-6-luna, gpt-6.1-sol, and gpt-6-astra.
         </h2>
-        <p className="mt-3 text-[12px] text-[#9E9A90]">Reasoning effort: xhigh. Linked rows open the trace inspector.</p>
+        <p className="mt-3 text-[12px] text-[#9E9A90]">Linked rows open the failure trace.</p>
         <div className="mt-6">
-          <TerminalWindow title="Frontier Calibration // xhigh" bodyClassName="overflow-x-auto">
+          <TerminalWindow title="Frontier Calibration" bodyClassName="overflow-x-auto">
             <table className="w-full min-w-[860px] border-collapse text-left text-[12px]">
               <caption className="sr-only">
                 Frontier model fail rates, average tokens, and shortcut caps
@@ -85,8 +85,7 @@ export function Scorecard() {
           </TerminalWindow>
         </div>
         <p className="mt-3 text-[11px] text-[#9E9A90]">
-          ehr01_longitudinal reports the reference solver at 1.0000 against 5 greedy shortcuts from 0.24 to 0.41.
-          Cells marked ... were not part of that reported run.
+          ehr01_longitudinal reference solver is 1.0000. Greedy shortcuts span 0.24 to 0.41.
         </p>
       </div>
     </section>

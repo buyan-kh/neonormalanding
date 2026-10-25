@@ -119,7 +119,7 @@ function VerifierBody({ active }: { active: string | null }) {
     <div className="flex h-full flex-col gap-3 p-2">
       <RuleList activeRules={task?.rules ?? []} />
       <p className="text-[11px] leading-relaxed text-[#9E9A90]">
-        {task ? `armed // ${task.armed}` : "Select a task to arm its verifier rules."}
+        {task ? `armed // ${task.armed}` : "Select a task to inspect its verifier."}
       </p>
       <pre className="overflow-x-auto text-[11px] leading-relaxed text-[#EFECE6]">{verifySource}</pre>
     </div>

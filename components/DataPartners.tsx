@@ -4,18 +4,18 @@ import { TerminalWindow } from "@/components/TerminalWindow";
 const stages = [
   {
     title: "Years 1 to 3",
-    kicker: "Noisy Encounters, Lot Drift, Amended Labs",
-    body: "Packaged into isolated Docker /workspace.",
+    kicker: "Early archive",
+    body: "Encounters, lot drift, and amended labs.",
   },
   {
     title: "Years 4 to 10+",
-    kicker: "Longitudinal Outcomes & Confirmatory Scans",
-    body: "Compiled into private Python verifiers (grade.py).",
+    kicker: "Later outcomes",
+    body: "Confirmatory scans and results set the answer.",
   },
   {
     title: "Direct Lab Distribution",
-    kicker: "100-to-500 task tranches",
-    body: "Sold to frontier post-training teams on a 50/50 split.",
+    kicker: "Paid distribution",
+    body: "100 to 500 tasks go to frontier labs, split 50/50.",
   },
 ];
 
@@ -28,10 +28,10 @@ export function DataPartners() {
           Dormant clinical archives become verifiable tasks.
         </h2>
         <div className="mt-6">
-          <TerminalWindow title="Data Partner Refinery // 50:50 Revenue Share" bodyClassName="p-3 md:p-4">
+          <TerminalWindow title="Data Partners // 50/50" bodyClassName="p-3 md:p-4">
             <p className="max-w-[80ch] text-[13px] leading-relaxed text-[#9E9A90]">
-              Hospital networks and biotech labs turn dormant 10-to-15-year EHR, wet-lab, and radiology databases
-              into $1,000 to $5,000 per-task RLVR tranches without exposing raw patient tables.
+              Hospital and biotech teams turn dormant clinical and lab archives into paid tasks, split 50/50, while
+              raw patient tables stay private.
             </p>
             <div className="mt-5 flex flex-col gap-4 lg:flex-row lg:items-stretch">
               {stages.map((stage, index) => (
