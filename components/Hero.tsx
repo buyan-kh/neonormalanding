@@ -38,23 +38,22 @@ export function Hero() {
         </a>
       </div>
 
-      <ol className="mt-10 flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center">
-        {stages.map((stage, index) => (
-          <li key={stage} className="flex flex-col gap-3 lg:flex-row lg:items-center">
-            <span className="border border-dashed border-[#EFECE6]/70 px-2 py-1 text-[11px] text-[#EFECE6]">{stage}</span>
-            {index < stages.length - 1 ? (
-              <>
-                <FlowLine className="hidden lg:block" length={52} />
-                <FlowLine className="lg:hidden" direction="vertical" length={28} />
-              </>
-            ) : null}
-          </li>
-        ))}
-      </ol>
-      <p className="mt-3 text-[11px] text-[#9E9A90]">
-        Raw Clinical & Wet-Lab Data -&gt; Parametric Refinery -&gt; Harbor/Docker RL Sandbox -&gt; Pure-Python Verifier
-        -&gt; Frontier Evaluation
-      </p>
+      <div className="mt-10 overflow-x-auto pb-2">
+        <ol className="flex w-max items-center gap-3">
+          {stages.map((stage, index) => (
+            <li key={stage} className="flex shrink-0 items-center gap-3">
+              <span className="border border-dashed border-[#EFECE6]/70 px-2 py-1 text-[11px] whitespace-nowrap text-[#EFECE6]">
+                {stage}
+              </span>
+              {index < stages.length - 1 ? <FlowLine length={52} /> : null}
+            </li>
+          ))}
+        </ol>
+        <p className="mt-3 w-max text-[11px] whitespace-nowrap text-[#9E9A90]">
+          Raw Clinical & Wet-Lab Data -&gt; Parametric Refinery -&gt; Harbor/Docker RL Sandbox -&gt; Pure-Python
+          Verifier -&gt; Frontier Evaluation
+        </p>
+      </div>
 
       <div id="pipeline" className="mt-8 scroll-mt-32">
         <PipelineShowcase />
