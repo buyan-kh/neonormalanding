@@ -164,67 +164,9 @@ export function PipelineShowcase() {
   const [active, setActive] = useState<string | null>(null);
 
   return (
-    <div>
-      <div className="xl:hidden">
-        <div className="space-y-3">
-          {sources.map((source) => (
-            <div key={source.title} className="border border-dashed border-[#EFECE6]/70">
-              <div className="flex items-center justify-between border-b border-dashed border-[#EFECE6]/70 px-2 py-1">
-                <p className="text-[11px]">{source.title}</p>
-                <WindowControls />
-              </div>
-              <div className="flex items-center gap-3 p-2">
-                <PixelIcon type={source.icon} pixel={2} />
-                {source.body ? (
-                  <pre className="text-[10px] leading-relaxed text-[#9E9A90]">{source.body}</pre>
-                ) : null}
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="flex items-center gap-3 py-3 text-[10px] text-[#9E9A90]">
-          <FlowLine direction="vertical" length={36} />
-          <span>Data -&gt; Agent Swarm</span>
-        </div>
-        <div className="flex justify-between px-2">
-          {sandboxTasks.map((task) => (
-            <PixelIcon key={task.id} type="robot" pixel={2} label="Agent" />
-          ))}
-        </div>
-        <div className="py-3">
-          <FlowLine direction="vertical" length={36} />
-        </div>
-        <div className="border border-dashed border-[#EFECE6]/70">
-          <div className="flex items-center justify-between border-b border-dashed border-[#EFECE6]/70 px-2 py-1">
-            <p className="text-[11px]">RL Environment Sandbox</p>
-            <WindowControls />
-          </div>
-          <SandboxTasks active={active} onPick={setActive} />
-        </div>
-        <div className="py-3">
-          <FlowLine direction="vertical" length={36} />
-        </div>
-        <div className="border border-dashed border-[#EFECE6]/70">
-          <div className="flex items-center justify-between border-b border-dashed border-[#EFECE6]/70 px-2 py-1">
-            <p className="text-[11px]">Deterministic Verifier</p>
-            <WindowControls />
-          </div>
-          <VerifierBody active={active} />
-        </div>
-        <div className="py-3">
-          <FlowLine direction="vertical" length={36} />
-        </div>
-        <div className="border border-dashed border-[#EFECE6]/70">
-          <div className="flex items-center justify-between border-b border-dashed border-[#EFECE6]/70 px-2 py-1">
-            <p className="text-[11px]">Evaluation</p>
-            <WindowControls />
-          </div>
-          <EvalBody />
-        </div>
-      </div>
-
+    <div className="overflow-x-auto pb-2">
       <div
-        className="hidden xl:grid xl:gap-y-2"
+        className="grid w-full min-w-[1042px] gap-y-2"
         style={{
           gridTemplateColumns: "158px 44px 48px 40px minmax(250px,1fr) 36px 220px 36px 210px",
           gridTemplateRows: "repeat(6, auto) auto",
