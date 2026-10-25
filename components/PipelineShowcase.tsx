@@ -316,7 +316,6 @@ export function PipelineShowcase() {
         </div>
       </div>
 
-      <p className="mt-3 text-right text-[12px] tracking-[0.16em] text-[#EFECE6]">Neo Norma</p>
     </div>
   );
 }
