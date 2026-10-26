@@ -26,7 +26,7 @@ export function PixelIcon({
     >
       {rows.map((row, y) =>
         Array.from(row).map((cell, x) =>
-          cell === "#" ? <rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" fill="#EFECE6" /> : null,
+          cell === "#" ? <rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" fill="#0A0A0A" /> : null,
         ),
       )}
     </svg>

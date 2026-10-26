@@ -23,13 +23,13 @@ export function FlowLine({
         <path
           d={`M6 0 V${height - 8}`}
           fill="none"
-          stroke="#EFECE6"
+          stroke="#0A0A0A"
           strokeWidth="3"
           strokeDasharray="3 3"
           strokeLinecap="butt"
           className={dash}
         />
-        <path d={`M3 ${height - 8} L6 ${height - 1} L9 ${height - 8}`} fill="none" stroke="#EFECE6" strokeWidth="1.5" />
+        <path d={`M3 ${height - 8} L6 ${height - 1} L9 ${height - 8}`} fill="none" stroke="#0A0A0A" strokeWidth="1.5" />
       </svg>
     );
   }
@@ -40,13 +40,13 @@ export function FlowLine({
       <path
         d={`M0 6 H${width - 8}`}
         fill="none"
-        stroke="#EFECE6"
+        stroke="#0A0A0A"
         strokeWidth="3"
         strokeDasharray="3 3"
         strokeLinecap="butt"
         className={dash}
       />
-      <path d={`M${width - 8} 2.5 L${width - 1} 6 L${width - 8} 9.5`} fill="none" stroke="#EFECE6" strokeWidth="1.5" />
+      <path d={`M${width - 8} 2.5 L${width - 1} 6 L${width - 8} 9.5`} fill="none" stroke="#0A0A0A" strokeWidth="1.5" />
     </svg>
   );
 }

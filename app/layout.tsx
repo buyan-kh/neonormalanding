@@ -14,7 +14,7 @@ const ibm = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "Neo Norma",
   description:
-    "Verifiable RL environments for clinical oncology, genomics, and wet-lab biology. Harbor and Docker native, with deterministic Python verifiers.",
+    "RL evaluation tasks and verifiable environments for science. Deterministic Harbor and Docker environments with Python verifiers.",
   authors: [{ name: "Neo Norma", url: `mailto:${CONTACT_EMAIL}` }],
   other: {
     contact: CONTACT_EMAIL,
@@ -24,11 +24,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={ibm.variable}>
-      <body className="bg-[#070707] font-mono text-[#EFECE6] antialiased">
+      <body className="bg-white font-mono text-[#0A0A0A] antialiased">
         <Grain />
         <a
           href="#pipeline"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:bg-[#EFECE6] focus:px-3 focus:py-2 focus:text-[#070707]"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:bg-[#0A0A0A] focus:px-3 focus:py-2 focus:text-white"
         >
           Skip to pipeline
         </a>

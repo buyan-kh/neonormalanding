@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { CONTACT_EMAIL } from "@/lib/contact";
 
-type Intent = "sample" | "partner";
+type Intent = "labs" | "data" | "investors";
 
 type IntakeBody = {
   name?: unknown;
   institution?: unknown;
+  organization?: unknown;
   email?: unknown;
   intent?: unknown;
   note?: unknown;
@@ -38,22 +39,30 @@ export async function POST(request: Request) {
   }
 
   const name = asText(body.name, 120);
-  const institution = asText(body.institution, 160);
+  const organization = asText(body.organization, 160) || asText(body.institution, 160);
   const email = asText(body.email, 180);
   const note = asText(body.note, 2000);
-  const intent = body.intent === "partner" || body.intent === "sample" ? (body.intent as Intent) : null;
+  const rawIntent = asText(body.intent, 40);
+  const intent: Intent | null =
+    rawIntent === "labs" || rawIntent === "sample"
+      ? "labs"
+      : rawIntent === "data" || rawIntent === "partner"
+        ? "data"
+        : rawIntent === "investors"
+          ? "investors"
+          : null;
 
   if (!name) {
     return NextResponse.json({ ok: false, error: "Name is required." }, { status: 400 });
   }
-  if (!institution) {
-    return NextResponse.json({ ok: false, error: "Institution is required." }, { status: 400 });
+  if (!organization) {
+    return NextResponse.json({ ok: false, error: "Organization is required." }, { status: 400 });
   }
   if (!emailPattern.test(email)) {
     return NextResponse.json({ ok: false, error: "Email is invalid." }, { status: 400 });
   }
   if (!intent) {
-    return NextResponse.json({ ok: false, error: "Intent must be sample or partner." }, { status: 400 });
+    return NextResponse.json({ ok: false, error: "Intent must be labs, data, or investors." }, { status: 400 });
   }
 
   const webhook = process.env.INTAKE_WEBHOOK;
@@ -70,7 +79,7 @@ export async function POST(request: Request) {
     const upstream = await fetch(webhook, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ name, institution, email, intent, note, source: "neonorma-landing" }),
+      body: JSON.stringify({ name, organization, email, intent, note, source: "neonorma-landing" }),
       signal: AbortSignal.timeout(8000),
     });
     if (!upstream.ok) {

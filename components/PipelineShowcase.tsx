@@ -32,8 +32,8 @@ function RuleList({ activeRules }: { activeRules: string[] }) {
         const on = activeRules.includes(rule.id);
         return (
           <li key={rule.id} className="flex items-center gap-2">
-            <span className={`inline-block h-2.5 w-2.5 border border-[#EFECE6] ${on ? "bg-[#EFECE6]" : ""}`} />
-            <span className={on ? "text-[#EFECE6]" : "text-[#9E9A90]"}>{rule.label}</span>
+            <span className={`inline-block h-2.5 w-2.5 border border-[#0A0A0A] ${on ? "bg-[#0A0A0A]" : ""}`} />
+            <span className={on ? "text-[#0A0A0A]" : "text-[#5A5852]"}>{rule.label}</span>
           </li>
         );
       })}
@@ -56,20 +56,20 @@ function Scatter() {
   ];
   return (
     <svg viewBox="0 0 150 90" className="mt-3 h-[90px] w-full" shapeRendering="crispEdges" aria-hidden="true">
-      <path d="M16 8 V78 H142" fill="none" stroke="#EFECE6" strokeWidth="1" />
+      <path d="M16 8 V78 H142" fill="none" stroke="#0A0A0A" strokeWidth="1" />
       {points.map(([x, y]) => (
-        <rect key={`${x}-${y}`} x={x} y={y} width="3" height="3" fill="#EFECE6" />
+        <rect key={`${x}-${y}`} x={x} y={y} width="3" height="3" fill="#0A0A0A" />
       ))}
-      <text x="4" y="12" fill="#9E9A90" fontSize="8" fontFamily="ui-monospace, monospace">
+      <text x="4" y="12" fill="#5A5852" fontSize="8" fontFamily="ui-monospace, monospace">
         1.0
       </text>
-      <text x="4" y="78" fill="#9E9A90" fontSize="8" fontFamily="ui-monospace, monospace">
+      <text x="4" y="78" fill="#5A5852" fontSize="8" fontFamily="ui-monospace, monospace">
         0.0
       </text>
-      <text x="18" y="88" fill="#9E9A90" fontSize="8" fontFamily="ui-monospace, monospace">
+      <text x="18" y="88" fill="#5A5852" fontSize="8" fontFamily="ui-monospace, monospace">
         10^3
       </text>
-      <text x="112" y="88" fill="#9E9A90" fontSize="8" fontFamily="ui-monospace, monospace">
+      <text x="112" y="88" fill="#5A5852" fontSize="8" fontFamily="ui-monospace, monospace">
         10^5
       </text>
     </svg>
@@ -94,19 +94,19 @@ function SandboxTasks({
             onClick={() => onPick(task.id)}
             onMouseEnter={() => onPick(task.id)}
             onFocus={() => onPick(task.id)}
-            className={`flex w-full items-center gap-2 px-2 py-2 text-left ${on ? "bg-[#EFECE6]/10" : "hover:bg-[#EFECE6]/5"}`}
+            className={`flex w-full items-center gap-2 px-2 py-2 text-left ${on ? "bg-[#0A0A0A]/6" : "hover:bg-[#0A0A0A]/4"}`}
           >
             <PixelIcon type={task.icon} pixel={2} />
             <span className="min-w-0 flex-1">
               <span className="block text-[12px]">{task.title}</span>
-              <span className="mt-1 block h-px border-t border-dashed border-[#EFECE6]/40" />
+              <span className="mt-1 block h-px border-t border-dashed border-[#0A0A0A]/30" />
             </span>
-            <span className="text-[10px] text-[#9E9A90]">...</span>
+            <span className="text-[10px] text-[#5A5852]">...</span>
           </button>
         );
       })}
-      <div className="flex items-center gap-2 px-2 py-2 text-[12px] text-[#9E9A90]">
-        <span className="inline-block h-8 w-8 border border-dashed border-[#EFECE6]/50" />
+      <div className="flex items-center gap-2 px-2 py-2 text-[12px] text-[#5A5852]">
+        <span className="inline-block h-8 w-8 border border-dashed border-[#0A0A0A]/40" />
         Task N: ...
       </div>
     </>
@@ -118,10 +118,10 @@ function VerifierBody({ active }: { active: string | null }) {
   return (
     <div className="flex h-full flex-col gap-3 p-2">
       <RuleList activeRules={task?.rules ?? []} />
-      <p className="text-[11px] leading-relaxed text-[#9E9A90]">
+      <p className="text-[11px] leading-relaxed text-[#5A5852]">
         {task ? `armed // ${task.armed}` : "Select a task to inspect its verifier."}
       </p>
-      <pre className="overflow-x-auto text-[11px] leading-relaxed text-[#EFECE6]">{verifySource}</pre>
+      <pre className="overflow-x-auto text-[11px] leading-relaxed text-[#0A0A0A]">{verifySource}</pre>
     </div>
   );
 }
@@ -129,10 +129,10 @@ function VerifierBody({ active }: { active: string | null }) {
 function EvalBody() {
   return (
     <div className="p-2 text-[11px]">
-      <p className="text-[#9E9A90]">r47_mrd_panel</p>
+      <p className="text-[#5A5852]">r47_mrd_panel</p>
       <table className="mt-2 w-full">
         <thead>
-          <tr className="text-left text-[#9E9A90]">
+          <tr className="text-left text-[#5A5852]">
             <th className="pb-1 font-normal" scope="col">
               Model
             </th>
@@ -147,14 +147,14 @@ function EvalBody() {
             ["gpt-6-astra", "67%"],
             ["gpt-6-luna", "100%"],
           ].map(([model, rate]) => (
-            <tr key={model} className="border-t border-dashed border-[#EFECE6]/30">
+            <tr key={model} className="border-t border-dashed border-[#0A0A0A]/20">
               <td className="py-1">{model}</td>
               <td className="py-1 text-right tabular-nums">{rate}</td>
             </tr>
           ))}
         </tbody>
       </table>
-      <p className="mt-3 text-[#9E9A90]">Pass@1 vs Tokens</p>
+      <p className="mt-3 text-[#5A5852]">Pass@1 vs Tokens</p>
       <Scatter />
     </div>
   );
@@ -172,20 +172,20 @@ export function PipelineShowcase() {
           gridTemplateRows: "repeat(6, auto) auto",
         }}
       >
-        <p className="col-start-2 row-start-1 self-end pb-1 text-center text-[10px] text-[#9E9A90]">Data</p>
-        <p className="col-start-3 row-start-1 self-end pb-1 text-center text-[10px] text-[#9E9A90]">Swarm</p>
+        <p className="col-start-2 row-start-1 self-end pb-1 text-center text-[10px] text-[#5A5852]">Data</p>
+        <p className="col-start-3 row-start-1 self-end pb-1 text-center text-[10px] text-[#5A5852]">Swarm</p>
 
         {sources.map((source, index) => (
           <div key={source.title} className="h-full" style={{ gridColumn: 1, gridRow: index + 2 }}>
-            <div className="flex h-full flex-col border border-dashed border-[#EFECE6]/70">
-              <div className="flex items-center justify-between border-b border-dashed border-[#EFECE6]/70 px-1.5 py-1">
+            <div className="flex h-full flex-col border border-dashed border-[#0A0A0A]">
+              <div className="flex items-center justify-between border-b border-dashed border-[#0A0A0A] px-1.5 py-1">
                 <p className="truncate text-[10px]">{source.title}</p>
                 <WindowControls />
               </div>
               <div className="flex flex-1 items-center gap-2 p-1.5">
                 <PixelIcon type={source.icon} pixel={2} />
                 {source.body ? (
-                  <pre className="text-[9px] leading-tight text-[#9E9A90]">{source.body}</pre>
+                  <pre className="text-[9px] leading-tight text-[#5A5852]">{source.body}</pre>
                 ) : null}
               </div>
             </div>
@@ -204,7 +204,7 @@ export function PipelineShowcase() {
 
         {sandboxTasks.map((task, index) => (
           <div key={`${task.id}-bot`} className="flex items-center justify-center" style={{ gridColumn: 3, gridRow: index + 2 }}>
-            <span className={active === task.id ? "bg-[#EFECE6]/15 p-0.5" : "p-0.5"}>
+            <span className={active === task.id ? "bg-[#0A0A0A]/10 p-0.5" : "p-0.5"}>
               <PixelIcon type="robot" pixel={2} label="Agent" />
             </span>
           </div>
@@ -220,8 +220,8 @@ export function PipelineShowcase() {
           </div>
         ))}
 
-        <div className="col-start-5 row-start-1 row-span-6 grid grid-rows-subgrid border border-dashed border-[#EFECE6]/70">
-          <div className="flex items-center justify-between border-b border-dashed border-[#EFECE6]/70 px-2 py-1">
+        <div className="col-start-5 row-start-1 row-span-6 grid grid-rows-subgrid border border-dashed border-[#0A0A0A]">
+          <div className="flex items-center justify-between border-b border-dashed border-[#0A0A0A] px-2 py-1">
             <p className="text-[11px]">RL Environment Sandbox</p>
             <WindowControls />
           </div>
@@ -232,8 +232,8 @@ export function PipelineShowcase() {
           <FlowLine length={28} />
         </div>
 
-        <div className="col-start-7 row-start-1 row-span-6 h-full border border-dashed border-[#EFECE6]/70">
-          <div className="flex items-center justify-between border-b border-dashed border-[#EFECE6]/70 px-2 py-1">
+        <div className="col-start-7 row-start-1 row-span-6 h-full border border-dashed border-[#0A0A0A]">
+          <div className="flex items-center justify-between border-b border-dashed border-[#0A0A0A] px-2 py-1">
             <p className="text-[11px]">Deterministic Verifier</p>
             <WindowControls />
           </div>
@@ -244,8 +244,8 @@ export function PipelineShowcase() {
           <FlowLine length={28} />
         </div>
 
-        <div className="col-start-9 row-start-1 row-span-6 h-full border border-dashed border-[#EFECE6]/70">
-          <div className="flex items-center justify-between border-b border-dashed border-[#EFECE6]/70 px-2 py-1">
+        <div className="col-start-9 row-start-1 row-span-6 h-full border border-dashed border-[#0A0A0A]">
+          <div className="flex items-center justify-between border-b border-dashed border-[#0A0A0A] px-2 py-1">
             <p className="text-[11px]">Evaluation</p>
             <WindowControls />
           </div>
@@ -254,7 +254,7 @@ export function PipelineShowcase() {
 
         <div className="col-start-3 col-span-3 row-start-7 flex items-center gap-2 pt-3">
           <FlowLine reverse length={120} />
-          <span className="text-[10px] text-[#9E9A90]">Observations / Rewards</span>
+          <span className="text-[10px] text-[#5A5852]">Observations / Rewards</span>
         </div>
       </div>
 
