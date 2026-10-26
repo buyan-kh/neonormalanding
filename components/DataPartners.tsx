@@ -6,21 +6,21 @@ const tracks = [
     title: "Buy RL Tasks & Environments",
     body: "We sell verifiable RL evaluation tasks and containerized Harbor/Docker post-training environments with <50ms Python graders. Start with a 5-task evaluation sample or license full environment tranches.",
     href: "#labs",
-    cta: "[Buy Eval Tasks ->]",
+    cta: "[Buy Eval Tasks]",
   },
   {
     kicker: "02 // FOR DATA HOLDERS",
     title: "Sell or Partner Your Data",
     body: "Have proprietary clinical, biotech, or scientific records? Sell datasets directly to us or partner with us to turn dormant archives into recurring revenue while raw data stays private.",
     href: "#data",
-    cta: "[Monetize Your Data ->]",
+    cta: "[Monetize Your Data]",
   },
   {
     kicker: "03 // FOR INVESTORS",
     title: "Invest in Neo Norma",
     body: "Frontier labs have exhausted the public internet. We are building the verifiable post-training environment refinery for empirical science.",
     href: "#investors",
-    cta: "[Investor Inquiry ->]",
+    cta: "[Investor Inquiry]",
   },
 ];
 

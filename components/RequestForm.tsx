@@ -14,19 +14,19 @@ const intents: Array<{ id: Intent; label: string; subject: string; cta: string }
     id: "labs",
     label: "Buy RL tasks (AI Labs)",
     subject: "Evaluation sample",
-    cta: "[Request 5-Task Sample ->]",
+    cta: "[Request 5-Task Sample]",
   },
   {
     id: "data",
     label: "Sell / partner data (Data Holders)",
     subject: "Data partnership",
-    cta: "[Monetize Data ->]",
+    cta: "[Monetize Data]",
   },
   {
     id: "investors",
     label: "Invest (VCs & Angels)",
     subject: "Investor inquiry",
-    cta: "[Connect with Founders ->]",
+    cta: "[Connect with Founders]",
   },
 ];
 
@@ -109,7 +109,7 @@ export function RequestForm() {
 
   const field =
     "w-full border border-[#0A0A0A]/40 bg-white px-2 py-1.5 text-[13px] text-[#0A0A0A] outline-none placeholder:text-[#5A5852] focus:border-[#0A0A0A]";
-  const cta = intents.find((item) => item.id === intent)?.cta ?? "[Send ->]";
+  const cta = intents.find((item) => item.id === intent)?.cta ?? "[Send]";
 
   return (
     <section className="border-t border-[#0A0A0A]/20">
