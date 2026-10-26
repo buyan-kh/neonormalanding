@@ -3,19 +3,19 @@ import { TerminalWindow } from "@/components/TerminalWindow";
 
 const stages = [
   {
-    title: "Years 1 to 3",
-    kicker: "Early archive",
-    body: "Encounters, lot drift, and amended labs.",
+    title: "Isolated Ingestion // De-Identified Longitudinal Slices",
+    kicker: "Chain of title",
+    body: "Multi-table clinical, wet-lab, and operational records are ingested into isolated workspaces with strict chain-of-title. Underlying databases are never exposed or distributed as static corpora.",
   },
   {
-    title: "Years 4 to 10+",
-    kicker: "Later outcomes",
-    body: "Confirmatory scans and results set the answer.",
+    title: "Deterministic Verification // <50ms Python Graders",
+    kicker: "Private grade.py",
+    body: "Held-out longitudinal outcomes are compiled into private Python verifiers (grade.py) with automated preflight proofs that falsify single-stage heuristics and enforce physical and clinical constraints.",
   },
   {
-    title: "Direct Lab Distribution",
-    kicker: "Paid distribution",
-    body: "100 to 500 tasks go to frontier labs, split 50/50.",
+    title: "Direct Lab Distribution // Revenue-Share Licensing",
+    kicker: "50/50 net revenue share",
+    body: "Compiled environment tranches are licensed directly to frontier AI research labs and post-training teams under a transparent 50/50 net revenue-share partnership.",
   },
 ];
 
@@ -23,15 +23,17 @@ export function DataPartners() {
   return (
     <section id="data-partners" className="scroll-mt-32 border-t border-[#EFECE6]/30">
       <div className="mx-auto w-full max-w-[1240px] px-4 py-16 md:px-6">
-        <p className="text-[11px] tracking-[0.18em] text-[#9E9A90]">04 // FOR HOSPITAL & BIOTECH DATA HOLDERS</p>
+        <p className="text-[11px] tracking-[0.18em] text-[#9E9A90]">04 // DATA PARTNERSHIPS & INSTITUTIONAL LICENSING</p>
         <h2 className="mt-3 max-w-[20em] text-[24px] leading-snug md:text-[30px]">
-          Dormant clinical archives become verifiable tasks.
+          Transform proprietary clinical and scientific records into verifiable post-training environments.
         </h2>
         <div className="mt-6">
-          <TerminalWindow title="Data Partners // 50/50" bodyClassName="p-3 md:p-4">
+          <TerminalWindow title="Institutional Licensing // 50/50" bodyClassName="p-3 md:p-4">
             <p className="max-w-[80ch] text-[13px] leading-relaxed text-[#9E9A90]">
-              Hospital and biotech teams turn dormant clinical and lab archives into paid tasks, split 50/50, while
-              raw patient tables stay private.
+              Neo Norma partners directly with health systems, biotechnology organizations, and enterprise data
+              holders under a co-licensing revenue-share model. Raw records remain private while our refinery
+              compiles longitudinal workflows into containerized Harbor/Docker evaluation and RL environments for
+              frontier AI labs.
             </p>
             <div className="mt-5 flex flex-col gap-4 lg:flex-row lg:items-stretch">
               {stages.map((stage, index) => (

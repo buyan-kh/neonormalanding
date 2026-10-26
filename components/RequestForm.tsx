@@ -10,7 +10,7 @@ type Status = "idle" | "sending" | "delivered" | "mailed" | "error";
 const linkClass = "underline decoration-[#EFECE6]/40 underline-offset-4 hover:decoration-[#EFECE6]";
 
 function intakeMailto(intent: Intent, brief: string) {
-  const subject = intent === "sample" ? "5-task sample" : "Data partnership (50/50)";
+  const subject = intent === "sample" ? "Evaluation sample" : "Data partnership";
   return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(brief)}`;
 }
 
@@ -36,7 +36,7 @@ export function RequestForm() {
 
   const brief = [
     "Neo Norma intake",
-    `Intent: ${intent === "sample" ? "5-task sample" : "Data partner (50/50)"}`,
+    `Intent: ${intent === "sample" ? "Evaluation sample" : "Data partnership"}`,
     `Name: ${name}`,
     `Institution: ${institution}`,
     `Email: ${email}`,
@@ -87,14 +87,14 @@ export function RequestForm() {
         <div id="sample" className="scroll-mt-32" />
         <div id="partner" className="scroll-mt-32" />
         <p className="text-[11px] tracking-[0.18em] text-[#9E9A90]">INTAKE</p>
-        <h2 className="mt-3 text-[24px] leading-snug md:text-[30px]">Request a sample, or open a data partnership.</h2>
+        <h2 className="mt-3 text-[24px] leading-snug md:text-[30px]">Request an evaluation sample, or inquire about a data partnership.</h2>
         <p className="mt-3 text-[13px]">
           <a href={`mailto:${CONTACT_EMAIL}`} className={linkClass}>
             {CONTACT_EMAIL}
           </a>
         </p>
         <div className="mt-6 max-w-[760px]">
-          <TerminalWindow title="Intake // Sample or Partner" bodyClassName="p-3 md:p-4">
+          <TerminalWindow title="Intake // Evaluation or Partnership" bodyClassName="p-3 md:p-4">
             <form
               action={`mailto:${CONTACT_EMAIL}`}
               method="POST"
@@ -113,7 +113,7 @@ export function RequestForm() {
                     checked={intent === "sample"}
                     onChange={() => setIntent("sample")}
                   />
-                  5-task sample
+                  Evaluation sample
                 </label>
                 <label className="flex items-center gap-2 text-[13px]">
                   <input
@@ -124,7 +124,7 @@ export function RequestForm() {
                     checked={intent === "partner"}
                     onChange={() => setIntent("partner")}
                   />
-                  Data partner (50/50)
+                  Data partnership
                 </label>
               </fieldset>
               <label className="block text-[11px] text-[#9E9A90]">
@@ -177,7 +177,11 @@ export function RequestForm() {
                 disabled={status === "sending"}
                 className="bg-[#EFECE6] px-3 py-2 text-[12px] text-[#070707] hover:bg-white disabled:opacity-60"
               >
-                {status === "sending" ? "[Sending...]" : "[Send intake ->]"}
+                {status === "sending"
+                  ? "[Sending...]"
+                  : intent === "sample"
+                    ? "[Request Evaluation Sample ->]"
+                    : "[Inquire About Data Partnership ->]"}
               </button>
               <p className="min-h-5 text-[12px]" role="status">
                 {status === "mailed" ? (
