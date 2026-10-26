@@ -72,7 +72,9 @@ export function DitheredIsometricCube({ className = "" }: { className?: string }
       }
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.imageSmoothingEnabled = false;
-      ctx.clearRect(0, 0, w, h);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, w, h);
 
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
@@ -85,8 +87,8 @@ export function DitheredIsometricCube({ className = "" }: { className?: string }
         }
       }
 
-      ctx.globalAlpha = 0.65;
-      ctx.fillStyle = "#EFECE6";
+      ctx.globalAlpha = 0.45;
+      ctx.fillStyle = "#0A0A0A";
       for (const particle of particles) {
         ctx.fillRect(Math.round(particle.x * w), Math.round(particle.y * h), 2, 2);
       }
@@ -134,7 +136,7 @@ export function DitheredIsometricCube({ className = "" }: { className?: string }
         }
       }
 
-      ctx.fillStyle = "#EFECE6";
+      ctx.fillStyle = "#0A0A0A";
       for (const key of occupied.keys()) {
         const [sx, sy] = key.split(",").map(Number);
         ctx.fillRect(sx, sy, 3, 3);
@@ -174,7 +176,7 @@ export function DitheredIsometricCube({ className = "" }: { className?: string }
   return (
     <canvas
       ref={ref}
-      className={`block h-full w-full ${className}`}
+      className={`block h-full w-full bg-white ${className}`}
       role="img"
       aria-label="Rotating dithered isometric cube"
     />

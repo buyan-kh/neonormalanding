@@ -60,7 +60,16 @@ export function Scorecard() {
                 {scoreRows.map((row) => (
                   <tr key={row.id} className="border-b border-[#0A0A0A]/15 hover:bg-[#0A0A0A]/4">
                     <th className="px-3 py-3 text-left align-top font-normal" scope="row">
-                      {row.id}
+                      {row.linked ? (
+                        <a
+                          href={`#${row.id}`}
+                          className="underline decoration-[#0A0A0A]/40 underline-offset-4 hover:decoration-[#0A0A0A]"
+                        >
+                          {row.id}
+                        </a>
+                      ) : (
+                        row.id
+                      )}
                       <span className="mt-1 block text-[11px] font-normal text-[#5A5852]">{row.name}</span>
                     </th>
                     <td className="px-3 py-3 align-top">

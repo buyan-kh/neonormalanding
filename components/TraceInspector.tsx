@@ -61,14 +61,14 @@ export function TraceInspector() {
   }
 
   return (
-    <section id="failure-trace" className="scroll-mt-32 border-t border-[#EFECE6]/30" aria-labelledby="trace-heading">
+    <section id="failure-trace" className="scroll-mt-32 border-t border-[#0A0A0A]/20" aria-labelledby="trace-heading">
       <div className="mx-auto w-full max-w-[1240px] px-4 py-16 md:px-6">
-        <p className="text-[11px] tracking-[0.18em] text-[#9E9A90]">02 // A 42,000-TOKEN FAILURE</p>
+        <p className="text-[11px] tracking-[0.18em] text-[#525252]">FAILURE TRACE</p>
         <h2 id="trace-heading" className="mt-3 max-w-[20em] text-[24px] leading-snug md:text-[30px]">
           Models print success. The biology fails.
         </h2>
-        <p className="mt-4 max-w-[75ch] text-[13px] leading-relaxed text-[#9E9A90]">
-          An LLM judge scores the prose. The Python verifier checks the biology.
+        <p className="mt-4 max-w-[62ch] text-[13px] leading-relaxed text-[#525252]">
+          The judge scores the prose. grade.py checks the biology.
         </p>
 
         <div id="trace" className="mt-6 flex max-w-full flex-wrap gap-2 scroll-mt-32" role="tablist" aria-label="Tasks">
@@ -82,7 +82,7 @@ export function TraceInspector() {
                 role="tab"
                 aria-selected={on}
                 onClick={() => select(task.id)}
-                className={`shrink-0 scroll-mt-32 px-2 py-1 text-[11px] ${on ? "bg-[#EFECE6] text-[#070707]" : "border border-[#EFECE6]/70 text-[#EFECE6]"}`}
+                className={`shrink-0 scroll-mt-32 px-2 py-1 text-[11px] ${on ? "bg-[#0A0A0A] text-white" : "border border-[#0A0A0A] text-[#0A0A0A]"}`}
               >
                 {task.id}
               </button>
@@ -94,18 +94,18 @@ export function TraceInspector() {
           <TerminalWindow title={`${active.step} // Reward Hacking in the Wild`} className="h-full">
             <div className="grid gap-3 p-3 md:grid-cols-[148px_minmax(0,1fr)]">
               <div className="hidden flex-col gap-2 md:flex">
-                <p className="text-[10px] text-[#9E9A90]">{active.tokenLine}</p>
+                <p className="text-[10px] text-[#525252]">{active.tokenLine}</p>
                 <div className="relative h-24">
                   {[0, 1, 2, 3].map((card) => (
                     <div
                       key={card}
-                      className="absolute border border-dashed border-[#EFECE6]/60 bg-[#070707] p-1"
+                      className="absolute border border-dashed border-[#0A0A0A]/50 bg-white p-1"
                       style={{ top: card * 10, left: card * 12, width: 88, height: 52 }}
                     >
                       <div className="space-y-1">
-                        <span className="block h-px w-10 bg-[#EFECE6]/70" />
-                        <span className="block h-px w-14 bg-[#EFECE6]/40" />
-                        <span className="block h-px w-8 bg-[#EFECE6]/40" />
+                        <span className="block h-px w-10 bg-[#0A0A0A]/70" />
+                        <span className="block h-px w-14 bg-[#0A0A0A]/35" />
+                        <span className="block h-px w-8 bg-[#0A0A0A]/35" />
                       </div>
                     </div>
                   ))}
@@ -116,40 +116,40 @@ export function TraceInspector() {
                 </div>
               </div>
               <div className="text-[12px] leading-relaxed">
-                <p className="text-[#9E9A90]">
-                  &gt; {active.step} <span className="cursor-block inline-block h-2.5 w-2 bg-[#EFECE6] align-middle" />
+                <p className="text-[#525252]">
+                  &gt; {active.step} <span className="cursor-block inline-block h-2.5 w-2 bg-[#0A0A0A] align-middle" />
                 </p>
                 <p className="mt-2">{active.contradiction}</p>
-                <p className="mt-3 text-[#9E9A90]">Options:</p>
+                <p className="mt-3 text-[#525252]">Options:</p>
                 <ol className="mt-1 space-y-1">
                   {active.options.map((option) => (
-                    <li key={option.n} className={option.chosen ? "bg-[#EFECE6] px-1 text-[#070707]" : "px-1 text-[#9E9A90]"}>
+                    <li key={option.n} className={option.chosen ? "bg-[#0A0A0A] px-1 text-white" : "px-1 text-[#525252]"}>
                       ({option.n}) {option.text} -&gt; {option.result}
                     </li>
                   ))}
                 </ol>
-                <pre className="mt-3 whitespace-pre-wrap text-[11px] text-[#9E9A90]">
+                <pre className="mt-3 whitespace-pre-wrap text-[11px] text-[#525252]">
                   {`${active.logLabel} = [\n  (...),\n  {...}\n]`}
                 </pre>
-                <p key={active.id} className="arm-line mt-2 border border-[#EFECE6]/70 px-1 py-1 text-[12px]">
+                <p key={active.id} className="arm-line mt-2 border border-[#0A0A0A] px-1 py-1 text-[12px]">
                   {active.removed}
                 </p>
-                <p className="mt-3 text-[#9E9A90]">Output:</p>
-                <p className="mt-1 border border-[#EFECE6]/70 px-2 py-1">{'{ "status": "success" }'}</p>
+                <p className="mt-3 text-[#525252]">Output:</p>
+                <p className="mt-1 border border-[#0A0A0A] px-2 py-1">{'{ "status": "success" }'}</p>
                 <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                  <div className="border border-dashed border-[#EFECE6]/70 p-2">
+                  <div className="border border-dashed border-[#0A0A0A] p-2">
                     <div className="flex items-center justify-between gap-2">
                       <p>Looks correct.</p>
                       <PixelIcon type="check" pixel={2} />
                     </div>
                     <PixelIcon type="scatter" pixel={2} className="mt-2" />
                   </div>
-                  <div className="border border-dashed border-[#EFECE6]/70 p-2">
+                  <div className="border border-dashed border-[#0A0A0A] p-2">
                     <div className="flex items-center justify-between gap-2">
                       <p>Reality.</p>
                       <PixelIcon type="cross" pixel={2} />
                     </div>
-                    <p className="mt-2 text-[11px] leading-relaxed text-[#9E9A90]">{active.reality}</p>
+                    <p className="mt-2 text-[11px] leading-relaxed text-[#525252]">{active.reality}</p>
                   </div>
                 </div>
               </div>
@@ -158,20 +158,20 @@ export function TraceInspector() {
 
           <TerminalWindow title="LLM-as-Judge: 10/10 vs. Biophysical Reality: FAIL" className="h-full">
             <div className="flex h-full flex-col gap-3 p-3">
-              <div className="border border-dashed border-[#EFECE6]/70 p-2">
+              <div className="border border-dashed border-[#0A0A0A] p-2">
                 <div className="flex items-center gap-3">
                   <PixelIcon type="robot" pixel={2} label="Judge" />
                   <div className="min-w-0 flex-1 space-y-1">
                     <p className="text-[11px]">LLM-as-Judge</p>
-                    <span className="block h-px w-full bg-[#EFECE6]/40" />
-                    <span className="block h-px w-4/5 bg-[#EFECE6]/40" />
-                    <span className="block h-px w-2/3 bg-[#EFECE6]/40" />
+                    <span className="block h-px w-full bg-[#0A0A0A]/35" />
+                    <span className="block h-px w-4/5 bg-[#0A0A0A]/35" />
+                    <span className="block h-px w-2/3 bg-[#0A0A0A]/35" />
                   </div>
-                  <div className="border border-[#EFECE6] px-2 py-1 text-[16px]">10/10</div>
+                  <div className="border border-[#0A0A0A] px-2 py-1 text-[16px]">10/10</div>
                 </div>
               </div>
 
-              <div className="border border-dashed border-[#EFECE6]/70 p-2">
+              <div className="border border-dashed border-[#0A0A0A] p-2">
                 <div className="flex items-start gap-3">
                   <PixelIcon type="analyst" pixel={2} label="Reality" />
                   <div className="min-w-0 flex-1">
@@ -181,13 +181,13 @@ export function TraceInspector() {
                     </div>
                     <p className="mt-1 text-[12px] leading-relaxed">{active.reality}</p>
                   </div>
-                  <p className="border border-[#EFECE6] px-2 py-1 text-[12px]" aria-live="polite">
+                  <p className="border border-[#0A0A0A] px-2 py-1 text-[12px]" aria-live="polite">
                     {done ? "FAIL" : "RUN"}
                   </p>
                 </div>
               </div>
 
-              <p className="text-[11px] text-[#9E9A90]">
+              <p className="text-[11px] text-[#525252]">
                 grade.py // &lt;50ms // {done ? "FAIL" : "replaying shortcuts"}
               </p>
               <div>
@@ -195,8 +195,8 @@ export function TraceInspector() {
                   <span>Reference solver</span>
                   <span className="tabular-nums">1.0000</span>
                 </div>
-                <div className="h-2 border border-[#EFECE6]/60">
-                  <div className="h-full w-full bg-[#EFECE6]" />
+                <div className="h-2 border border-[#0A0A0A]/50">
+                  <div className="h-full w-full bg-[#0A0A0A]" />
                 </div>
               </div>
               <ul className="space-y-2">
@@ -206,13 +206,13 @@ export function TraceInspector() {
                   return (
                     <li key={shortcut.name}>
                       <div className="mb-1 flex items-center justify-between gap-3 text-[11px]">
-                        <span className="truncate text-[#9E9A90]">{shortcut.name}</span>
+                        <span className="truncate text-[#525252]">{shortcut.name}</span>
                         <span className="shrink-0 tabular-nums">
                           {formatLive(value, capText, done, active.landAtCap)}
                         </span>
                       </div>
-                      <div className="h-2 border border-[#EFECE6]/40">
-                        <div className="h-full bg-[#EFECE6]" style={{ width: `${Math.max(4, value * 100)}%` }} />
+                      <div className="h-2 border border-[#0A0A0A]/30">
+                        <div className="h-full bg-[#0A0A0A]" style={{ width: `${Math.max(4, value * 100)}%` }} />
                       </div>
                     </li>
                   );
@@ -222,7 +222,7 @@ export function TraceInspector() {
               <button
                 type="button"
                 onClick={() => setRun((count) => count + 1)}
-                className="mt-auto self-start border border-[#EFECE6] px-2 py-1 text-[12px] hover:bg-[#EFECE6] hover:text-[#070707]"
+                className="mt-auto self-start border border-[#0A0A0A] px-2 py-1 text-[12px] hover:bg-[#0A0A0A] hover:text-white"
               >
                 [Replay failure -&gt;]
               </button>
