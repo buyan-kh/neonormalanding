@@ -12,7 +12,7 @@ const checks = [
 ];
 
 const inputs: Array<{ label: string; icon: PixelIconType }> = [
-  { label: "Hospital EHR", icon: "ehr" },
+  // { label: "Hospital EHR", icon: "ehr" },
   { label: "Lab Assays", icon: "assay" },
   { label: "Imaging", icon: "ct-scan" },
   { label: "Genomics", icon: "dna" },
