@@ -6,13 +6,12 @@ import { firstMiss, traceFor } from "@/lib/traces";
 
 const VB_W = 760;
 const VB_H = 440;
-const PAD = { l: 88, r: 28, t: 28, b: 58 };
-const Y_MAX = 0.4;
-const Y_TICKS = [0, 0.1, 0.2, 0.3, 0.4];
+const PAD = { l: 104, r: 36, t: 28, b: 58 };
+const Y_MAX = 40;
+const Y_TICKS = [0, 10, 20, 30, 40];
 const TOKEN_MIN = 36000;
 const TOKEN_MAX = 56000;
 
-type Mode = "task" | "length";
 type Scale = "log" | "linear";
 type Shape = "square" | "diamond";
 
@@ -25,6 +24,7 @@ type Point = {
   color: string;
   shape: Shape;
   reward: number;
+  score: number;
   tokens: number;
   x: number;
   y: number;
@@ -42,9 +42,9 @@ function seriesColor(index: number, fallback: string) {
   return seriesColors[index] ?? fallback;
 }
 
-function yOf(reward: number) {
+function yOf(score: number) {
   const plotH = VB_H - PAD.t - PAD.b;
-  const t = Math.min(1, Math.max(0, reward / Y_MAX));
+  const t = Math.min(1, Math.max(0, score / Y_MAX));
   return PAD.t + (1 - t) * plotH;
 }
 
@@ -60,16 +60,14 @@ function shortName(name: string) {
   return parts[parts.length - 1] ?? name;
 }
 
-function layout(mode: Mode, scale: Scale): Point[] {
+function layout(scale: Scale): Point[] {
   const plotW = VB_W - PAD.l - PAD.r;
-  return benchmarkTasks.flatMap((task, taskIndex) => {
+  return benchmarkTasks.flatMap((task) => {
     const trace = traceFor(task.id);
     return measured.map((model, seriesIndex) => {
       const reward = Number(task.frontier[model.rewardIndex]);
-      const center =
-        mode === "task"
-          ? PAD.l + (plotW / benchmarkTasks.length) * (taskIndex + 0.5)
-          : PAD.l + tokenT(task.tokenCount, scale) * plotW;
+      const score = reward * 100;
+      const center = PAD.l + tokenT(task.tokenCount, scale) * plotW;
       const offset = (seriesIndex - (measured.length - 1) / 2) * 12;
       const miss = firstMiss(task.id, model.id);
       return {
@@ -81,9 +79,10 @@ function layout(mode: Mode, scale: Scale): Point[] {
         color: seriesColor(seriesIndex, model.color),
         shape: shapes[seriesIndex % shapes.length],
         reward,
+        score,
         tokens: task.tokenCount,
         x: center + offset,
-        y: yOf(reward),
+        y: yOf(score),
         title: trace.title,
         axis: trace.axis,
         miss: miss ? miss.label : "Passed the named checks",
@@ -151,10 +150,9 @@ export function RewardChart({
   modelId: string;
   onPick: (taskId: string, modelId: string) => void;
 }) {
-  const [mode, setMode] = useState<Mode>("task");
   const [scale, setScale] = useState<Scale>("log");
   const [hoverKey, setHoverKey] = useState<string | null>(null);
-  const points = layout(mode, scale);
+  const points = layout(scale);
   const hover = points.find((point) => point.key === hoverKey) ?? null;
   const plotW = VB_W - PAD.l - PAD.r;
   const plotRight = VB_W - PAD.r;
@@ -165,24 +163,17 @@ export function RewardChart({
     <div className="border border-[#0A0A0A]">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#0A0A0A] px-3 py-2">
         <div className="flex flex-wrap items-center gap-2">
-          <p className="text-[13px]">Reward</p>
+          <p className="text-[13px]">Score (%)</p>
           <p className="text-[11px] text-[#5A5852]">vs</p>
-          <div className="flex border border-[#0A0A0A]" role="group" aria-label="Chart axis">
-            <Toggle label="Task" pressed={mode === "task"} onClick={() => setMode("task")} />
-            <Toggle label="Length" pressed={mode === "length"} onClick={() => setMode("length")} />
+          <p className="text-[13px]">Reasoning tokens</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <p className="text-[10px] tracking-[0.14em] text-[#5A5852]">SCALE</p>
+          <div className="flex border border-[#0A0A0A]" role="group" aria-label="Reasoning token scale">
+            <Toggle label="Log" pressed={scale === "log"} onClick={() => setScale("log")} />
+            <Toggle label="Linear" pressed={scale === "linear"} onClick={() => setScale("linear")} />
           </div>
         </div>
-        {mode === "length" ? (
-          <div className="flex items-center gap-2">
-            <p className="text-[10px] tracking-[0.14em] text-[#5A5852]">SCALE</p>
-            <div className="flex border border-[#0A0A0A]" role="group" aria-label="Length scale">
-              <Toggle label="Log" pressed={scale === "log"} onClick={() => setScale("log")} />
-              <Toggle label="Linear" pressed={scale === "linear"} onClick={() => setScale("linear")} />
-            </div>
-          </div>
-        ) : (
-          <p className="text-[11px] text-[#5A5852]">Four held-out tasks</p>
-        )}
       </div>
 
       <div className="px-2 pt-3">
@@ -192,32 +183,25 @@ export function RewardChart({
               <g key={tick}>
                 <line x1={PAD.l} x2={plotRight} y1={yOf(tick)} y2={yOf(tick)} stroke="#0A0A0A" strokeOpacity="0.12" />
                 <text x={PAD.l - 10} y={yOf(tick) + 4} textAnchor="end" fill="#5A5852" fontSize="11" fontFamily="inherit">
-                  {tick.toFixed(2)}
+                  {tick}
                 </text>
               </g>
             ))}
-            {mode === "task"
-              ? benchmarkTasks.map((task, index) => {
-                  const x = PAD.l + (plotW / benchmarkTasks.length) * (index + 0.5);
-                  return (
-                    <line key={task.id} x1={x} x2={x} y1={PAD.t} y2={axisY} stroke="#0A0A0A" strokeOpacity="0.06" />
-                  );
-                })
-              : xTicks.map((tick) => {
-                  const x = PAD.l + tokenT(tick, scale) * plotW;
-                  return <line key={tick} x1={x} x2={x} y1={PAD.t} y2={axisY} stroke="#0A0A0A" strokeOpacity="0.06" />;
-                })}
+            {xTicks.map((tick) => {
+              const x = PAD.l + tokenT(tick, scale) * plotW;
+              return <line key={tick} x1={x} x2={x} y1={PAD.t} y2={axisY} stroke="#0A0A0A" strokeOpacity="0.06" />;
+            })}
             <line x1={PAD.l} x2={plotRight} y1={axisY} y2={axisY} stroke="#0A0A0A" strokeOpacity="0.45" />
             <text
-              x="20"
+              x="34"
               y={(PAD.t + axisY) / 2}
               textAnchor="middle"
               fill="#5A5852"
               fontSize="11"
               fontFamily="inherit"
-              transform={`rotate(-90 20 ${(PAD.t + axisY) / 2})`}
+              transform={`rotate(-90 34 ${(PAD.t + axisY) / 2})`}
             >
-              Reward
+              Score (%)
             </text>
             {measured.map((model) => {
               const series = points.filter((point) => point.modelId === model.id).sort((a, b) => a.x - b.x);
@@ -240,30 +224,21 @@ export function RewardChart({
                 </text>
               </g>
             ))}
-            {mode === "task"
-              ? benchmarkTasks.map((task, index) => {
-                  const x = PAD.l + (plotW / benchmarkTasks.length) * (index + 0.5);
-                  return (
-                    <text key={task.id} x={x} y={axisY + 22} textAnchor="middle" fill="#5A5852" fontSize="11" fontFamily="inherit">
-                      {traceFor(task.id).axis}
-                    </text>
-                  );
-                })
-              : xTicks.map((tick) => (
-                  <text
-                    key={tick}
-                    x={PAD.l + tokenT(tick, scale) * plotW}
-                    y={axisY + 22}
-                    textAnchor="middle"
-                    fill="#5A5852"
-                    fontSize="11"
-                    fontFamily="inherit"
-                  >
-                    {formatTokens(tick)}
-                  </text>
-                ))}
+            {xTicks.map((tick) => (
+              <text
+                key={tick}
+                x={PAD.l + tokenT(tick, scale) * plotW}
+                y={axisY + 22}
+                textAnchor="middle"
+                fill="#5A5852"
+                fontSize="11"
+                fontFamily="inherit"
+              >
+                {formatTokens(tick)}
+              </text>
+            ))}
             <text x={(PAD.l + plotRight) / 2} y={VB_H - 14} textAnchor="middle" fill="#5A5852" fontSize="11" fontFamily="inherit">
-              {mode === "task" ? "Task" : "Task length (tokens)"}
+              Reasoning tokens
             </text>
           </svg>
 
@@ -273,7 +248,7 @@ export function RewardChart({
               <button
                 key={point.key}
                 type="button"
-                aria-label={`${point.name}, ${point.title}, reward ${point.reward.toFixed(4)}. ${point.miss}`}
+                aria-label={`${point.name}, ${point.title}, score ${point.score.toFixed(1)} percent, ${formatTokens(point.tokens)} reasoning tokens. ${point.miss}`}
                 aria-pressed={selected}
                 onClick={() => {
                   setHoverKey(null);
@@ -300,7 +275,7 @@ export function RewardChart({
               <p>{hover.name}</p>
               <p className="text-[#5A5852]">{hover.title}</p>
               <p className="mt-1 tabular-nums">
-                {hover.reward.toFixed(4)} reward · {formatTokens(hover.tokens)} tokens
+                {hover.score.toFixed(1)}% score · {formatTokens(hover.tokens)} reasoning tokens
               </p>
               <p className="mt-1">{hover.miss}</p>
             </div>

@@ -115,7 +115,7 @@ export function Evaluation() {
             <RewardChart taskId={taskId} modelId={modelId} onPick={openMiss} />
           </div>
           <p className="mt-3 max-w-[72ch] text-[11px] leading-relaxed text-[#5A5852]">
-            Each line is one model across the four tasks. The axis stops at 0.40 so the difference between runs is visible. Click a point to open the miss.
+            Score is the grader result as a percent. The horizontal axis is reasoning tokens. Each line is one model across the four tasks. Click a point to open the miss.
           </p>
 
           <div className="mt-6 overflow-x-auto border border-[#0A0A0A]">
@@ -135,7 +135,7 @@ export function Evaluation() {
                     </th>
                   ))}
                   <th className="px-3 py-2 font-normal" scope="col">
-                    Length
+                    Reasoning tokens
                   </th>
                 </tr>
               </thead>
