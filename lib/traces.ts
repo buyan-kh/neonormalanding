@@ -23,130 +23,27 @@ export type TaskTrace = {
 
 export const taskTraces: TaskTrace[] = [
   {
-    id: "longitudinal-ehr",
-    title: "Ten-year cancer records",
-    axis: "10-year",
-    brief: "Decide if the cancer is back by year 10. You can see the first three years. The later years are hidden and used only to grade.",
-    records: "Clinic visits, blood counts, tumor DNA in the blood, and scan measurements, linked for the same patient.",
-    checks: [
-      {
-        id: "tables",
-        label: "Read the clinic, lab, DNA, and scan records together",
-        miss: "Scores one table and ignores the others.",
-        correct: "Join the clinic visits, blood counts, tumor DNA, and scans for the same patient before deciding.",
-        failedModels: [],
-      },
-      {
-        id: "aging",
-        label: "Set aside mutations from normal aging blood",
-        miss: "Counts mutations that also show up in healthy aging blood cells as the cancer coming back.",
-        correct: "Remove mutations that also appear in healthy aging blood before calling a relapse.",
-        failedModels: ["sol", "astra"],
-      },
-      {
-        id: "clock",
-        label: "Stop the clock when follow-up stops",
-        miss: "Scores all ten years, including time after the patient had stopped being observed.",
-        correct: "Stop the clock when visits stop. Do not score years the patient was not observed.",
-        failedModels: ["sol", "astra"],
-      },
-    ],
-    answers: {
-      sol: [
-        {
-          text: "I line up the clinic visits, blood counts, tumor DNA, and scan measurements for each patient. ",
-          checkId: "tables",
-        },
-        { text: "The later years are hidden, so I extend the early trend out to year 10. " },
-        {
-          text: "I count every new blood mutation as the cancer coming back, including mutations that also appear in healthy aging blood cells. ",
-          checkId: "aging",
-        },
-        {
-          text: "Patients who stop coming in at year 4 are still scored through year 10. ",
-          checkId: "clock",
-        },
-        { text: "Call: the cancer is back." },
-      ],
-      astra: [
-        {
-          text: "The four records join on patient id, and the scan measurements move with the blood test. ",
-          checkId: "tables",
-        },
-        { text: "I forecast year 10 from the first three years. " },
-        {
-          text: "Mutations shared with normal aging blood stay in the tumor signal, so they count as relapse. ",
-          checkId: "aging",
-        },
-        {
-          text: "I keep the full ten-year window even after follow-up has stopped. ",
-          checkId: "clock",
-        },
-        { text: "Call: relapse." },
-      ],
-    },
+    id: "neonorma/ctdna-chip",
+    title: "Plasma cfDNA liquid biopsy & aging-blood filtering",
+    axis: "cfDNA & CHIP",
+    brief: "Infer tumor fraction, ploidy, and subclonal copy number from cell-free DNA without a matched white-blood-cell normal, and separate true truncal tumor mutations from aging-blood clonal hematopoiesis (CHIP).",
+    records: "48 autosomal CBS segments, 1,420 heterozygous SNPs, and 42 targeted duplex panel variants.",
+    checks: [],
+    answers: {},
   },
   {
-    id: "mrd-duplex",
+    id: "neonorma/mrd-duplex",
     title: "Blood test for leftover cancer",
     axis: "Blood test",
-    brief: "Decide whether DNA in the blood is leftover cancer, or a scar from the lab plus normal aging blood.",
-    records: "Copy-families from the sequencer, a panel of known lab damage, and repeat blood draws.",
+    brief: "Classify duplex-sequencing variants from post-surgery plasma, using a matched WBC control and an oxidative damage panel.",
+    records: "Duplex UMI families, paired buffy-coat white blood cells, and an oxidative damage calibration panel.",
     checks: [
-      {
-        id: "copies",
-        label: "Require the mutation to agree across its own copies",
-        miss: "Accepts a single damaged read as leftover cancer.",
-        correct: "A real mutation has to agree across its own family of copies. One read is not enough.",
-        failedModels: ["astra"],
-      },
-      {
-        id: "damage",
-        label: "Drop the chemical scar left by lab prep",
-        miss: "Treats a common chemical scar from preparing the sample as a tumor mutation.",
-        correct: "Drop the chemical scar left by lab prep. It is not a tumor mutation.",
-        failedModels: ["sol", "astra"],
-      },
-      {
-        id: "aging",
-        label: "Filter mutations from normal aging blood",
-        miss: "Leaves in mutations that come from normal aging blood cells.",
-        correct: "Filter mutations that come from normal aging blood cells, using the blood-cell control.",
-        failedModels: ["sol", "astra"],
-      },
+      { id: "check_schema_and_join", label: "Schema and input joins", miss: "Does not correctly join the required inputs.", correct: "Join inputs on variant_id.", failedModels: [] },
+      { id: "check_duplex_strand_consensus", label: "Duplex strand consensus", miss: "Counts a single-strand artifact as a duplex variant.", correct: "Require alternate reads on both strands.", failedModels: ["astra"] },
+      { id: "check_oxog_damage_filter", label: "Oxidative damage filter", miss: "Fails to use context-specific oxidative damage rates.", correct: "Use the oxidative calibration panel.", failedModels: ["sol", "astra"] },
+      { id: "check_wbc_chip_subtraction", label: "WBC / CHIP subtraction", miss: "Retains a variant present in matched WBCs.", correct: "Use WBC evidence to filter CHIP.", failedModels: ["sol", "astra", "opus"] },
     ],
-    answers: {
-      sol: [
-        {
-          text: "I group the reads into copy families and set aside families that do not agree with themselves. ",
-          checkId: "copies",
-        },
-        {
-          text: "A chemical scar from preparing the sample still counts as a tumor mutation. ",
-          checkId: "damage",
-        },
-        {
-          text: "Mutations that come from normal aging blood cells stay in the call. ",
-          checkId: "aging",
-        },
-        { text: "Call: leftover cancer." },
-      ],
-      astra: [
-        {
-          text: "I treat a single damaged read as enough to call a mutation. ",
-          checkId: "copies",
-        },
-        {
-          text: "The chemical scar on that read is counted as tumor DNA. ",
-          checkId: "damage",
-        },
-        {
-          text: "Aging-blood mutations are included in the same call. ",
-          checkId: "aging",
-        },
-        { text: "Call: the cancer is still there." },
-      ],
-    },
+    answers: {},
   },
   {
     id: "perturb-seq",

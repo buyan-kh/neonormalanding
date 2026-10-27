@@ -40,8 +40,8 @@ export function Evaluation() {
     })
     .sort((a, b) => b.mean - a.mean);
   const best = ranked[0];
-  const [taskId, setTaskId] = useState(benchmarkTasks[0].id);
-  const [modelId, setModelId] = useState(best?.id ?? benchmarkModels[0].id);
+  const [taskId, setTaskId] = useState("neonorma/mrd-duplex");
+  const [modelId, setModelId] = useState("sol");
   const [checkId, setCheckId] = useState<string | null>(null);
   const [expandedTasks, setExpandedTasks] = useState<Set<string>>(() => new Set());
 
@@ -185,7 +185,7 @@ export function Evaluation() {
             Models print success. The biology fails.
           </h2>
           <p className="mt-3 max-w-[58ch] text-[13px] leading-relaxed text-[#5A5852]">
-            Run a mock Harbor v1.2 grader to see an example of its output. Click an underlined sentence to see what the model missed and what a correct answer needs.
+            Explore a simulated Harbor v1.2 run: inspect the task files, run the weighted checks, and trace a result back to the submitted output.
           </p>
           <div id="trace" className="mt-4 scroll-mt-32">
             <TaskExplorer

@@ -47,28 +47,27 @@ export type BenchmarkTask = {
 
 export const benchmarkTasks: BenchmarkTask[] = [
   {
-    id: "longitudinal-ehr",
-    name: "Longitudinal EHR + Wet-Lab + Radiology (10-Year Holdout)",
-    short: "10-year EHR + radiology",
-    records:
-      "5 linked clinical, flow cytometry, ctDNA, and RECIST tables (Years 1 to 3 exposed, Years 4 to 10 held out in Grader)",
+    id: "neonorma/ctdna-chip",
+    name: "Plasma cfDNA liquid biopsy & aging-blood filtering",
+    short: "cfDNA copy number & CHIP",
+    records: "48 autosomal CBS segments, 1,420 heterozygous SNPs, and 42 targeted duplex panel variants without a matched white-blood-cell normal",
     tokens: "~38,400",
     tokenCount: 38400,
     reasoningTokens: [38400, 35500, 49000, 52000, 47000, 61000, 44000, 56000, 58000],
     frontier: ["0.3650", "0.4250", "0.3250", "0.4120", "0.3000", "0.3850", "0.3150", "0.2950", "0.3750"],
     reference: "1.0000",
     failure:
-      "Fails to subtract CHIP hematopoietic background and ignores immortal-time bias before scoring 10-year relapse",
+      "Confuses clonal hematopoiesis with tumor variants or misestimates tumor fraction, ploidy, and subclonal copy number",
   },
   {
-    id: "mrd-duplex",
+    id: "neonorma/mrd-duplex",
     name: "Molecular Residual Disease (MRD) Duplex Sequencing",
     short: "MRD duplex sequencing",
     records: "Raw UMI family reads, oxidative damage panels, and longitudinal plasma draws",
     tokens: "~41,200",
     tokenCount: 41200,
     reasoningTokens: [41200, 37000, 35000, 67000, 59000, 48000, 72000, 41000, 76000],
-    frontier: ["0.1900", "0.2350", "0.1650", "0.2200", "0.1400", "0.2050", "0.1550", "0.1450", "0.1950"],
+    frontier: ["0.4500", "0.2000", "0.1650", "0.7000", "0.1400", "0.2050", "0.1550", "0.1450", "0.1950"],
     reference: "1.0000",
     failure: "Treats 8-oxoG strand artifacts and clonal hematopoiesis variants as true tumor recurrence",
   },
