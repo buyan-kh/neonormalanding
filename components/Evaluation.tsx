@@ -42,13 +42,11 @@ export function Evaluation() {
   const best = ranked[0];
   const [taskId, setTaskId] = useState("neonorma/mrd-duplex");
   const [modelId, setModelId] = useState("sol");
-  const [checkId, setCheckId] = useState<string | null>(null);
   const [expandedTasks, setExpandedTasks] = useState<Set<string>>(() => new Set());
 
   function openMiss(nextTask: string, nextModel: string, scroll = true) {
     setTaskId(nextTask);
     setModelId(nextModel);
-    setCheckId(null);
     if (scroll) {
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       document.getElementById("failure-trace")?.scrollIntoView({
@@ -180,25 +178,17 @@ export function Evaluation() {
 
       <section id="failure-trace" className="scroll-mt-32 border-t border-[#0A0A0A]/20" aria-labelledby="trace-heading">
         <div className="mx-auto w-full max-w-[1080px] px-4 py-6 md:px-6">
-          <p className="text-[13px] tracking-[0.18em] text-[#525252]">THE MISS</p>
+          <p className="text-[13px] tracking-[0.18em] text-[#525252]">INSIDE THE ENVIRONMENT</p>
           <h2 id="trace-heading" className="mt-2 max-w-[30em] text-[24px] leading-[1.15] md:text-[28px]">
-            Models print success. The biology fails.
+            From real data to a verifiable task.
           </h2>
           <p className="mt-3 max-w-[58ch] text-[13px] leading-relaxed text-[#5A5852]">
-            Explore a simulated Harbor v1.2 run: inspect the task files, run the weighted checks, and trace a result back to the submitted output.
+            Explore what each environment gives the model, what the work involves, and what the verifier checks.
           </p>
           <div id="trace" className="mt-4 scroll-mt-32">
             <TaskExplorer
-              key={`${taskId}:${modelId}`}
               taskId={taskId}
-              modelId={modelId}
-              checkId={checkId}
-              onTask={(id) => {
-                setTaskId(id);
-                setCheckId(null);
-              }}
-              onModel={setModelId}
-              onCheck={setCheckId}
+              onTask={setTaskId}
             />
           </div>
         </div>

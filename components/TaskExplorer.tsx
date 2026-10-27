@@ -1,146 +1,182 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { benchmarkModels, benchmarkTasks } from "@/lib/catalog";
-import { demoResult, demoReward, harborChecks, harborDemos, isDemoModel, mrdTaskId, type HarborCheckId } from "@/lib/harbor-demo";
+import { benchmarkTasks } from "@/lib/catalog";
 import { traceFor } from "@/lib/traces";
 
-const demoModels = ["sol", "astra", "opus", "oracle"] as const;
-const fileList: Record<string, string[]> = {
-  "neonorma/ctdna-chip": ["instruction.md", "docs/analysis.md", "data/segments.csv · 48 autosomal CBS segments", "data/snps.csv · 1,420 heterozygous SNPs", "data/variants.csv · 42 targeted duplex panel variants"],
-  [mrdTaskId]: ["instruction.md", "data/duplex_families.csv", "data/wbc_control.csv", "data/oxog_panel.csv", "solution/solve.sh · reference solution"],
+type Stage = { title: string; lines: [string, string, string] };
+type Environment = {
+  eyebrow: string;
+  summary: string;
+  visual: "copy" | "duplex" | "matrix" | "survival";
+  visualTitle: string;
+  visualNote: string;
+  stages: [Stage, Stage, Stage];
+  checks: string[];
+  output: string;
 };
-const sampleFamilies = `variant_id,gene,chrom_pos,change,ab_alt_reads,ba_alt_reads,total_duplex_depth\nV04,TP53,chr17:7577120,G>T,6,0,4800\nV09,DNMT3A,chr2:25457242,C>T,11,10,5100\nV14,KRAS,chr12:25398284,G>A,4,4,6200`;
-const sampleWbc = `variant_id,wbc_alt_reads,wbc_total_depth\nV04,0,3900\nV09,18,4100\nV14,0,4400`;
 
-function modelName(id: string) {
-  return id === "oracle" ? "Reference Oracle" : benchmarkModels.find((model) => model.id === id)?.name ?? id;
+const environments: Record<string, Environment> = {
+  "neonorma/ctdna-chip": {
+    eyebrow: "LIQUID BIOPSY / COPY NUMBER",
+    summary: "Infer what belongs to the tumor from a plasma sample, without a matched white-blood-cell normal.",
+    visual: "copy",
+    visualTitle: "A mixed signal, not a clean genome",
+    visualNote: "A schematic view of segment-level copy-number changes.",
+    stages: [
+      { title: "Plasma data", lines: ["Copy-number segments", "Heterozygous SNPs", "Targeted variants"] },
+      { title: "Joint analysis", lines: ["Tumor fraction & ploidy", "Subclonal copy number", "Tumor vs. CHIP"] },
+      { title: "Structured result", lines: ["Estimated tumor fraction", "Copy-number calls", "Variant interpretation"] },
+    ],
+    checks: ["Purity and ploidy", "Allelic evidence", "CHIP uncertainty"],
+    output: "The verifier checks whether the result uses the available evidence and handles uncertainty.",
+  },
+  "neonorma/mrd-duplex": {
+    eyebrow: "LIQUID BIOPSY / RESIDUAL DISEASE",
+    summary: "Separate residual tumor DNA from sequencing artifacts and variants originating in blood cells.",
+    visual: "duplex",
+    visualTitle: "Two strands tell a different story",
+    visualNote: "A schematic of how duplex and blood-cell evidence change a variant call.",
+    stages: [
+      { title: "Sequencing data", lines: ["Duplex read families", "Matched WBC control", "Oxidative damage panel"] },
+      { title: "Variant filtering", lines: ["Strand consensus", "Oxidative artifacts", "WBC / CHIP signal"] },
+      { title: "Structured result", lines: ["MRD status", "Estimated ctDNA VAF", "Variant classifications"] },
+    ],
+    checks: ["Both strands", "Oxidative damage", "WBC evidence"],
+    output: "The verifier checks the variant calls, not just whether the submission is valid JSON.",
+  },
+  "perturb-seq": {
+    eyebrow: "PERTURB-SEQ / DRUG COMBINATIONS",
+    summary: "Evaluate a drug pair while accounting for the experimental conditions that can distort the result.",
+    visual: "matrix",
+    visualTitle: "The answer lives across the dose matrix",
+    visualNote: "A schematic of paired doses and the controls around them.",
+    stages: [
+      { title: "Experiment data", lines: ["Dose-response matrix", "Guide assignments", "Plate controls"] },
+      { title: "Adjust & compare", lines: ["Knockdown efficiency", "Plate-position effects", "Synergy reference"] },
+      { title: "Analysis", lines: ["Combination response", "Model assumptions", "Interpretable result"] },
+    ],
+    checks: ["Dose coverage", "Guide efficiency", "Plate controls"],
+    output: "The verifier checks whether the analysis accounts for the experimental controls and assumptions.",
+  },
+  "oncology-trial": {
+    eyebrow: "CLINICAL TRIAL / SURVIVAL",
+    summary: "Compare treatments when benefits appear late and patients can switch arms or experience competing events.",
+    visual: "survival",
+    visualTitle: "A treatment effect can emerge over time",
+    visualNote: "Schematic survival curves, shown to illustrate a delayed separation.",
+    stages: [
+      { title: "Trial records", lines: ["Assigned treatment arms", "Follow-up & events", "Treatment switches"] },
+      { title: "Survival analysis", lines: ["Censoring & competing risks", "Delayed treatment effect", "Fixed-window comparison"] },
+      { title: "Analysis", lines: ["Treatment comparison", "Time window & assumptions", "Interpretable result"] },
+    ],
+    checks: ["Assigned arms", "Follow-up", "RMST comparison"],
+    output: "The verifier checks the treatment comparison and how follow-up and competing events are handled.",
+  },
+};
+
+function ScientificVisual({ environment }: { environment: Environment }) {
+  const grid = [0, 1, 2, 3, 4];
+  return (
+    <div className="rl-visual overflow-hidden border-b border-[#0a0a0a]/10 bg-[#f8f8f8]">
+      <div className="flex flex-wrap items-start justify-between gap-2 px-4 pt-4 md:px-5">
+        <div><p className="font-mono text-[10px] tracking-[0.1em] text-[#929292]">SIGNAL / 01</p><p className="mt-1 text-[14px] font-medium text-[#333]">{environment.visualTitle}</p></div>
+        <span className="rounded-full border border-[#dedede] px-2 py-1 font-mono text-[10px] text-[#888]">SCHEMATIC</span>
+      </div>
+      <div className="overflow-x-auto px-3 pb-2">
+        <svg viewBox="0 0 760 200" role="img" aria-label={`${environment.visualTitle}. ${environment.visualNote}`} className="block h-auto w-full min-w-[560px]">
+          <g stroke="#e6e6e6" strokeWidth="1">{grid.map((i) => <line key={i} x1="44" x2="716" y1={40 + i * 30} y2={40 + i * 30} />)}</g>
+          {environment.visual === "copy" && <>
+            <text x="45" y="23" fill="#999" fontSize="10" fontFamily="inherit">RELATIVE COPY SIGNAL</text>
+            <path d="M45 100 H715" stroke="#b5b5b5" strokeWidth="1" strokeDasharray="3 5" />
+            <path d="M45 102 H124 V76 H197 V90 H276 V53 H345 V94 H432 V117 H504 V78 H579 V101 H716" fill="none" stroke="#313131" strokeWidth="2" strokeLinejoin="round" className="rl-draw" />
+            <path d="M45 111 H124 V86 H197 V100 H276 V64 H345 V104 H432 V127 H504 V89 H579 V111 H716" fill="none" stroke="#b2b2b2" strokeWidth="1" strokeLinejoin="round" className="rl-draw rl-delay-1" />
+            {[124,197,276,345,432,504,579].map((x,i) => <circle key={x} cx={x} cy={[76,90,53,94,117,78,101][i]} r="3" fill="#535353" className="rl-point" style={{ animationDelay: `${i * 90}ms` }} />)}
+            <text x="45" y="187" fill="#999" fontSize="10" fontFamily="inherit">SEGMENTS ALONG THE GENOME</text><text x="561" y="187" fill="#999" fontSize="10" fontFamily="inherit">TUMOR + NORMAL DNA</text>
+          </>}
+          {environment.visual === "duplex" && <>
+            <text x="45" y="23" fill="#999" fontSize="10" fontFamily="inherit">DUPLEX EVIDENCE</text>
+            {[0,1,2].map((i) => <g key={i} transform={`translate(${45 + i * 228} 40)`} className="rl-cell" style={{ animationDelay: `${i * 120}ms` }}>
+              <rect width="210" height="111" rx="3" fill="white" stroke="#dedede" /><text x="14" y="23" fill="#333" fontSize="12" fontFamily="inherit" fontWeight="600">{["V04 / one strand", "V09 / WBC signal", "V14 / duplex"][i]}</text>
+              <text x="14" y="49" fill="#999" fontSize="10" fontFamily="inherit">AB</text><line x1="43" x2="171" y1="46" y2="46" stroke="#e2e2e2" strokeWidth="5" strokeLinecap="round" /><line x1="43" x2={i === 2 ? "131" : "145"} y1="46" y2="46" stroke="#555" strokeWidth="5" strokeLinecap="round" className="rl-duplex-line" />
+              <text x="14" y="73" fill="#999" fontSize="10" fontFamily="inherit">BA</text><line x1="43" x2="171" y1="70" y2="70" stroke="#e2e2e2" strokeWidth="5" strokeLinecap="round" />{i !== 0 && <line x1="43" x2={i === 2 ? "131" : "143"} y1="70" y2="70" stroke="#777" strokeWidth="5" strokeLinecap="round" className="rl-duplex-line rl-delay-1" />}
+              <text x="14" y="96" fill="#888" fontSize="10" fontFamily="inherit">{["Strand support missing", "Present in blood control", "Both strands supported"][i]}</text>
+            </g>)}
+            <text x="45" y="187" fill="#999" fontSize="10" fontFamily="inherit">READ FAMILIES + MATCHED CONTROL</text>
+          </>}
+          {environment.visual === "matrix" && <>
+            <text x="45" y="23" fill="#999" fontSize="10" fontFamily="inherit">DRUG A × DRUG B</text>
+            {[0,1,2,3,4,5,6,7].flatMap((x) => [0,1,2,3].map((y) => <rect key={`${x}-${y}`} x={76 + x * 45} y={38 + y * 33} width="36" height="25" rx="2" fill={["#ededed", "#dadada", "#c5c5c5", "#adadad", "#8f8f8f"][(x * 2 + y * 3 + x * y) % 5]} className="rl-cell" style={{ animationDelay: `${(x + y) * 45}ms` }} />))}
+            <path d="M474 52 H677 M474 84 H677 M474 116 H677" stroke="#e0e0e0" /><text x="474" y="44" fill="#999" fontSize="10" fontFamily="inherit">LOOK BEYOND A SINGLE WELL</text>
+            <text x="474" y="75" fill="#555" fontSize="12" fontFamily="inherit">Dose coverage</text><text x="474" y="107" fill="#555" fontSize="12" fontFamily="inherit">Guide efficiency</text><text x="474" y="139" fill="#555" fontSize="12" fontFamily="inherit">Plate controls</text>
+            <text x="76" y="187" fill="#999" fontSize="10" fontFamily="inherit">PAIRED DOSE CONDITIONS</text>
+          </>}
+          {environment.visual === "survival" && <>
+            <text x="45" y="23" fill="#999" fontSize="10" fontFamily="inherit">PROPORTION EVENT-FREE</text>
+            <path d="M45 45 H115 V58 H180 V68 H245 V77 H306 V85 H362 V100 H425 V108 H486 V117 H552 V128 H612 V139 H715" fill="none" stroke="#a3a3a3" strokeWidth="2" className="rl-draw" />
+            <path d="M45 45 H115 V57 H180 V67 H245 V76 H306 V82 H362 V88 H425 V92 H486 V97 H552 V104 H612 V111 H715" fill="none" stroke="#313131" strokeWidth="2" className="rl-draw rl-delay-1" />
+            <path d="M306 82 V85 H362 V100 H425 V108 H486 V117 H552 V128 H612 V139 H715 V111 H612 V104 H552 V97 H486 V92 H425 V88 H362 V82 Z" fill="#d5d5d5" opacity="0.5" className="rl-reveal" />
+            <text x="465" y="68" fill="#777" fontSize="10" fontFamily="inherit">DELAYED SEPARATION</text><path d="M530 72 V85" stroke="#aaa" />
+            <text x="45" y="187" fill="#999" fontSize="10" fontFamily="inherit">FOLLOW-UP TIME →</text><line x1="578" x2="596" y1="184" y2="184" stroke="#313131" strokeWidth="2" /><text x="601" y="187" fill="#888" fontSize="10" fontFamily="inherit">ARM A</text><line x1="652" x2="670" y1="184" y2="184" stroke="#aaa" strokeWidth="2" /><text x="675" y="187" fill="#888" fontSize="10" fontFamily="inherit">ARM B</text>
+          </>}
+        </svg>
+      </div>
+      <p className="border-t border-[#eaeaea] px-4 py-2 text-[11px] text-[#929292] md:px-5">{environment.visualNote}</p>
+    </div>
+  );
 }
 
-function linkedCheck(line: string): HarborCheckId | null {
-  if (line.includes("V04_TP53")) return "check_oxog_damage_filter";
-  if (line.includes("V09_DNMT3A")) return "check_wbc_chip_subtraction";
-  if (line.includes('"retained_tumor_variants"')) return "check_wbc_chip_subtraction";
-  if (line.includes('"patient_status"')) return "check_schema_and_join";
-  return null;
+function EnvironmentGraph({ environment }: { environment: Environment }) {
+  return (
+    <svg viewBox="0 0 840 296" role="img" aria-labelledby="env-graph-title env-graph-desc" className="block h-auto w-full min-w-[560px]">
+      <title id="env-graph-title">{`${environment.eyebrow}: environment flow`}</title>
+      <desc id="env-graph-desc">{environment.stages.map((stage) => `${stage.title}: ${stage.lines.join(", ")}`).join(". ")}. The verifier checks {environment.checks.join(", ")}.</desc>
+      <defs><pattern id="env-grid" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="0.8" fill="#dfdfdf" /></pattern></defs>
+      <rect width="840" height="296" fill="#fafafa" />
+      <rect width="840" height="296" fill="url(#env-grid)" />
+      <path d="M252 113 H312 M546 113 H606" fill="none" stroke="#b7b7b7" strokeWidth="1.2" />
+      <path d="M252 113 H312 M546 113 H606" fill="none" stroke="#555" strokeWidth="1.5" strokeDasharray="3 8" className="rl-flow" />
+      <path d="M714 177 V205 H420 V222" fill="none" stroke="#b7b7b7" strokeWidth="1.2" />
+      <path d="M714 177 V205 H420 V222" fill="none" stroke="#777" strokeWidth="1.5" strokeDasharray="3 8" className="rl-flow" />
+      {environment.stages.map((stage, index) => {
+        const x = 18 + index * 294;
+        return <g key={stage.title} transform={`translate(${x} 49)`} className="rl-stage" style={{ animationDelay: `${index * 90}ms` }}>
+          <text x="0" y="-12" fill="#888" fontSize="10" fontFamily="inherit" letterSpacing="1.2">{["01 / INPUTS", "02 / WORK", "03 / OUTPUT"][index]}</text>
+          <rect x="0" y="0" width="234" height="128" rx="3" fill="white" stroke="#d5d5d5" />
+          <text x="16" y="25" fill="#222" fontSize="13" fontWeight="600" fontFamily="inherit">{stage.title}</text>
+          <line x1="16" x2="218" y1="36" y2="36" stroke="#ededed" />
+          {stage.lines.map((line, lineIndex) => <g key={line}><circle cx="19" cy={58 + lineIndex * 24} r="2" fill="#a0a0a0" /><text x="30" y={62 + lineIndex * 24} fill="#555" fontSize="12" fontFamily="inherit">{line}</text></g>)}
+        </g>;
+      })}
+      <rect x="251" y="222" width="338" height="53" rx="3" fill="#f1f1f1" stroke="#d4d4d4" />
+      <circle cx="270" cy="241" r="4" fill="#777" className="rl-pulse" />
+      <text x="283" y="245" fill="#333" fontSize="12" fontWeight="600" fontFamily="inherit">Deterministic verifier</text>
+      <text x="283" y="261" fill="#777" fontSize="10" fontFamily="inherit">{environment.checks.join("  ·  ")}</text>
+    </svg>
+  );
 }
 
-export function TaskExplorer({ taskId, modelId, checkId, onTask, onModel, onCheck }: {
-  taskId: string; modelId: string; checkId: string | null;
-  onTask: (taskId: string) => void; onModel: (modelId: string) => void; onCheck: (checkId: string) => void;
-}) {
+export function TaskExplorer({ taskId, onTask }: { taskId: string; onTask: (taskId: string) => void }) {
   const task = benchmarkTasks.find((item) => item.id === taskId) ?? benchmarkTasks[0];
-  const trace = traceFor(task.id);
-  const model = benchmarkModels.find((item) => item.id === modelId);
-  const demo = task.id === mrdTaskId && isDemoModel(modelId) ? harborDemos[modelId] : null;
-  const [cursor, setCursor] = useState<number | null>(null);
-  const [completed, setCompleted] = useState(false);
-  const [tab, setTab] = useState<"submission" | "trajectory">("submission");
-  const timers = useRef<number[]>([]);
-  const running = cursor !== null;
-  const active = harborChecks.find((check) => check.id === checkId) ?? harborChecks.find((check) => demo && demo.checks[check.id] === 0) ?? harborChecks[0];
-
-  useEffect(() => {
-    const bucket = timers;
-    return () => bucket.current.forEach((id) => window.clearTimeout(id));
-  }, []);
-
-  function run() {
-    if (!demo || !isDemoModel(modelId)) return;
-    timers.current.forEach((id) => window.clearTimeout(id));
-    timers.current = [];
-    setCompleted(false);
-    const firstFailed = harborChecks.find((check) => demo?.checks[check.id] === 0);
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      onCheck((firstFailed ?? harborChecks[0]).id);
-      setCompleted(true);
-      return;
-    }
-    setCursor(-1);
-    harborChecks.forEach((check, index) => {
-      const timer = window.setTimeout(() => {
-        setCursor(index);
-        onCheck(check.id);
-      }, 300 * index);
-      timers.current.push(timer);
-    });
-    timers.current.push(window.setTimeout(() => {
-      setCursor(null);
-      setCompleted(true);
-      onCheck((firstFailed ?? harborChecks[0]).id);
-    }, 300 * harborChecks.length));
-  }
-
-  const currentReward = demo && isDemoModel(modelId) ? demoReward(modelId, completed ? harborChecks.length - 1 : cursor ?? -1) : 0;
-  const result = demo && isDemoModel(modelId) ? demoResult(modelId) : null;
-  const tokenCount = model ? task.reasoningTokens[model.rewardIndex] : null;
-  const output = demo ? JSON.stringify(demo.submission, null, 2).split("\n") : [];
+  const environment = environments[task.id];
 
   return (
     <div className="grid gap-4 md:grid-cols-[210px_minmax(0,1fr)] md:gap-6">
-      <ol className="border-t border-[#0A0A0A]/20">
-        {benchmarkTasks.map((item, index) => {
-          const reward = modelId === "oracle" ? 1 : model ? Number(item.frontier[model.rewardIndex]) : null;
-          return <li key={item.id} className="border-b border-[#0A0A0A]/20"><button type="button" aria-pressed={item.id === task.id} onClick={() => onTask(item.id)} className={`flex w-full items-baseline justify-between gap-2 py-3 text-left text-[13px] ${item.id === task.id ? "text-[#0A0A0A]" : "text-[#666] hover:text-black"}`}><span className="flex gap-2"><span className="tabular-nums">{String(index + 1).padStart(2, "0")}</span><span>{traceFor(item.id).title}</span></span><span className="shrink-0 tabular-nums">{reward === null ? "—" : reward.toFixed(2)}</span></button></li>;
-        })}
-      </ol>
-      <div className="min-w-0 border border-[#0A0A0A]/30">
-        <div className="flex flex-wrap gap-2 border-b border-[#0A0A0A]/15 p-3" role="group" aria-label="Example models">
-          {demoModels.map((id) => <button key={id} type="button" aria-pressed={modelId === id} onClick={() => onModel(id)} className={`border px-2 py-1 text-[13px] ${modelId === id ? "border-[#C5C5C5] bg-[#E4E4E4] text-[#303030]" : "border-[#0A0A0A]/25 hover:border-[#0A0A0A]"}`}>{modelName(id)}{id === "oracle" ? " (1.00)" : ""}</button>)}
-          {!isDemoModel(modelId) && <span className="self-center text-[12px] text-[#666]">No artifact example for {modelName(modelId)}; select a model above.</span>}
+      <div>
+        <p className="mb-2 text-[11px] tracking-[0.12em] text-[#777]">ENVIRONMENTS</p>
+        <ol className="border-t border-[#0A0A0A]/15">
+          {benchmarkTasks.map((item, index) => <li key={item.id} className="border-b border-[#0A0A0A]/15"><button type="button" aria-pressed={item.id === task.id} onClick={() => onTask(item.id)} className={`flex w-full items-baseline gap-3 rounded-sm px-2 py-3 text-left text-[13px] transition-colors duration-200 ${item.id === task.id ? "bg-[#f1f1f1] font-medium text-[#111]" : "text-[#777] hover:bg-[#f8f8f8] hover:text-[#111]"}`}><span className="font-mono text-[11px] text-[#999]">{String(index + 1).padStart(2, "0")}</span><span>{traceFor(item.id).title}</span></button></li>)}
+        </ol>
+      </div>
+      <div key={task.id} className="rl-enter min-w-0 border border-[#0A0A0A]/15">
+        <div className="border-b border-[#0A0A0A]/10 px-4 py-4 md:px-5">
+          <p className="text-[10px] tracking-[0.12em] text-[#888]">{environment.eyebrow}</p>
+          <h3 className="mt-2 text-[19px] leading-snug">{traceFor(task.id).title}</h3>
+          <p className="mt-2 max-w-[70ch] text-[13px] leading-relaxed text-[#666]">{environment.summary}</p>
         </div>
-        <div className="grid gap-5 p-4 md:p-5">
-          <div>
-            <p className="text-[12px] text-[#737373]">{task.id}</p>
-            <h3 className="mt-1 text-[20px] leading-snug">{trace.title}</h3>
-            <p className="mt-2 max-w-[75ch] text-[13px] leading-relaxed">{task.id === mrdTaskId ? "A stage III colorectal cancer patient’s post-surgery plasma was sequenced with duplex UMI adapters. Use the duplex families, paired WBC control, and oxidative damage panel to classify variants and write /workspace/output/submission.json with MRD status, estimated ctDNA VAF, and a classification for each variant." : trace.brief}</p>
-            <p className="mt-2 max-w-[75ch] text-[13px] leading-relaxed text-[#666]">{trace.records}</p>
-            {tokenCount !== null && <p className="mt-2 text-[12px] tabular-nums text-[#666]">~{tokenCount.toLocaleString("en-US")} reasoning tokens{model && model.rewardIndex > 0 ? " (estimate)" : ""}</p>}
-          </div>
-          <details className="border border-[#D8D8D8] text-[13px]">
-            <summary className="cursor-pointer px-3 py-2 text-[#404040] hover:bg-[#F4F4F4]">Inspect /workspace/ files &amp; task.toml</summary>
-            <div className="space-y-3 border-t border-[#E3E3E3] p-3">
-              {fileList[task.id] ? <><p className="font-mono text-[12px] text-[#666]">/workspace/</p><ul className="space-y-1 font-mono text-[12px]">{fileList[task.id].map((file) => <li key={file}>{file}</li>)}</ul></> : <p>Workspace details are not available for this example.</p>}
-              <p className="text-[12px] text-[#666]">task.toml configuration excerpt (illustrative; the full file was not supplied)</p>
-              <pre className="overflow-x-auto font-mono text-[11px] leading-relaxed">{'schema_version = "1.2"\nnetwork_mode = "no-network"'}</pre>
-              {task.id === mrdTaskId && <><p className="font-mono text-[12px]">instruction.md · prompt summary</p><p className="text-[12px] leading-relaxed">Analyze the post-surgery duplex plasma sample alongside the paired WBC control and oxidative damage panel. Write <code>/workspace/output/submission.json</code> with MRD status, ctDNA VAF, and a classification for each variant: <code>tumor_mrd</code>, <code>oxog_artifact</code>, <code>chip_hematopoietic</code>, or <code>germline</code>.</p><p className="text-[12px] text-[#666]">Safe sample rows</p><div className="overflow-x-auto"><p className="font-mono text-[12px]">data/duplex_families.csv</p><pre className="mt-1 text-[11px] leading-relaxed">{sampleFamilies}</pre></div><div className="overflow-x-auto"><p className="font-mono text-[12px]">data/wbc_control.csv</p><pre className="mt-1 text-[11px] leading-relaxed">{sampleWbc}</pre></div><p className="text-[12px] text-[#666]">The oxidative calibration panel is an input; sample rows were not provided.</p></>}
-            </div>
-          </details>
-          {task.id !== mrdTaskId ? <div className="border border-[#DDD] bg-[#F7F7F7] p-4 text-[13px] text-[#666]">A Harbor artifact walkthrough is available for <button type="button" onClick={() => onTask(mrdTaskId)} className="text-[#222] underline underline-offset-2">Blood test for leftover cancer</button>. The current task’s grader artifacts and checks have not yet been supplied.</div> : !demo ? <div className="border border-[#DDD] bg-[#F7F7F7] p-4 text-[13px] text-[#666]">Choose Sol, Astra, Opus, or the reference oracle above to view this example.</div> : <>
-            <div className="border border-[#D0D0D0] bg-[#F6F6F6]">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#DDD] px-4 py-3">
-                <div><p className="text-[13px] font-medium">Harbor v1.2 <span className="font-normal text-[#737373]">· example run</span></p><p className="mt-1 font-mono text-[11px] text-[#666]">schema_version = &quot;1.2&quot; · network_mode = &quot;no-network&quot;</p></div>
-                <button type="button" onClick={run} disabled={running} className="rounded-sm bg-[#D9D9D9] px-3 py-2 text-[13px] hover:bg-[#C9C9C9] disabled:opacity-50">{running ? "Running…" : completed ? "Run again" : "Run grader"}</button>
-              </div>
-              <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-[12px]" aria-live="polite"><span className="text-[#666]">{running ? "Running verifier checks…" : completed ? "Example run complete · exit_code: 0" : "Ready · simulated output"}</span><span className="font-mono tabular-nums">reward {currentReward.toFixed(4)}</span></div>
-            </div>
-            <div>
-              <div className="mb-2 flex justify-between gap-2 text-[13px]"><span className="font-medium">Verifier checks</span><span className="text-[#737373]">Weight · contribution</span></div>
-              <div className="border-t border-[#DDD]">
-                {harborChecks.map((check, index) => {
-                  const visible = completed || (cursor !== null && index <= cursor);
-                  const passed = demo.checks[check.id] === 1;
-                  return <button key={check.id} type="button" onClick={() => onCheck(check.id)} aria-pressed={active.id === check.id} className={`grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-[#E5E5E5] px-2 py-2 text-left text-[12px] ${active.id === check.id ? "bg-[#F2F2F2]" : "hover:bg-[#F8F8F8]"}`}><span><span className="block font-mono text-[11px] text-[#666]">{check.id}</span><span>{check.label}</span></span><span className="text-right font-mono tabular-nums"><span className="text-[#777]">{check.weight.toFixed(2)} · </span>{visible ? `${passed ? "PASS" : "FAIL"} +${(passed ? check.weight : 0).toFixed(2)}` : "—"}</span></button>;
-                })}
-              </div>
-            </div>
-            <div className="grid gap-4 lg:grid-cols-2">
-              <div className="min-w-0 overflow-hidden border border-[#D0D0D0]">
-                <div className="flex flex-wrap border-b border-[#DDD] bg-[#F6F6F6]" role="tablist" aria-label="Example output files">
-                  <button type="button" role="tab" aria-selected={tab === "submission"} onClick={() => setTab("submission")} className={`px-3 py-2 font-mono text-[11px] ${tab === "submission" ? "bg-white text-black" : "text-[#777]"}`}>/workspace/output/submission.json</button>
-                  <button type="button" role="tab" aria-selected={tab === "trajectory"} onClick={() => setTab("trajectory")} className={`px-3 py-2 font-mono text-[11px] ${tab === "trajectory" ? "bg-white text-black" : "text-[#777]"}`}>/logs/agent/trajectory.json</button>
-                </div>
-                <div className="overflow-x-auto p-3 font-mono text-[11px] leading-relaxed">
-                  {tab === "submission" ? <div aria-label="Example submission JSON">{output.map((line, index) => { const id = linkedCheck(line); const selected = id === active.id || (line.includes("V04_TP53") && active.id === "check_duplex_strand_consensus"); return id ? <button key={index} type="button" onClick={() => onCheck(id)} className={`block whitespace-pre text-left underline decoration-[#AAA] underline-offset-2 ${selected ? "bg-[#E4E4E4]" : ""}`}>{line}</button> : <div key={index} className="whitespace-pre">{line || " "}</div>; })}</div> : <p aria-label="Example trajectory summary">{harborChecks.map((check, index) => <span key={check.id}>{index > 0 ? " " : ""}<button type="button" onClick={() => onCheck(check.id)} className={`inline text-left underline decoration-[#AAA] underline-offset-2 ${active.id === check.id ? "bg-[#E4E4E4]" : ""}`}>{demo.trajectory[check.id]}</button></span>)}</p>}
-                </div>
-              </div>
-              <div className="min-w-0 overflow-hidden border border-[#D0D0D0]">
-                <div className="border-b border-[#DDD] bg-[#F6F6F6] px-3 py-2 font-mono text-[11px]">/logs/verifier/reward.json</div>
-                <div className="p-3"><pre className="overflow-x-auto font-mono text-[11px] leading-relaxed">{completed && result ? JSON.stringify(result, null, 2) : "Run the example to see verifier output."}</pre><div className="mt-3 border-t border-[#DDD] pt-3 text-[12px] leading-relaxed"><p className="font-medium">Grader diagnostic · {active.label}</p><p className="mt-1 text-[#666]">Expected: {active.expected}</p>{completed && <p className="mt-1">{demo.checks[active.id] ? "PASS · Requirement satisfied." : `FAIL · ${active.diagnostic}`}</p>}</div></div>
-              </div>
-            </div>
-            <p className="text-[12px] leading-relaxed text-[#666]">Example artifacts and checks are simulated. Reward is the sum of passed check weights; <code>passed: 1</code> requires all critical biological checks to pass. A successful process and positive MRD call alone do not verify the analysis: V04 lacks reverse-strand support, V09 appears in WBCs, and only V14 is tumor-derived in this example (4/6,200 ≈ 0.00065).</p>
-          </>}
+        <ScientificVisual environment={environment} />
+        <div className="overflow-x-auto"><EnvironmentGraph environment={environment} /></div>
+        <div className="flex flex-wrap items-baseline justify-between gap-2 border-t border-[#0A0A0A]/10 px-4 py-3 text-[12px] text-[#666] md:px-5">
+          <p>{environment.output}</p><span className="shrink-0 font-mono text-[10px] text-[#999]">HARBOR / TASK → VERIFIER</span>
         </div>
       </div>
     </div>

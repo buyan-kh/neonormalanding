@@ -1,3 +1,6 @@
+import { isDemoModel } from "@/lib/harbor-demo";
+import { scenarios } from "@/lib/harbor-scenarios";
+
 export type TraceSpan = {
   text: string;
   checkId?: string;
@@ -199,6 +202,13 @@ export function failedChecks(taskId: string, modelId: string) {
 }
 
 export function firstMiss(taskId: string, modelId: string) {
+  const scenario = scenarios[taskId];
+  if (scenario && isDemoModel(modelId)) {
+    const index = scenario.outcomes[modelId].findIndex((passed) => !passed);
+    if (index < 0) return null;
+    const check = scenario.checks[index];
+    return { id: check.id, label: check.label, miss: check.miss, correct: check.expected, failedModels: [modelId] };
+  }
   return failedChecks(taskId, modelId)[0] ?? null;
 }
 
@@ -212,3 +222,4 @@ export function failedCheckCount(modelId: string) {
     0,
   );
 }
+

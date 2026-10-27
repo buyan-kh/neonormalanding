@@ -54,7 +54,7 @@ export const benchmarkTasks: BenchmarkTask[] = [
     tokens: "~38,400",
     tokenCount: 38400,
     reasoningTokens: [38400, 35500, 49000, 52000, 47000, 61000, 44000, 56000, 58000],
-    frontier: ["0.3650", "0.4250", "0.3250", "0.4120", "0.3000", "0.3850", "0.3150", "0.2950", "0.3750"],
+    frontier: ["0.5000", "0.4500", "0.3250", "0.7500", "0.3000", "0.3850", "0.3150", "0.2950", "0.3750"],
     reference: "1.0000",
     failure:
       "Confuses clonal hematopoiesis with tumor variants or misestimates tumor fraction, ploidy, and subclonal copy number",
@@ -79,7 +79,7 @@ export const benchmarkTasks: BenchmarkTask[] = [
     tokens: "~45,800",
     tokenCount: 45800,
     reasoningTokens: [45800, 42300, 72000, 46000, 75000, 76000, 52000, 82000, 51000],
-    frontier: ["0.4050", "0.4720", "0.3550", "0.4620", "0.3250", "0.4180", "0.3420", "0.3150", "0.4120"],
+    frontier: ["0.4500", "0.7000", "0.3550", "0.7500", "0.3250", "0.4180", "0.3420", "0.3150", "0.4120"],
     reference: "1.0000",
     failure:
       "Uses unadjusted Loewe/Bliss averages without correcting for guide knockdown efficiency or plate-edge drift",
@@ -92,7 +92,7 @@ export const benchmarkTasks: BenchmarkTask[] = [
     tokens: "~52,600",
     tokenCount: 52600,
     reasoningTokens: [52600, 48600, 56000, 81000, 42000, 85000, 62000, 64000, 68000],
-    frontier: ["0.4600", "0.5100", "0.4050", "0.5250", "0.3900", "0.4700", "0.4050", "0.3750", "0.4850"],
+    frontier: ["0.5000", "0.7500", "0.4050", "0.7000", "0.3900", "0.4700", "0.4050", "0.3750", "0.4850"],
     reference: "1.0000",
     failure:
       "Applies standard Cox PH under non-proportional delayed separation instead of covariate-adjusted RMST",
