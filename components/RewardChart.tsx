@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Logo } from "@/components/Logo";
 import { benchmarkModels, benchmarkTasks, isMeasured } from "@/lib/catalog";
 import { firstMiss, traceFor } from "@/lib/traces";
 
@@ -163,6 +164,7 @@ export function RewardChart({
     <div className="border border-[#0A0A0A]">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#0A0A0A] px-3 py-2">
         <div className="flex flex-wrap items-center gap-2">
+          <Logo size={22} />
           <p className="text-[13px]">Score (%)</p>
           <p className="text-[11px] text-[#5A5852]">vs</p>
           <p className="text-[13px]">Reasoning tokens</p>
