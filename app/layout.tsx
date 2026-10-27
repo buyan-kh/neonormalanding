@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={ibm.variable}>
-      <body className="bg-white font-mono text-[#0A0A0A] antialiased">
+      <body className="bg-white font-sans text-[#0A0A0A] antialiased">
         <Grain />
         <a
           href="#pipeline"

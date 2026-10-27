@@ -113,14 +113,14 @@ export function RequestForm() {
 
   return (
     <section className="border-t border-[#0A0A0A]/20">
-      <div id="request" className="mx-auto w-full max-w-[1240px] scroll-mt-32 px-4 py-16 md:px-6">
+      <div id="request" className="mx-auto w-full max-w-[1080px] scroll-mt-32 px-4 py-10 md:px-6">
         <div id="labs" className="scroll-mt-32" />
         <div id="sample" className="scroll-mt-32" />
         <div id="data" className="scroll-mt-32" />
         <div id="partner" className="scroll-mt-32" />
         <div id="investors" className="scroll-mt-32" />
         <p className="text-[11px] tracking-[0.18em] text-[#5A5852]">INTAKE</p>
-        <h2 className="mt-3 text-[24px] leading-snug md:text-[30px]">Send an inquiry.</h2>
+        <h2 className="mt-3 text-[24px] leading-snug md:text-[26px]">Send an inquiry.</h2>
         {/* <p className="mt-3 flex flex-col gap-2 text-[13px]">
           <a href={CALENDLY_URL} className={linkClass} target="_blank" rel="noreferrer">
             Book 30-Min Pilot / Partner Call

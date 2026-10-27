@@ -45,9 +45,9 @@ const breaks: Array<{ icon: PixelIconType; title: string; body: string; rate: st
 export function Refinery() {
   return (
     <section id="why-models-fail" className="scroll-mt-32 border-t border-[#0A0A0A]/20">
-      <div className="mx-auto w-full max-w-[1240px] px-4 py-16 md:px-6">
+      <div className="mx-auto w-full max-w-[1080px] px-4 py-10 md:px-6">
         <p className="text-[11px] tracking-[0.18em] text-[#525252]">HOW WE TEST</p>
-        <h2 className="mt-3 max-w-[18em] text-[24px] leading-snug md:text-[30px]">
+        <h2 className="mt-3 max-w-[18em] text-[24px] leading-snug md:text-[26px]">
           Real lab and hospital work breaks today&apos;s best AI models.
         </h2>
         <p className="mt-4 max-w-[68ch] text-[13px] leading-relaxed text-[#525252]">

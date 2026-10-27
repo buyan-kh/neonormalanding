@@ -31,9 +31,9 @@ const tracks = [
 export function DataPartners() {
   return (
     <section id="work" className="scroll-mt-32 border-t border-[#0A0A0A]/20">
-      <div className="mx-auto w-full max-w-[1240px] px-4 py-16 md:px-6">
+      <div className="mx-auto w-full max-w-[1080px] px-4 py-10 md:px-6">
         <p className="text-[11px] tracking-[0.18em] text-[#5A5852]">03 // WORK WITH US</p>
-        <h2 className="mt-3 max-w-[16em] text-[24px] leading-snug md:text-[30px]">Three ways to work with Neo Norma.</h2>
+        <h2 className="mt-3 max-w-[16em] text-[24px] leading-snug md:text-[26px]">Three ways to work with Neo Norma.</h2>
         <div className="mt-6 flex flex-col gap-4 lg:flex-row lg:items-stretch">
           {tracks.map((track, index) => (
             <div key={track.kicker} className="flex flex-1 flex-col gap-4 lg:flex-row lg:items-center">

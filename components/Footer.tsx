@@ -5,7 +5,7 @@ const linkClass = "underline decoration-[#0A0A0A]/30 underline-offset-4 hover:de
 export function Footer() {
   return (
     <footer className="border-t border-[#0A0A0A]/20">
-      <div className="mx-auto flex w-full max-w-[1240px] flex-col gap-4 px-4 py-8 text-[12px] md:flex-row md:items-end md:justify-between md:px-6">
+      <div className="mx-auto flex w-full max-w-[1080px] flex-col gap-4 px-4 py-8 text-[12px] md:flex-row md:items-end md:justify-between md:px-6">
         <div>
           <p className="text-[14px] tracking-[0.16em]">Neo Norma</p>
           <p className="mt-2 text-[#5A5852]">Neo Norma // San Francisco, CA</p>

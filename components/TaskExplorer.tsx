@@ -4,8 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { benchmarkModels, benchmarkTasks, isMeasured, referenceColor } from "@/lib/catalog";
 import { modelFailed, traceFor, type TraceSpan } from "@/lib/traces";
 
-const measured = benchmarkModels.filter(isMeasured);
-
 function Swatch({ color, onDark = false }: { color: string; onDark?: boolean }) {
   return (
     <span
@@ -100,7 +98,7 @@ export function TaskExplorer({
   }
 
   return (
-    <div className="grid gap-8 md:grid-cols-[210px_minmax(0,1fr)] md:gap-12">
+    <div className="grid gap-4 md:grid-cols-[210px_minmax(0,1fr)] md:gap-6">
       <ol className="border-t border-[#0A0A0A]/20">
         {benchmarkTasks.map((item, index) => {
           const on = item.id === task.id;
@@ -115,10 +113,10 @@ export function TaskExplorer({
                 className={`flex w-full items-baseline justify-between gap-3 py-3 text-left ${on ? "text-[#0A0A0A]" : "text-[#5A5852] hover:text-[#0A0A0A]"}`}
               >
                 <span className="flex items-baseline gap-3">
-                  <span className="text-[11px] tabular-nums">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="text-[13px] tabular-nums">{String(index + 1).padStart(2, "0")}</span>
                   <span className="text-[13px] leading-snug">{itemTrace.title}</span>
                 </span>
-                <span className="text-[11px] tabular-nums">{itemReward === null ? "—" : itemReward.toFixed(2)}</span>
+                <span className="text-[13px] tabular-nums">{itemReward === null ? "—" : itemReward.toFixed(2)}</span>
               </button>
             </li>
           );
@@ -135,7 +133,7 @@ export function TaskExplorer({
                 type="button"
                 aria-pressed={on}
                 onClick={() => onModel(item.id)}
-                className={`inline-flex items-center border px-2 py-1 text-[12px] ${
+                className={`inline-flex items-center border px-2 py-1 text-[13px] ${
                   on ? "border-[#0A0A0A] bg-[#0A0A0A] text-white" : "border-[#0A0A0A]/25 text-[#0A0A0A] hover:border-[#0A0A0A]"
                 }`}
               >
@@ -146,69 +144,49 @@ export function TaskExplorer({
           })}
         </div>
 
-        <div className="grid gap-8 p-4 md:p-8">
+        <div className="grid gap-5 p-4 md:p-5">
           <div>
-            <p className="text-[10px] tracking-[0.16em] text-[#5A5852]">TASK</p>
+            <p className="text-[13px] tracking-[0.16em] text-[#5A5852]">TASK</p>
             <h3 className="mt-3 text-[20px] leading-snug">{trace.title}</h3>
-            <p className="mt-2 text-[12px] text-[#5A5852]">{task.name}</p>
+            <p className="mt-2 text-[13px] text-[#5A5852]">{task.name}</p>
             <p className="mt-4 max-w-[68ch] text-[13px] leading-relaxed">{trace.brief}</p>
             <p className="mt-3 max-w-[68ch] text-[13px] leading-relaxed text-[#5A5852]">{trace.records}</p>
-            <p className="mt-4 text-[12px] tabular-nums text-[#5A5852]">{task.tokens} tokens</p>
+            <p className="mt-4 text-[13px] tabular-nums text-[#5A5852]">~{task.reasoningTokens[model.rewardIndex].toLocaleString("en-US")} tokens{model.rewardIndex > 0 ? " (estimate)" : ""}</p>
           </div>
 
           <div>
             <div className="flex flex-wrap items-end justify-between gap-3">
-              <p className="text-[10px] tracking-[0.16em] text-[#5A5852]">CHECKS</p>
-              <p className="text-[11px] tabular-nums text-[#5A5852]" aria-live="polite">
+              <p className="text-[13px] tracking-[0.16em] text-[#5A5852]">CHECKS</p>
+              <p className="text-[13px] tabular-nums text-[#5A5852]" aria-live="polite">
                 {running && cursor !== null && cursor >= 0
                   ? `Check ${cursor + 1} of ${trace.checks.length}`
-                  : measuredModel
+                  : spans
                     ? `${failedCount} of ${trace.checks.length} failed`
-                    : "Not measured yet"}
+                    : "Check results unavailable"}
               </p>
             </div>
             <div className="mt-3 border-t border-[#0A0A0A]/20">
-              <div className="hidden grid-cols-[minmax(0,1fr)_auto_auto] gap-2 border-b border-[#0A0A0A]/20 py-2 text-[10px] tracking-[0.12em] text-[#5A5852] md:grid">
+              <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 border-b border-[#0A0A0A]/20 py-2 text-[13px] tracking-normal text-[#5A5852]">
                 <p>Check</p>
-                {measured.map((item) => (
-                  <p key={item.id} className="min-w-[9.5rem] text-right">
-                    <Swatch color={item.color} />
-                    {item.name}
-                  </p>
-                ))}
+                <p className="text-right"><Swatch color={model.color} />{model.name}</p>
               </div>
               {trace.checks.map((check, index) => (
                 <div
                   key={check.id}
-                  className="grid gap-2 border-b border-[#0A0A0A]/20 py-2 md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-center"
+                  className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 border-b border-[#0A0A0A]/20 py-2"
                 >
                   <p className="text-[13px] leading-snug">{check.label}</p>
-                  {measured.map((item) => {
-                    const fail = modelFailed(check, item.id);
-                    const on = model.id === item.id && active.id === check.id;
+                  {(() => {
+                    const fail = modelFailed(check, model.id);
                     const show = revealed(index);
                     return (
-                      <button
-                        key={item.id}
-                        type="button"
-                        aria-pressed={on}
-                        onClick={() => {
-                          stop();
-                          onModel(item.id);
-                          onCheck(check.id);
-                        }}
-                        className={`w-fit justify-self-end px-2 py-1 text-[12px] ${
-                          on ? "bg-[#0A0A0A] text-white" : fail ? "text-[#0A0A0A] hover:bg-[#0A0A0A]/5" : "text-[#5A5852] hover:bg-[#0A0A0A]/5"
-                        }`}
+                      <span
+                        className={`w-fit justify-self-end px-2 py-1 text-[13px] ${fail ? "text-[#0A0A0A]" : "text-[#5A5852]"}`}
                       >
-                        <span className="md:hidden">
-                          <Swatch color={item.color} onDark={on} />
-                          {item.name}{" "}
-                        </span>
-                        {show ? (fail ? "FAIL" : "PASS") : "···"}
-                      </button>
+                        {spans ? (show ? (fail ? "FAIL" : "PASS") : "···") : "—"}
+                      </span>
                     );
-                  })}
+                  })()}
                 </div>
               ))}
             </div>
@@ -218,18 +196,18 @@ export function TaskExplorer({
             <div className="border border-[#0A0A0A] p-4">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="text-[10px] tracking-[0.16em] text-[#5A5852]">MODEL ANSWER</p>
+                  <p className="text-[13px] tracking-[0.16em] text-[#5A5852]">MODEL ANSWER</p>
                   <p className="mt-2 flex items-center text-[13px]">
                     <Swatch color={model.color} />
                     {model.name}
                   </p>
                 </div>
-                {measuredModel ? (
+                {measuredModel && spans ? (
                   <button
                     type="button"
                     onClick={run}
                     disabled={running}
-                    className="bg-[#0A0A0A] px-3 py-2 text-[12px] text-white hover:bg-[#262626] disabled:opacity-60"
+                    className="bg-[#0A0A0A] px-3 py-2 text-[13px] text-white hover:bg-[#262626] disabled:opacity-60"
                   >
                     {running ? "[Running]" : "[Run grader]"}
                   </button>
@@ -237,7 +215,7 @@ export function TaskExplorer({
               </div>
               {reward === null || !spans ? (
                 <p className="mt-4 text-[13px] leading-relaxed text-[#5A5852]">
-                  Not measured yet. The checks above are what the grader scores. Switch to GPT-6.1 Sol or GPT-6 Astra to read a graded answer.
+                  A graded answer is not available for this model. Switch to GPT-6.1 Sol or GPT-6 Astra to read one.
                 </p>
               ) : (
                 <>
@@ -268,23 +246,23 @@ export function TaskExplorer({
                       );
                     })}
                   </p>
-                  <p className="mt-4 text-[12px] tabular-nums text-[#5A5852]">{reward.toFixed(4)} reward</p>
+                  <p className="mt-4 text-[13px] tabular-nums text-[#5A5852]">{reward.toFixed(4)} reward</p>
                 </>
               )}
             </div>
 
             <div className="border border-[#0A0A0A] p-4">
-              <p className="text-[10px] tracking-[0.16em] text-[#5A5852]">WHAT THE GRADER ACCEPTS</p>
+              <p className="text-[13px] tracking-[0.16em] text-[#5A5852]">WHAT THE GRADER ACCEPTS</p>
               <p className="mt-3 text-[13px] leading-snug">{active.label}</p>
               <p className="mt-3 text-[13px] leading-relaxed">{active.correct}</p>
-              {measuredModel ? (
+              {spans ? (
                 <p className="mt-4 border-t border-[#0A0A0A]/20 pt-4 text-[13px] leading-relaxed text-[#5A5852]">
                   {activeFailed ? active.miss : "This check passed."}
                 </p>
               ) : (
                 <p className="mt-4 border-t border-[#0A0A0A]/20 pt-4 text-[13px] leading-relaxed text-[#5A5852]">
                   <Swatch color={referenceColor} />
-                  The known-correct answer passes every check.
+                  Check results are not available for this model.
                 </p>
               )}
             </div>

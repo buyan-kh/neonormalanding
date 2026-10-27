@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme inline {
+  --font-sans: Arial, Helvetica, sans-serif;
   --font-mono: var(--font-ibm), ui-monospace, SFMono-Regular, Menlo, monospace;
   --color-carbon: #ffffff;
   --color-ink: #0a0a0a;
@@ -102,4 +103,9 @@ body {
   .arm-line {
     animation: none;
   }
+}
+
+/* Keep analytical details quiet and easy to scan. */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }

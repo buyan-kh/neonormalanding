@@ -12,37 +12,37 @@ import { CALENDLY_URL, CONTACT_EMAIL } from "@/lib/contact";
 
 export function Hero() {
   return (
-    <section className="mx-auto w-full max-w-[1240px] px-4 pb-16 pt-10 md:px-6 md:pt-14">
+    <section className="mx-auto w-full max-w-[1080px] px-4 pb-8 pt-8 md:px-6 md:pt-9">
       <p className="text-[11px] tracking-[0.16em] text-[#5A5852]">
         RL EVALUATION TASKS & VERIFIABLE ENVIRONMENTS
       </p>
-      <h1 className="mt-4 max-w-[16em] text-[26px] leading-[1.2] text-[#0A0A0A] md:text-[34px]">
+      <h1 className="mt-4 max-w-[25em] text-[26px] leading-[1.2] text-[#0A0A0A] md:text-[32px]">
         We build RL evaluation tasks and verifiable environments for science.
       </h1>
       <p className="mt-4 max-w-[62ch] text-[13px] leading-relaxed text-[#5A5852] md:text-sm">
         Deterministic Harbor and Docker environments with &lt;50ms Python verifiers built from real clinical and
         wet-lab records.
       </p>
-      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <div className="mt-5 flex flex-wrap gap-2 sm:flex-row sm:flex-wrap">
         <a
           href={CALENDLY_URL}
           className="inline-flex items-center justify-center bg-[#0A0A0A] px-3 py-2 text-[12px] text-white hover:bg-[#262626]"
           target="_blank"
           rel="noreferrer"
         >
-          [Book 30-Min Pilot / Partner Call]
+          Book a partner call
         </a>
         <a
           href={`mailto:${CONTACT_EMAIL}`}
           className="inline-flex items-center justify-center border border-[#0A0A0A] px-3 py-2 text-[12px] text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white"
         >
-          [Direct Desk]
+          Direct desk
         </a>
         <a
           href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Investor inquiry")}`}
           className="inline-flex items-center justify-center border border-[#0A0A0A]/40 px-3 py-2 text-[12px] text-[#0A0A0A] hover:border-[#0A0A0A]"
         >
-          [Investors]
+          Investors
         </a>
       </div>
       {/* <div className="mt-10 overflow-x-auto pb-2">
@@ -57,7 +57,7 @@ export function Hero() {
           ))}
         </ol>
       </div> */}
-      <div id="pipeline" className="mt-8 scroll-mt-32">
+      <div id="pipeline" className="mt-0 scroll-mt-32">
         {/* <PipelineShowcase /> */}
       </div>
     </section>

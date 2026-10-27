@@ -3,13 +3,12 @@
 import { useState } from "react";
 import { RewardChart } from "@/components/RewardChart";
 import { TaskExplorer } from "@/components/TaskExplorer";
-import { benchmarkModels, benchmarkTasks, isMeasured, referenceColor } from "@/lib/catalog";
-import { failedCheckCount, totalChecks, traceFor } from "@/lib/traces";
+import { benchmarkModels, benchmarkTasks, isMeasured, referenceColor, type RewardIndex } from "@/lib/catalog";
+import { traceFor } from "@/lib/traces";
 
 const reference = Number(benchmarkTasks[0]?.reference ?? 1);
-const checks = totalChecks();
 
-function meanReward(rewardIndex: 0 | 1) {
+function meanReward(rewardIndex: RewardIndex) {
   const total = benchmarkTasks.reduce((sum, task) => sum + Number(task.frontier[rewardIndex]), 0);
   return total / benchmarkTasks.length;
 }
@@ -34,33 +33,35 @@ function ModelSwatch({ color, onDark = false }: { color: string; onDark?: boolea
 
 export function Evaluation() {
   const measured = benchmarkModels.filter(isMeasured);
-  const unmeasured = benchmarkModels.filter((model) => !isMeasured(model));
   const ranked = measured
     .map((model) => {
       const mean = meanReward(model.rewardIndex);
-      return { ...model, mean, gap: reference - mean, failed: failedCheckCount(model.id) };
+      return { ...model, mean, gap: reference - mean };
     })
     .sort((a, b) => b.mean - a.mean);
   const best = ranked[0];
   const [taskId, setTaskId] = useState(benchmarkTasks[0].id);
   const [modelId, setModelId] = useState(best?.id ?? benchmarkModels[0].id);
   const [checkId, setCheckId] = useState<string | null>(null);
+  const [expandedTasks, setExpandedTasks] = useState<Set<string>>(() => new Set());
 
-  function openMiss(nextTask: string, nextModel: string) {
+  function openMiss(nextTask: string, nextModel: string, scroll = true) {
     setTaskId(nextTask);
     setModelId(nextModel);
     setCheckId(null);
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    document.getElementById("failure-trace")?.scrollIntoView({
-      behavior: reduce ? "auto" : "smooth",
-      block: "start",
-    });
+    if (scroll) {
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      document.getElementById("failure-trace")?.scrollIntoView({
+        behavior: reduce ? "auto" : "smooth",
+        block: "start",
+      });
+    }
   }
 
   const stats = best
     ? [
         {
-          label: "Best model",
+          label: "Highest estimate",
           value: formatShare(best.mean),
           note: `${best.name} · ${formatReward(best.mean)} reward`,
           color: best.color,
@@ -82,27 +83,27 @@ export function Evaluation() {
   return (
     <>
       <section id="calibration" className="scroll-mt-32 border-t border-[#0A0A0A]/20">
-        <div className="mx-auto w-full max-w-[1240px] px-4 py-20 md:px-6">
-          <p className="text-[11px] tracking-[0.18em] text-[#525252]">02 // BENCHMARKS</p>
-          <h2 className="mt-4 max-w-[16em] text-[28px] leading-[1.15] md:text-[40px]">
-            {best ? `The best model reaches ${formatShare(best.mean)} of the correct answer.` : "Benchmarks"}
+        <div className="mx-auto w-full max-w-[1080px] px-4 py-10 md:px-6">
+          <p className="text-[13px] tracking-[0.18em] text-[#525252]">02 // BENCHMARKS</p>
+          <h2 className="mt-4 max-w-[30em] text-[24px] leading-[1.15] md:text-[28px]">
+            {best ? `The highest estimated score reaches ${formatShare(best.mean)} of the reference.` : "Benchmarks"}
           </h2>
-          <p className="mt-6 max-w-[62ch] text-[13px] leading-relaxed text-[#5A5852]">
+          <p className="mt-3 max-w-[85ch] text-[13px] leading-relaxed text-[#5A5852]">
             {best
-              ? `${best.name} averages ${formatReward(best.mean)} across four held-out tasks. The grader's own solution scores 1.0000. Click a point to open the miss.`
+              ? `${best.name} has an estimated average reward of ${formatReward(best.mean)} across four mock tasks. The reference answer scores 1.0000.`
               : "No models have been measured yet."}
           </p>
 
           {stats.length > 0 ? (
-            <dl className="mt-10 grid border border-[#0A0A0A] sm:grid-cols-3">
+            <dl className="mt-5 grid border border-[#0A0A0A]/10 sm:grid-cols-3">
               {stats.map((stat, index) => (
                 <div
                   key={stat.label}
                   className={`px-3 py-3 ${index < stats.length - 1 ? "border-b border-[#0A0A0A]/20 sm:border-r sm:border-b-0" : ""}`}
                 >
-                  <dt className="text-[10px] tracking-[0.14em] text-[#5A5852]">{stat.label}</dt>
-                  <dd className="mt-2 text-[28px] leading-none tabular-nums">{stat.value}</dd>
-                  <dd className="mt-2 text-[11px] text-[#5A5852]">
+                  <dt className="text-[13px] tracking-[0.14em] text-[#5A5852]">{stat.label}</dt>
+                  <dd className="mt-2 text-[22px] leading-none tabular-nums">{stat.value}</dd>
+                  <dd className="mt-2 text-[13px] text-[#5A5852]">
                     {stat.color ? <ModelSwatch color={stat.color} /> : null}
                     {stat.note}
                   </dd>
@@ -112,104 +113,81 @@ export function Evaluation() {
           ) : null}
 
           <div className="mt-4">
-            <RewardChart taskId={taskId} modelId={modelId} onPick={openMiss} />
+            <RewardChart taskId={taskId} modelId={modelId} onPick={(task, model) => openMiss(task, model, false)} />
           </div>
-          <p className="mt-3 max-w-[72ch] text-[11px] leading-relaxed text-[#5A5852]">
-            Score is the grader result as a percent. The horizontal axis is reasoning tokens. Each line is one model across the four tasks. Click a point to open the miss.
+          <p className="mt-3 max-w-[72ch] text-[13px] leading-relaxed text-[#5A5852]">
+            Scores across four tasks. Click a point to explore the task.
           </p>
 
-          <div className="mt-6 overflow-x-auto border border-[#0A0A0A]">
-            <table className="w-full min-w-[520px] border-collapse text-left text-[12px]">
-              <caption className="border-b border-[#0A0A0A] px-3 py-2 text-left text-[11px] text-[#0A0A0A]">
-                Reward by task. Click a score to open that miss.
-              </caption>
-              <thead>
-                <tr className="border-b border-[#0A0A0A]/20 text-[10px] tracking-[0.12em] text-[#5A5852]">
-                  <th className="px-3 py-2 font-normal" scope="col">
-                    Task
-                  </th>
-                  {measured.map((model) => (
-                    <th key={model.id} className="px-3 py-2 font-normal" scope="col">
-                      <ModelSwatch color={model.color} />
-                      {model.name}
-                    </th>
-                  ))}
-                  <th className="px-3 py-2 font-normal" scope="col">
-                    Reasoning tokens
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {benchmarkTasks.map((task) => {
-                  const trace = traceFor(task.id);
-                  return (
-                    <tr key={task.id} className="border-b border-[#0A0A0A]/15">
-                      <th className="px-3 py-2 text-left font-normal" scope="row">
-                        <button
-                          type="button"
-                          onClick={() => openMiss(task.id, modelId)}
-                          className={`text-left underline decoration-[#0A0A0A]/30 underline-offset-4 hover:decoration-[#0A0A0A] ${task.id === taskId ? "text-[#0A0A0A]" : "text-[#5A5852]"}`}
-                        >
-                          {trace.title}
-                        </button>
-                      </th>
-                      {measured.map((model) => {
+          <div className="mt-6 border border-[#0A0A0A]/10">
+            <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[#0A0A0A]/10 px-4 py-3">
+              <h3 className="text-[15px] font-medium">Reward by task examples</h3>
+              <p className="text-[13px] text-[#5A5852]">1.0000 is the reference</p>
+            </div>
+            <div className="grid md:grid-cols-2">
+              {benchmarkTasks.map((task, taskIndex) => {
+                const trace = traceFor(task.id);
+                const expanded = expandedTasks.has(task.id);
+                const models = [...measured].sort((a, b) => Number(task.frontier[b.rewardIndex]) - Number(task.frontier[a.rewardIndex]));
+                return (
+                  <section key={task.id} aria-label={trace.title} className={`p-4 ${taskIndex < 2 ? "border-b border-[#0A0A0A]/10" : ""} ${taskIndex % 2 === 0 ? "md:border-r md:border-[#0A0A0A]/10" : ""} ${taskIndex === 2 ? "border-b border-[#0A0A0A]/10 md:border-b-0" : ""}`}>
+                    <div className="mb-4 flex items-baseline justify-between gap-3">
+                      <h4 className="text-[14px] font-medium">{trace.title}</h4>
+                      <span className="shrink-0 text-[12px] text-[#5A5852]">Reward</span>
+                    </div>
+                    <div className="space-y-1">
+                      {(expanded ? models : models.slice(0, 3)).map((model) => {
                         const score = Number(task.frontier[model.rewardIndex]);
-                        const on = task.id === taskId && model.id === modelId;
                         return (
-                          <td key={model.id} className="px-3 py-2">
-                            <button
-                              type="button"
-                              aria-pressed={on}
-                              onClick={() => openMiss(task.id, model.id)}
-                              className={`block w-full max-w-[9rem] px-1 py-1 text-left ${on ? "bg-[#0A0A0A] text-white" : "hover:bg-[#0A0A0A]/5"}`}
-                            >
-                              <span className="tabular-nums">{formatReward(score)}</span>
-                              <span className={`mt-1 block h-[6px] ${on ? "bg-white/20" : "bg-[#0A0A0A]/10"}`}>
-                                <span
-                                  className="block h-full"
-                                  style={{ width: `${Math.max(0, Math.min(1, score / reference)) * 100}%`, backgroundColor: on ? "#ffffff" : model.color }}
-                                />
-                              </span>
-                            </button>
-                          </td>
+                          <div
+                            key={model.id}
+                            className="grid w-full grid-cols-[110px_minmax(0,1fr)_50px] items-center gap-2 px-2 py-1 text-left text-[12px] sm:grid-cols-[135px_minmax(0,1fr)_52px]"
+                          >
+                            <span className="truncate">{model.name}</span>
+                            <span className="h-2 overflow-hidden rounded-full bg-[#0A0A0A]/[0.06]" aria-hidden="true">
+                              <span className="block h-full rounded-full" style={{ width: `${Math.max(0, Math.min(1, score / reference)) * 100}%`, backgroundColor: model.color }} />
+                            </span>
+                            <span className="text-right tabular-nums text-[#5A5852]">{formatReward(score)}</span>
+                          </div>
                         );
                       })}
-                      <td className="px-3 py-2 tabular-nums text-[#5A5852]">{task.tokens}</td>
-                    </tr>
-                  );
-                })}
-                <tr>
-                  <th className="px-3 py-2 text-left font-normal" scope="row">
-                    Mean
-                  </th>
-                  {measured.map((model) => (
-                    <td key={model.id} className="px-3 py-2 tabular-nums">
-                      {formatReward(meanReward(model.rewardIndex))}
-                    </td>
-                  ))}
-                  <td className="px-3 py-2" />
-                </tr>
-              </tbody>
-            </table>
+                    </div>
+                    {models.length > 3 ? (
+                      <button
+                        type="button"
+                        aria-expanded={expanded}
+                        onClick={() => setExpandedTasks((current) => {
+                          const next = new Set(current);
+                          if (next.has(task.id)) next.delete(task.id);
+                          else next.add(task.id);
+                          return next;
+                        })}
+                        className="mt-3 px-2 text-[12px] text-[#5A5852] underline decoration-[#0A0A0A]/30 underline-offset-4 hover:text-[#0A0A0A]"
+                      >
+                        {expanded ? "Show less" : `Show ${models.length - 3} more`}
+                      </button>
+                    ) : null}
+                  </section>
+                );
+              })}
+            </div>
           </div>
-          <p className="mt-3 max-w-[72ch] text-[11px] leading-relaxed text-[#5A5852]">
-            {ranked.map((model) => `${model.name} fails ${model.failed} of ${checks} checks.`).join(" ")} A shared miss can still leave two different rewards, because the grader gives partial credit.
-            {unmeasured.length > 0 ? ` Not measured yet: ${unmeasured.map((model) => model.name).join(", ")}.` : ""}
+          <p className="mt-3 max-w-[72ch] text-[13px] leading-relaxed text-[#5A5852]">
+          Means use the measured runs only. Reward is the deterministic grader, not an LLM judge. {" "}
           </p>
         </div>
       </section>
 
       <section id="failure-trace" className="scroll-mt-32 border-t border-[#0A0A0A]/20" aria-labelledby="trace-heading">
-        <div className="mx-auto w-full max-w-[1240px] px-4 py-20 md:px-6">
-          <p className="text-[11px] tracking-[0.18em] text-[#525252]">THE MISS</p>
-          <h2 id="trace-heading" className="mt-4 max-w-[16em] text-[28px] leading-[1.15] md:text-[40px]">
+        <div className="mx-auto w-full max-w-[1080px] px-4 py-6 md:px-6">
+          <p className="text-[13px] tracking-[0.18em] text-[#525252]">THE MISS</p>
+          <h2 id="trace-heading" className="mt-2 max-w-[30em] text-[24px] leading-[1.15] md:text-[28px]">
             Models print success. The biology fails.
           </h2>
-          <p className="mt-6 max-w-[58ch] text-[13px] leading-relaxed text-[#5A5852]">
-            Click a failed check, or the sentence itself. The line the grader accepts sits beside it. Run the grader to watch the checks land.
+          <p className="mt-3 max-w-[58ch] text-[13px] leading-relaxed text-[#5A5852]">
+            Click an underlined sentence to see what the grader accepts. Run the grader to watch the checks land.
           </p>
-          <div id="trace" className="mt-12 scroll-mt-32">
+          <div id="trace" className="mt-4 scroll-mt-32">
             <TaskExplorer
               key={`${taskId}:${modelId}`}
               taskId={taskId}
