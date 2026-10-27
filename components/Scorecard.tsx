@@ -1,4 +1,4 @@
-import { benchmarkModels, benchmarkTasks } from "@/lib/catalog";
+import { benchmarkModels, benchmarkTasks, referenceColor } from "@/lib/catalog";
 
 const reference = Number(benchmarkTasks[0]?.reference ?? 1);
 
@@ -15,11 +15,17 @@ function formatShare(value: number) {
   return `${((value / reference) * 100).toFixed(1)}%`;
 }
 
-function ScoreTrack({ value, strong = false }: { value: number; strong?: boolean }) {
+function ModelSwatch({ color }: { color: string }) {
+  return (
+    <span aria-hidden="true" className="mr-2 inline-block size-[9px] shrink-0 align-baseline" style={{ backgroundColor: color }} />
+  );
+}
+
+function ScoreTrack({ value, color }: { value: number; color: string }) {
   const width = `${Math.max(0, Math.min(1, value / reference)) * 100}%`;
   return (
-    <div className="h-2 border border-[#0A0A0A]/40" aria-hidden="true">
-      <div className={`h-full ${strong ? "bg-[#0A0A0A]" : "bg-[#0A0A0A]/45"}`} style={{ width }} />
+    <div className="relative h-[9px] bg-[#0A0A0A]/[0.06]" aria-hidden="true">
+      <div className="absolute inset-y-0 left-0" style={{ width, backgroundColor: color }} />
     </div>
   );
 }
@@ -38,6 +44,7 @@ export function Scorecard() {
       label: "Best frontier mean",
       value: formatShare(best.mean),
       note: `${best.name} · ${formatReward(best.mean)} reward`,
+      color: best.color,
     },
     {
       label: "Reference solver",
@@ -70,7 +77,10 @@ export function Scorecard() {
             >
               <dt className="text-[10px] tracking-[0.14em] text-[#5A5852]">{stat.label}</dt>
               <dd className="mt-2 text-[28px] leading-none tabular-nums">{stat.value}</dd>
-              <dd className="mt-2 text-[11px] text-[#5A5852]">{stat.note}</dd>
+              <dd className="mt-2 text-[11px] text-[#5A5852]">
+                {stat.color ? <ModelSwatch color={stat.color} /> : null}
+                {stat.note}
+              </dd>
             </div>
           ))}
         </dl>
@@ -84,9 +94,12 @@ export function Scorecard() {
             <li className="grid grid-cols-[4.5rem_minmax(0,1fr)_auto] items-center gap-x-3 border-b border-[#0A0A0A]/15 px-3 py-3">
               <p className="text-[10px] tracking-[0.14em] text-[#5A5852]">BASELINE</p>
               <div>
-                <p className="text-[13px]">Reference solver</p>
+                <p className="text-[13px]">
+                  <ModelSwatch color={referenceColor} />
+                  Reference solver
+                </p>
                 <div className="mt-2">
-                  <ScoreTrack value={reference} strong />
+                  <ScoreTrack value={reference} color={referenceColor} />
                 </div>
               </div>
               <div className="text-right">
@@ -101,9 +114,12 @@ export function Scorecard() {
               >
                 <p className="text-[13px] tabular-nums">{rank + 1}</p>
                 <div>
-                  <p className="text-[13px]">{model.name}</p>
+                  <p className="text-[13px]">
+                    <ModelSwatch color={model.color} />
+                    {model.name}
+                  </p>
                   <div className="mt-2">
-                    <ScoreTrack value={model.mean} strong={rank === 0} />
+                    <ScoreTrack value={model.mean} color={model.color} />
                   </div>
                 </div>
                 <div className="text-right">
@@ -122,15 +138,20 @@ export function Scorecard() {
           <div className="hidden grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))_5.5rem] gap-3 border-b border-[#0A0A0A]/20 px-3 py-2 text-[10px] tracking-[0.12em] text-[#5A5852] md:grid">
             <p>TASK</p>
             {benchmarkModels.map((model) => (
-              <p key={model.id}>{model.name.toUpperCase()}</p>
+              <p key={model.id}>
+                <ModelSwatch color={model.color} />
+                {model.name.toUpperCase()}
+              </p>
             ))}
-            <p>REFERENCE</p>
+            <p>
+              <ModelSwatch color={referenceColor} />
+              REFERENCE
+            </p>
             <p>TOKENS</p>
           </div>
           <ul>
             {benchmarkTasks.map((task) => {
               const scores = task.frontier.map(Number);
-              const bestFrontier = Math.max(...scores);
               return (
                 <li
                   key={task.id}
@@ -143,20 +164,24 @@ export function Scorecard() {
                   </p>
                   {scores.map((score, index) => (
                     <div key={benchmarkModels[index].id}>
-                      <p className="text-[10px] tracking-[0.12em] text-[#5A5852] md:hidden">{benchmarkModels[index].name}</p>
-                      <p className={`mt-1 tabular-nums md:mt-0 ${score === bestFrontier ? "text-[#0A0A0A]" : "text-[#5A5852]"}`}>
-                        {formatReward(score)}
+                      <p className="text-[10px] tracking-[0.12em] text-[#5A5852] md:hidden">
+                        <ModelSwatch color={benchmarkModels[index].color} />
+                        {benchmarkModels[index].name}
                       </p>
+                      <p className="mt-1 tabular-nums md:mt-0">{formatReward(score)}</p>
                       <div className="mt-1">
-                        <ScoreTrack value={score} strong={score === bestFrontier && score > 0} />
+                        <ScoreTrack value={score} color={benchmarkModels[index].color} />
                       </div>
                     </div>
                   ))}
                   <div>
-                    <p className="text-[10px] tracking-[0.12em] text-[#5A5852] md:hidden">Reference</p>
+                    <p className="text-[10px] tracking-[0.12em] text-[#5A5852] md:hidden">
+                      <ModelSwatch color={referenceColor} />
+                      Reference
+                    </p>
                     <p className="mt-1 tabular-nums md:mt-0">{formatReward(reference)}</p>
                     <div className="mt-1">
-                      <ScoreTrack value={reference} strong />
+                      <ScoreTrack value={reference} color={referenceColor} />
                     </div>
                   </div>
                   <p className="text-[12px] text-[#5A5852] tabular-nums md:text-right">

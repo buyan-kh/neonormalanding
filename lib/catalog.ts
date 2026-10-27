@@ -1,7 +1,9 @@
 export const benchmarkModels = [
-  { id: "sol", name: "GPT-6.1 Sol" },
-  { id: "astra", name: "GPT-6 Astra" },
+  { id: "sol", name: "GPT-6.1 Sol", color: "#10A37F" },
+  { id: "astra", name: "GPT-6 Astra", color: "#10A37F" },
 ] as const;
+
+export const referenceColor = "#0A0A0A";
 
 export type BenchmarkTask = {
   id: string;

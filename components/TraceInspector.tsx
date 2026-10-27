@@ -31,6 +31,11 @@ export function TraceInspector() {
                   </th>
                   {benchmarkModels.map((model) => (
                     <th key={model.id} className="px-3 py-2 font-normal" scope="col">
+                      <span
+                        aria-hidden="true"
+                        className="mr-2 inline-block size-[9px] align-baseline"
+                        style={{ backgroundColor: model.color }}
+                      />
                       {model.name}
                     </th>
                   ))}
