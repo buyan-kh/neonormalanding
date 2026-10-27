@@ -108,7 +108,7 @@ export function Evaluation() {
           </h2>
           <p className="mt-3 max-w-[85ch] text-[13px] leading-relaxed text-[#5A5852]">
             {best
-              ? `${best.name} has an estimated average reward of ${formatReward(best.mean)} across four mock tasks. The reference answer scores 1.0000.`
+              ? `${best.name} has an estimated average reward of ${formatReward(best.mean)} across four tasks. The reference answer scores 1.0000.`
               : "No models have been measured yet."}
           </p>
           </Reveal>
