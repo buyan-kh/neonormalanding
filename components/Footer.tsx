@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL } from "@/lib/contact";
+import { CALENDLY_URL, CONTACT_EMAIL } from "@/lib/contact";
 
 const linkClass = "underline decoration-[#0A0A0A]/30 underline-offset-4 hover:decoration-[#0A0A0A]";
 
@@ -10,9 +10,12 @@ export function Footer() {
           <p className="text-[14px] tracking-[0.16em]">Neo Norma</p>
           <p className="mt-2 text-[#5A5852]">Neo Norma // San Francisco, CA</p>
         </div>
-        <nav className="flex flex-col gap-2 sm:flex-row sm:gap-4" aria-label="Contact">
+        <nav className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-4" aria-label="Contact">
+          <a href={CALENDLY_URL} className={linkClass} target="_blank" rel="noreferrer">
+            Book 30-Min Pilot / Partner Call
+          </a>
           <a href={`mailto:${CONTACT_EMAIL}`} className={linkClass}>
-            {CONTACT_EMAIL}
+            Direct Desk {CONTACT_EMAIL}
           </a>
           <a href="https://x.com/buyan_kh" className={linkClass} target="_blank" rel="noreferrer">
             X @buyan_kh

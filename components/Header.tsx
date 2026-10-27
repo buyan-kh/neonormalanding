@@ -1,3 +1,5 @@
+import { CALENDLY_URL } from "@/lib/contact";
+
 const links = [
   { href: "#pipeline", label: "[01. PIPELINE]" },
   { href: "#calibration", label: "[02. BENCHMARKS]" },
@@ -22,8 +24,13 @@ export function Header() {
               {link.label}
             </a>
           ))}
-          <a href="#request" className="bg-[#0A0A0A] px-2 py-1 text-white hover:bg-[#262626]">
-            [Get Tasks]
+          <a
+            href={CALENDLY_URL}
+            className="bg-[#0A0A0A] px-2 py-1 text-white hover:bg-[#262626]"
+            target="_blank"
+            rel="noreferrer"
+          >
+            [Book a Call]
           </a>
         </nav>
       </div>

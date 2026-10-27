@@ -129,7 +129,7 @@ function VerifierBody({ active }: { active: string | null }) {
 function EvalBody() {
   return (
     <div className="p-2 text-[11px]">
-      <p className="text-[#5A5852]">r47_mrd_panel</p>
+      <p className="text-[#5A5852]">mrd duplex</p>
       <table className="mt-2 w-full">
         <thead>
           <tr className="text-left text-[#5A5852]">

@@ -1,3 +1,4 @@
+import { CALENDLY_URL, CONTACT_EMAIL } from "@/lib/contact";
 // import { FlowLine } from "@/components/FlowLine";
 // import { PipelineShowcase } from "@/components/PipelineShowcase";
 
@@ -24,19 +25,21 @@ export function Hero() {
       </p>
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <a
-          href="#labs"
+          href={CALENDLY_URL}
           className="inline-flex items-center justify-center bg-[#0A0A0A] px-3 py-2 text-[12px] text-white hover:bg-[#262626]"
+          target="_blank"
+          rel="noreferrer"
         >
-          [Buy Eval Tasks]
+          [Book 30-Min Pilot / Partner Call]
         </a>
         <a
-          href="#data"
+          href={`mailto:${CONTACT_EMAIL}`}
           className="inline-flex items-center justify-center border border-[#0A0A0A] px-3 py-2 text-[12px] text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white"
         >
-          [Sell or Partner Data]
+          [Direct Desk]
         </a>
         <a
-          href="#investors"
+          href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Investor inquiry")}`}
           className="inline-flex items-center justify-center border border-[#0A0A0A]/40 px-3 py-2 text-[12px] text-[#0A0A0A] hover:border-[#0A0A0A]"
         >
           [Investors]

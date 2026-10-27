@@ -1,21 +1,5 @@
 import { TerminalWindow } from "@/components/TerminalWindow";
-import { scoreRows } from "@/lib/catalog";
-
-function Meter({ value }: { value: string }) {
-  const match = value.match(/(\d+)%/);
-  if (!match) return <span>{value}</span>;
-  const filled = Math.round(Number(match[1]) / 20);
-  return (
-    <span className="inline-flex items-center justify-end gap-2">
-      <span className="tabular-nums">{value}</span>
-      <span aria-hidden="true" className="inline-flex gap-px">
-        {Array.from({ length: 5 }, (_, index) => (
-          <span key={index} className={`h-2 w-1.5 ${index < filled ? "bg-[#0A0A0A]" : "bg-[#0A0A0A]/20"}`} />
-        ))}
-      </span>
-    </span>
-  );
-}
+import { benchmarkTasks } from "@/lib/catalog";
 
 export function Scorecard() {
   return (
@@ -26,63 +10,47 @@ export function Scorecard() {
           Frontier models pass textbook biology. They fail real workflows.
         </h2>
         <p className="mt-3 max-w-[68ch] text-[13px] leading-relaxed text-[#5A5852]">
-          Verified fail rates across frontier models using our deterministic &lt;50ms Python graders (grade.py).
+          Rewards on held-out scientific tasks. The reference solver scores 1.0000.
         </p>
         <div className="mt-6">
           <TerminalWindow title="Frontier Calibration" bodyClassName="overflow-x-auto">
-            <table className="w-full min-w-[860px] border-collapse text-left text-[12px]">
-              <caption className="sr-only">
-                Frontier model fail rates, average tokens, and shortcut caps
-              </caption>
+            <table className="w-full min-w-[760px] border-collapse text-left text-[12px]">
+              <caption className="sr-only">Frontier rewards, reference score, and token counts for public scientific tasks</caption>
               <thead>
                 <tr className="border-b border-[#0A0A0A]/30 text-[#5A5852]">
                   <th className="px-3 py-2 font-normal" scope="col">
                     Task
                   </th>
                   <th className="px-3 py-2 font-normal" scope="col">
-                    gpt-6-luna
+                    Frontier 1
                   </th>
                   <th className="px-3 py-2 font-normal" scope="col">
-                    gpt-6.1-sol
+                    Frontier 2
                   </th>
                   <th className="px-3 py-2 font-normal" scope="col">
-                    gpt-6-astra
+                    Reference
                   </th>
                   <th className="px-3 py-2 font-normal" scope="col">
-                    avg tokens
-                  </th>
-                  <th className="px-3 py-2 font-normal" scope="col">
-                    shortcuts
+                    Tokens
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {scoreRows.map((row) => (
-                  <tr key={row.id} className="border-b border-[#0A0A0A]/15 hover:bg-[#0A0A0A]/4">
-                    <th className="px-3 py-3 text-left align-top font-normal" scope="row">
-                      {row.linked ? (
-                        <a
-                          href={`#${row.id}`}
-                          className="underline decoration-[#0A0A0A]/40 underline-offset-4 hover:decoration-[#0A0A0A]"
-                        >
-                          {row.id}
-                        </a>
-                      ) : (
-                        row.id
-                      )}
-                      <span className="mt-1 block text-[11px] font-normal text-[#5A5852]">{row.name}</span>
+                {benchmarkTasks.map((task) => (
+                  <tr key={task.id} className="border-b border-[#0A0A0A]/15 align-top hover:bg-[#0A0A0A]/4">
+                    <th className="px-3 py-3 text-left font-normal" scope="row">
+                      <a
+                        href="#failure-trace"
+                        className="underline decoration-[#0A0A0A]/40 underline-offset-4 hover:decoration-[#0A0A0A]"
+                      >
+                        {task.name}
+                      </a>
+                      <span className="mt-1 block text-[11px] font-normal text-[#5A5852]">{task.failure}</span>
                     </th>
-                    <td className="px-3 py-3 align-top">
-                      <Meter value={row.luna} />
-                    </td>
-                    <td className="px-3 py-3 align-top">
-                      <Meter value={row.sol} />
-                    </td>
-                    <td className="px-3 py-3 align-top">
-                      <Meter value={row.astra} />
-                    </td>
-                    <td className="px-3 py-3 align-top tabular-nums">{row.tokens}</td>
-                    <td className="px-3 py-3 align-top">{row.shortcuts}</td>
+                    <td className="px-3 py-3 whitespace-nowrap tabular-nums">{task.frontier[0]} (FAIL)</td>
+                    <td className="px-3 py-3 whitespace-nowrap tabular-nums">{task.frontier[1]} (FAIL)</td>
+                    <td className="px-3 py-3 whitespace-nowrap tabular-nums">{task.reference} (PASS)</td>
+                    <td className="px-3 py-3 whitespace-nowrap tabular-nums">{task.tokens}</td>
                   </tr>
                 ))}
               </tbody>
