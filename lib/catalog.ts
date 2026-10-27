@@ -19,12 +19,19 @@ export const benchmarkModels: BenchmarkModel[] = [
 
 export const referenceColor = "#0A0A0A";
 
+export function isMeasured(
+  model: BenchmarkModel,
+): model is BenchmarkModel & { rewardIndex: 0 | 1 } {
+  return model.rewardIndex !== undefined;
+}
+
 export type BenchmarkTask = {
   id: string;
   name: string;
   short: string;
   records: string;
   tokens: string;
+  tokenCount: number;
   frontier: [string, string];
   reference: string;
   failure: string;
@@ -38,6 +45,7 @@ export const benchmarkTasks: BenchmarkTask[] = [
     records:
       "5 linked clinical, flow cytometry, ctDNA, and RECIST tables (Years 1 to 3 exposed, Years 4 to 10 held out in Grader)",
     tokens: "38,400+",
+    tokenCount: 38400,
     frontier: ["0.2449", "0.2449"],
     reference: "1.0000",
     failure:
@@ -49,6 +57,7 @@ export const benchmarkTasks: BenchmarkTask[] = [
     short: "MRD duplex sequencing",
     records: "Raw UMI family reads, oxidative damage panels, and longitudinal plasma draws",
     tokens: "41,200+",
+    tokenCount: 41200,
     frontier: ["0.1810", "0.0000"],
     reference: "1.0000",
     failure: "Treats 8-oxoG strand artifacts and clonal hematopoiesis variants as true tumor recurrence",
@@ -59,6 +68,7 @@ export const benchmarkTasks: BenchmarkTask[] = [
     short: "Perturb-seq synergy",
     records: "Single-cell guide assignments, dose-response matrices, and batch viability controls",
     tokens: "45,800+",
+    tokenCount: 45800,
     frontier: ["0.2150", "0.1940"],
     reference: "1.0000",
     failure:
@@ -70,6 +80,7 @@ export const benchmarkTasks: BenchmarkTask[] = [
     short: "Competing risks & RMST",
     records: "Multi-center censoring logs, crossover events, and biomarker-stratified survival cohorts",
     tokens: "52,600+",
+    tokenCount: 52600,
     frontier: ["0.2890", "0.3120"],
     reference: "1.0000",
     failure:
