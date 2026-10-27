@@ -53,7 +53,7 @@ export function Evaluation() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     document.getElementById("failure-trace")?.scrollIntoView({
       behavior: reduce ? "auto" : "smooth",
-      block: "nearest",
+      block: "start",
     });
   }
 

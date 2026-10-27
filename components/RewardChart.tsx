@@ -259,7 +259,7 @@ export function RewardChart({
                 onMouseEnter={() => setHoverKey(point.key)}
                 onFocus={() => setHoverKey(point.key)}
                 onBlur={() => setHoverKey((current) => (current === point.key ? null : current))}
-                className="absolute size-8 -translate-x-1/2 -translate-y-1/2"
+                className="absolute z-10 size-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer"
                 style={{ left: `${(point.x / VB_W) * 100}%`, top: `${(point.y / VB_H) * 100}%` }}
               />
             );
