@@ -1,0 +1,320 @@
+{
+  "kind": "demo-mock",
+  "notMeasured": true,
+  "source": "Predicted from the rewards and checks already in lib/catalog.ts and lib/traces.ts. Sol and Astra are copied from those files. Every other score is a guess.",
+  "reference": "1.0000",
+  "shape": "The other models land in the same low band. A model moves only when it clears one named trap. None of them get near the grader, because the points sit in the wet-lab filters: aging-blood mutations, the lab-prep scar, gene knockdown, and a real fixed-window area comparison.",
+  "howRewardMoves": [
+    "Pass only the setup check (join the tables, require copy agreement, use the full dose table, keep the assigned arms) and the score stays inside the measured band for that task, about 0.16 to 0.32.",
+    "Fail the setup check and the task goes to 0, the way Astra does on duplex sequencing.",
+    "Each extra domain check adds a step. The last scientific check is still failed, so the score stays well under 1.",
+    "The same failed checks can still differ by a few hundredths. That is the partial credit already visible between Sol and Astra."
+  ],
+  "ifThisIsWrong": "If nobody actually drops the proportional-hazard model or refuses the averaged textbook formulas, Opus and DeepSeek fall back into the pack and every model mean sits between about 0.16 and 0.27.",
+  "tasks": [
+    {
+      "id": "longitudinal-ehr",
+      "short": "10-year EHR + radiology",
+      "setupCheck": "tables",
+      "domainChecks": ["aging", "clock"],
+      "measuredBand": ["0.2449", "0.2449"],
+      "whatWouldMoveIt": "Stop scoring years after follow-up ends. Subtracting aging-blood mutations would move it further, and no model here does that."
+    },
+    {
+      "id": "mrd-duplex",
+      "short": "MRD duplex sequencing",
+      "setupCheck": "copies",
+      "domainChecks": ["damage", "aging"],
+      "measuredBand": ["0.0000", "0.1810"],
+      "whatWouldMoveIt": "Require the mutation to agree across its own copies. The lab-prep scar and aging-blood filter stay failed for every model."
+    },
+    {
+      "id": "perturb-seq",
+      "short": "Perturb-seq synergy",
+      "setupCheck": "doses",
+      "domainChecks": ["off", "edge", "formula"],
+      "measuredBand": ["0.1940", "0.2150"],
+      "whatWouldMoveIt": "Correct dried-out edge wells, or stop averaging the two textbook formulas. Adjusting for a partial gene switch-off is the check nobody gets."
+    },
+    {
+      "id": "oncology-trial",
+      "short": "Competing risks & RMST",
+      "setupCheck": "arms",
+      "domainChecks": ["late", "area"],
+      "measuredBand": ["0.2890", "0.3120"],
+      "whatWouldMoveIt": "Drop the model that assumes the benefit stays proportional. Reporting the fixed-window area, adjusted for patient differences, is still failed."
+    }
+  ],
+  "models": [
+    {
+      "id": "sol",
+      "name": "GPT-6.1 Sol",
+      "status": "measured",
+      "mean": "0.2325",
+      "shareOfCorrect": "23.2%",
+      "rewards": {
+        "longitudinal-ehr": "0.2449",
+        "mrd-duplex": "0.1810",
+        "perturb-seq": "0.2150",
+        "oncology-trial": "0.2890"
+      },
+      "passed": {
+        "longitudinal-ehr": ["tables"],
+        "mrd-duplex": ["copies"],
+        "perturb-seq": ["doses"],
+        "oncology-trial": ["arms"]
+      },
+      "failed": {
+        "longitudinal-ehr": ["aging", "clock"],
+        "mrd-duplex": ["damage", "aging"],
+        "perturb-seq": ["off", "edge", "formula"],
+        "oncology-trial": ["late", "area"]
+      }
+    },
+    {
+      "id": "astra",
+      "name": "GPT-6 Astra",
+      "status": "measured",
+      "mean": "0.1877",
+      "shareOfCorrect": "18.8%",
+      "rewards": {
+        "longitudinal-ehr": "0.2449",
+        "mrd-duplex": "0.0000",
+        "perturb-seq": "0.1940",
+        "oncology-trial": "0.3120"
+      },
+      "passed": {
+        "longitudinal-ehr": ["tables"],
+        "mrd-duplex": [],
+        "perturb-seq": ["doses"],
+        "oncology-trial": ["arms"]
+      },
+      "failed": {
+        "longitudinal-ehr": ["aging", "clock"],
+        "mrd-duplex": ["copies", "damage", "aging"],
+        "perturb-seq": ["off", "edge", "formula"],
+        "oncology-trial": ["late", "area"]
+      }
+    },
+    {
+      "id": "opus",
+      "name": "Claude Opus 5.5",
+      "status": "predicted",
+      "mean": "0.4050",
+      "shareOfCorrect": "40.5%",
+      "why": "Most likely to follow a named statistical warning: stop the clock when follow-up stops, do not average the two formulas, and do not keep a proportional-hazard model after a late split. Still misses the wet-lab filters.",
+      "rewards": {
+        "longitudinal-ehr": "0.4150",
+        "mrd-duplex": "0.1960",
+        "perturb-seq": "0.4680",
+        "oncology-trial": "0.5410"
+      },
+      "passed": {
+        "longitudinal-ehr": ["tables", "clock"],
+        "mrd-duplex": ["copies"],
+        "perturb-seq": ["doses", "edge", "formula"],
+        "oncology-trial": ["arms", "late"]
+      },
+      "failed": {
+        "longitudinal-ehr": ["aging"],
+        "mrd-duplex": ["damage", "aging"],
+        "perturb-seq": ["off"],
+        "oncology-trial": ["area"]
+      }
+    },
+    {
+      "id": "grok",
+      "name": "Grok 4.7",
+      "status": "predicted",
+      "mean": "0.2748",
+      "shareOfCorrect": "27.5%",
+      "why": "A small step above Sol on the quantitative tasks. Notices the dried-out edge wells and is stricter about single damaged reads. Does not drop the proportional-hazard model, and misses the same biology filters.",
+      "rewards": {
+        "longitudinal-ehr": "0.2380",
+        "mrd-duplex": "0.2090",
+        "perturb-seq": "0.3340",
+        "oncology-trial": "0.3180"
+      },
+      "passed": {
+        "longitudinal-ehr": ["tables"],
+        "mrd-duplex": ["copies"],
+        "perturb-seq": ["doses", "edge"],
+        "oncology-trial": ["arms"]
+      },
+      "failed": {
+        "longitudinal-ehr": ["aging", "clock"],
+        "mrd-duplex": ["damage", "aging"],
+        "perturb-seq": ["off", "formula"],
+        "oncology-trial": ["late", "area"]
+      }
+    },
+    {
+      "id": "deepseek",
+      "name": "DeepSeek V4.1",
+      "status": "predicted",
+      "mean": "0.2650",
+      "shareOfCorrect": "26.5%",
+      "why": "Strongest on the survival task and refuses the averaged formulas, then gives the sequencing task away by accepting one damaged read. The zero is why it does not rank above Grok.",
+      "rewards": {
+        "longitudinal-ehr": "0.2210",
+        "mrd-duplex": "0.0000",
+        "perturb-seq": "0.3510",
+        "oncology-trial": "0.4880"
+      },
+      "passed": {
+        "longitudinal-ehr": ["tables"],
+        "mrd-duplex": [],
+        "perturb-seq": ["doses", "formula"],
+        "oncology-trial": ["arms", "late"]
+      },
+      "failed": {
+        "longitudinal-ehr": ["aging", "clock"],
+        "mrd-duplex": ["copies", "damage", "aging"],
+        "perturb-seq": ["off", "edge"],
+        "oncology-trial": ["area"]
+      }
+    },
+    {
+      "id": "argon",
+      "name": "Gemini 4 Argon",
+      "status": "predicted",
+      "mean": "0.2398",
+      "shareOfCorrect": "24.0%",
+      "why": "Long context helps the five-table join and the longest trial record, which shows up as a slightly better partial score. It does not clear a domain check Sol missed.",
+      "rewards": {
+        "longitudinal-ehr": "0.2680",
+        "mrd-duplex": "0.1630",
+        "perturb-seq": "0.1870",
+        "oncology-trial": "0.3410"
+      },
+      "passed": {
+        "longitudinal-ehr": ["tables"],
+        "mrd-duplex": ["copies"],
+        "perturb-seq": ["doses"],
+        "oncology-trial": ["arms"]
+      },
+      "failed": {
+        "longitudinal-ehr": ["aging", "clock"],
+        "mrd-duplex": ["damage", "aging"],
+        "perturb-seq": ["off", "edge", "formula"],
+        "oncology-trial": ["late", "area"]
+      }
+    },
+    {
+      "id": "kimi",
+      "name": "Kimi K3.1",
+      "status": "predicted",
+      "mean": "0.2163",
+      "shareOfCorrect": "21.6%",
+      "why": "Holds the long records together, then applies the copy-family rule loosely, so the sequencing score comes back below Sol on the same passed check.",
+      "rewards": {
+        "longitudinal-ehr": "0.2310",
+        "mrd-duplex": "0.1540",
+        "perturb-seq": "0.2040",
+        "oncology-trial": "0.2760"
+      },
+      "passed": {
+        "longitudinal-ehr": ["tables"],
+        "mrd-duplex": ["copies"],
+        "perturb-seq": ["doses"],
+        "oncology-trial": ["arms"]
+      },
+      "failed": {
+        "longitudinal-ehr": ["aging", "clock"],
+        "mrd-duplex": ["damage", "aging"],
+        "perturb-seq": ["off", "edge", "formula"],
+        "oncology-trial": ["late", "area"]
+      }
+    },
+    {
+      "id": "wonder",
+      "name": "Muse Wonder",
+      "status": "predicted",
+      "mean": "0.1600",
+      "shareOfCorrect": "16.0%",
+      "why": "Same misses as Astra, including the single-read sequencing call that zeros that task. No extra check cleared.",
+      "rewards": {
+        "longitudinal-ehr": "0.2080",
+        "mrd-duplex": "0.0000",
+        "perturb-seq": "0.1690",
+        "oncology-trial": "0.2630"
+      },
+      "passed": {
+        "longitudinal-ehr": ["tables"],
+        "mrd-duplex": [],
+        "perturb-seq": ["doses"],
+        "oncology-trial": ["arms"]
+      },
+      "failed": {
+        "longitudinal-ehr": ["aging", "clock"],
+        "mrd-duplex": ["copies", "damage", "aging"],
+        "perturb-seq": ["off", "edge", "formula"],
+        "oncology-trial": ["late", "area"]
+      }
+    }
+  ],
+  "ranking": [
+    { "rank": 1, "id": "opus", "name": "Claude Opus 5.5", "status": "predicted", "mean": "0.4050", "shareOfCorrect": "40.5%" },
+    { "rank": 2, "id": "grok", "name": "Grok 4.7", "status": "predicted", "mean": "0.2748", "shareOfCorrect": "27.5%" },
+    { "rank": 3, "id": "deepseek", "name": "DeepSeek V4.1", "status": "predicted", "mean": "0.2650", "shareOfCorrect": "26.5%" },
+    { "rank": 4, "id": "argon", "name": "Gemini 4 Argon", "status": "predicted", "mean": "0.2398", "shareOfCorrect": "24.0%" },
+    { "rank": 5, "id": "sol", "name": "GPT-6.1 Sol", "status": "measured", "mean": "0.2325", "shareOfCorrect": "23.2%" },
+    { "rank": 6, "id": "kimi", "name": "Kimi K3.1", "status": "predicted", "mean": "0.2163", "shareOfCorrect": "21.6%" },
+    { "rank": 7, "id": "astra", "name": "GPT-6 Astra", "status": "measured", "mean": "0.1877", "shareOfCorrect": "18.8%" },
+    { "rank": 8, "id": "wonder", "name": "Muse Wonder", "status": "predicted", "mean": "0.1600", "shareOfCorrect": "16.0%" }
+  ],
+  "board": [
+    {
+      "task": "longitudinal-ehr",
+      "scores": {
+        "opus": "0.4150",
+        "argon": "0.2680",
+        "sol": "0.2449",
+        "astra": "0.2449",
+        "grok": "0.2380",
+        "kimi": "0.2310",
+        "deepseek": "0.2210",
+        "wonder": "0.2080"
+      }
+    },
+    {
+      "task": "mrd-duplex",
+      "scores": {
+        "grok": "0.2090",
+        "opus": "0.1960",
+        "sol": "0.1810",
+        "argon": "0.1630",
+        "kimi": "0.1540",
+        "wonder": "0.0000",
+        "astra": "0.0000",
+        "deepseek": "0.0000"
+      }
+    },
+    {
+      "task": "perturb-seq",
+      "scores": {
+        "opus": "0.4680",
+        "deepseek": "0.3510",
+        "grok": "0.3340",
+        "sol": "0.2150",
+        "kimi": "0.2040",
+        "astra": "0.1940",
+        "argon": "0.1870",
+        "wonder": "0.1690"
+      }
+    },
+    {
+      "task": "oncology-trial",
+      "scores": {
+        "opus": "0.5410",
+        "deepseek": "0.4880",
+        "argon": "0.3410",
+        "grok": "0.3180",
+        "astra": "0.3120",
+        "sol": "0.2890",
+        "kimi": "0.2760",
+        "wonder": "0.2630"
+      }
+    }
+  ]
+}
