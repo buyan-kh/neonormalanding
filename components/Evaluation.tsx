@@ -119,7 +119,7 @@ export function Evaluation() {
           </p>
 
           <div className="mt-6 overflow-x-auto border border-[#0A0A0A]">
-            <table className="w-full min-w-[640px] border-collapse text-left text-[12px]">
+            <table className="w-full min-w-[520px] border-collapse text-left text-[12px]">
               <caption className="border-b border-[#0A0A0A] px-3 py-2 text-left text-[11px] text-[#0A0A0A]">
                 Reward by task. Click a score to open that miss.
               </caption>
@@ -134,10 +134,6 @@ export function Evaluation() {
                       {model.name}
                     </th>
                   ))}
-                  <th className="px-3 py-2 font-normal" scope="col">
-                    <ModelSwatch color={referenceColor} />
-                    Correct
-                  </th>
                   <th className="px-3 py-2 font-normal" scope="col">
                     Length
                   </th>
@@ -179,7 +175,6 @@ export function Evaluation() {
                           </td>
                         );
                       })}
-                      <td className="px-3 py-2 tabular-nums">{formatReward(reference)}</td>
                       <td className="px-3 py-2 tabular-nums text-[#5A5852]">{task.tokens}</td>
                     </tr>
                   );
@@ -193,7 +188,6 @@ export function Evaluation() {
                       {formatReward(meanReward(model.rewardIndex))}
                     </td>
                   ))}
-                  <td className="px-3 py-2 tabular-nums">{formatReward(reference)}</td>
                   <td className="px-3 py-2" />
                 </tr>
               </tbody>

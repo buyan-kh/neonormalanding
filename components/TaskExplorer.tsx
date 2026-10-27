@@ -268,9 +268,7 @@ export function TaskExplorer({
                       );
                     })}
                   </p>
-                  <p className="mt-4 text-[12px] tabular-nums text-[#5A5852]">
-                    {reward.toFixed(4)} reward · known-correct {Number(task.reference).toFixed(4)}
-                  </p>
+                  <p className="mt-4 text-[12px] tabular-nums text-[#5A5852]">{reward.toFixed(4)} reward</p>
                 </>
               )}
             </div>
