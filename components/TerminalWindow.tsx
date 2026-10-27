@@ -16,12 +16,14 @@ export function TerminalWindow({
   title,
   children,
   dashed = false,
+  wrapTitle = false,
   className = "",
   bodyClassName = "",
 }: {
   title: string;
   children: ReactNode;
   dashed?: boolean;
+  wrapTitle?: boolean;
   className?: string;
   bodyClassName?: string;
 }) {
@@ -29,9 +31,9 @@ export function TerminalWindow({
   return (
     <div className={`flex min-w-0 max-w-full flex-col border border-[#0A0A0A] bg-white ${stroke} ${className}`}>
       <div
-        className={`flex items-center justify-between gap-3 border-b border-[#0A0A0A] bg-[#F5F5F4] px-2 py-1 text-[#0A0A0A] ${stroke}`}
+        className={`flex justify-between gap-3 border-b border-[#0A0A0A] bg-[#F5F5F4] px-2 py-1 text-[#0A0A0A] ${wrapTitle ? "items-start" : "items-center"} ${stroke}`}
       >
-        <p className="min-w-0 truncate text-[11px] tracking-wide">{title}</p>
+        <p className={`min-w-0 text-[11px] tracking-wide ${wrapTitle ? "whitespace-normal" : "truncate"}`}>{title}</p>
         <WindowControls />
       </div>
       <div className={`min-h-0 flex-1 bg-white ${bodyClassName}`}>{children}</div>
