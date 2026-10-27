@@ -1,5 +1,5 @@
 import { FlowLine } from "@/components/FlowLine";
-import { PipelineShowcase } from "@/components/PipelineShowcase";
+// import { PipelineShowcase } from "@/components/PipelineShowcase";
 
 const stages = [
   "Raw Clinical & Wet-Lab Data",
@@ -55,7 +55,7 @@ export function Hero() {
         </ol>
       </div>
       <div id="pipeline" className="mt-8 scroll-mt-32">
-        <PipelineShowcase />
+        {/* <PipelineShowcase /> */}
       </div>
     </section>
   );
