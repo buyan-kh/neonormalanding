@@ -5,38 +5,38 @@ import { TerminalWindow } from "@/components/TerminalWindow";
 import type { PixelIconType } from "@/lib/icons";
 
 const checks = [
-  "Encode domain rules",
-  "Add real-world noise",
-  "Generate variations",
-  "Auto-verify (no LLM judge)",
+  "Write the field's rules into the test",
+  "Add the mess of a real experiment",
+  "Make many versions of each case",
+  "Grade with code, not another AI",
 ];
 
 const inputs: Array<{ label: string; icon: PixelIconType }> = [
-  // { label: "Hospital EHR", icon: "ehr" },
-  { label: "Lab Assays", icon: "assay" },
-  { label: "Imaging", icon: "ct-scan" },
-  { label: "Genomics", icon: "dna" },
+  // { label: "Hospital records", icon: "ehr" },
+  { label: "Lab tests", icon: "assay" },
+  { label: "Scans", icon: "ct-scan" },
+  { label: "DNA", icon: "dna" },
 ];
 
 const breaks: Array<{ icon: PixelIconType; title: string; body: string; rate: string; note: string }> = [
   {
     icon: "antibody",
-    title: "SPR Binding Kinetics",
-    body: "Naive 1:1 Langmuir fit, missing mass transport and decay.",
+    title: "How tightly a drug binds",
+    body: "Uses a simple textbook formula and ignores how the sample reaches the sensor and how the signal fades.",
     rate: "67% to 100%",
     note: "Fail rate",
   },
   {
     icon: "ct-scan",
-    title: "Longitudinal Oncology EHR + CT",
-    body: "Calls a CT flare as progression and skips the confirmatory scan.",
+    title: "Cancer charts and scans over time",
+    body: "Reads a temporary flare on a scan as the cancer growing, and skips the follow-up scan that would check.",
     rate: "78%",
     note: "Fail rate",
   },
   {
     icon: "dna",
-    title: "Liquid Biopsy cfDNA & MRD",
-    body: "Calls ctDNA purity and MRD without copy inheritance or CHIP filters.",
+    title: "Blood test for leftover cancer",
+    body: "Calls leftover cancer from DNA in the blood without checking that it fits the tumor, or filtering mutations from normal aging blood cells.",
     rate: "72%",
     note: "Fail rate",
   },
@@ -46,12 +46,15 @@ export function Refinery() {
   return (
     <section id="why-models-fail" className="scroll-mt-32 border-t border-[#0A0A0A]/20">
       <div className="mx-auto w-full max-w-[1240px] px-4 py-16 md:px-6">
-        <p className="text-[11px] tracking-[0.18em] text-[#525252]">REFINERY</p>
+        <p className="text-[11px] tracking-[0.18em] text-[#525252]">HOW WE TEST</p>
         <h2 className="mt-3 max-w-[18em] text-[24px] leading-snug md:text-[30px]">
-          Real workflows break frontier models.
+          Real lab and hospital work breaks today&apos;s best AI models.
         </h2>
+        <p className="mt-4 max-w-[68ch] text-[13px] leading-relaxed text-[#525252]">
+          Each test comes from real records and has a known right answer. Models that ace textbook questions fail these.
+        </p>
         <div className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-          <TerminalWindow title="Parametric Generator" bodyClassName="p-3">
+          <TerminalWindow title="How a test is built" bodyClassName="p-3">
             <div className="flex flex-wrap items-center gap-3">
               {inputs.map((input, index) => (
                 <div key={input.label} className="flex items-center gap-2">
@@ -77,20 +80,20 @@ export function Refinery() {
           </TerminalWindow>
 
           <div className="flex flex-col gap-4">
-            <TerminalWindow title="Standard Bio Tasks (Dead)" bodyClassName="p-3">
+            <TerminalWindow title="Textbook questions, already solved" bodyClassName="p-3">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <PixelIcon type="chart" pixel={3} />
                 <p className="flex-1 text-[12px] leading-relaxed text-[#525252]">
-                  Survival analysis, interval censoring, competing risks, dose-response
+                  Survival curves, gaps in follow-up, more than one cause of death, dose versus effect
                 </p>
                 <div className="border border-[#0A0A0A] px-2 py-1 text-right text-[12px]">
-                  <p>Pass@1: 100%</p>
-                  <p className="text-[#525252]">(&lt;3.5k tokens)</p>
+                  <p>First try: 100%</p>
+                  <p className="text-[#525252]">(short problems)</p>
                 </div>
               </div>
             </TerminalWindow>
 
-            <TerminalWindow title="Real-World Scientific Tasks (Break Models)" bodyClassName="px-3">
+            <TerminalWindow title="Real work, where models break" bodyClassName="px-3">
               <ol>
                 {breaks.map((item, index) => (
                   <li
@@ -113,18 +116,18 @@ export function Refinery() {
               </ol>
             </TerminalWindow>
 
-            <TerminalWindow title="Automated Verification" bodyClassName="p-3">
+            <TerminalWindow title="Graded by code" bodyClassName="p-3">
               <ul className="space-y-2 text-[12px]">
                 <li className="flex items-center justify-between gap-3">
-                  <span>Reference solver</span>
+                  <span>Known-correct answer</span>
                   <span className="tabular-nums">1.0000</span>
                 </li>
                 <li className="flex items-center justify-between gap-3">
-                  <span>Shortcut heuristics (5x)</span>
+                  <span>Five easy shortcuts</span>
                   <span className="tabular-nums">&lt;= 0.42</span>
                 </li>
                 <li className="flex items-center justify-between gap-3">
-                  <span>Frontier models</span>
+                  <span>Today&apos;s best models</span>
                   <span>67% to 100% fail</span>
                 </li>
               </ul>
