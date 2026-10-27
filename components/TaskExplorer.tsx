@@ -16,7 +16,7 @@ function Swatch({ color, onDark = false }: { color: string; onDark?: boolean }) 
 
 function spanClass(span: TraceSpan, activeId: string, failed: boolean) {
   if (!span.checkId) return "";
-  if (span.checkId === activeId) return "bg-[#0A0A0A] text-white";
+  if (span.checkId === activeId) return "bg-[#E4E4E4] text-[#303030]";
   if (failed) return "underline decoration-[#0A0A0A] decoration-2 underline-offset-[3px]";
   return "";
 }
@@ -50,6 +50,7 @@ export function TaskExplorer({
   const failedCount = trace.checks.filter((check) => modelFailed(check, model.id)).length;
   const timers = useRef<number[]>([]);
   const [cursor, setCursor] = useState<number | null>(null);
+  const [hasRun, setHasRun] = useState(false);
   const running = cursor !== null;
 
   useEffect(() => {
@@ -67,7 +68,8 @@ export function TaskExplorer({
 
   function run() {
     stop();
-    if (!measuredModel) return;
+    if (!measuredModel || !spans) return;
+    setHasRun(true);
     const order = trace.checks.map((check) => check.id);
     const land =
       order.find((id) => {
@@ -134,7 +136,7 @@ export function TaskExplorer({
                 aria-pressed={on}
                 onClick={() => onModel(item.id)}
                 className={`inline-flex items-center border px-2 py-1 text-[13px] ${
-                  on ? "border-[#0A0A0A] bg-[#0A0A0A] text-white" : "border-[#0A0A0A]/25 text-[#0A0A0A] hover:border-[#0A0A0A]"
+                  on ? "border-[#C5C5C5] bg-[#E4E4E4] text-[#303030]" : "border-[#0A0A0A]/25 text-[#0A0A0A] hover:border-[#0A0A0A]"
                 }`}
               >
                 <Swatch color={item.color} onDark={on} />
@@ -152,6 +154,39 @@ export function TaskExplorer({
             <p className="mt-4 max-w-[68ch] text-[13px] leading-relaxed">{trace.brief}</p>
             <p className="mt-3 max-w-[68ch] text-[13px] leading-relaxed text-[#5A5852]">{trace.records}</p>
             <p className="mt-4 text-[13px] tabular-nums text-[#5A5852]">~{task.reasoningTokens[model.rewardIndex].toLocaleString("en-US")} tokens{model.rewardIndex > 0 ? " (estimate)" : ""}</p>
+          </div>
+
+          <div className="overflow-hidden border border-[#D0D0D0] bg-[#F6F6F6]">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#DEDEDE] px-4 py-3">
+              <div>
+                <p className="text-[13px] font-medium text-[#303030]">Harbor v1.2 <span className="ml-1 font-normal text-[#737373]">· mock run</span></p>
+                <p className="mt-1 text-[12px] text-[#737373]">Example grader output for {model.name}</p>
+              </div>
+              <button
+                type="button"
+                onClick={run}
+                disabled={running || !spans}
+                className="rounded-sm bg-[#D9D9D9] px-3 py-2 text-[13px] text-[#303030] hover:bg-[#C9C9C9] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {running ? "Running…" : hasRun ? "Run again" : "Run mock grader"}
+              </button>
+            </div>
+            <div className="space-y-1.5 px-4 py-3 font-mono text-[12px] leading-relaxed text-[#505050]" aria-live="polite">
+              <p><span className="text-[#858585]">task</span> &nbsp; {task.id}</p>
+              <p><span className="text-[#858585]">model</span> &nbsp;{model.name}</p>
+              {!spans ? (
+                <p className="pt-1 text-[#737373]">No example output for this model. Select Sol or Astra to run the demo.</p>
+              ) : !hasRun ? (
+                <p className="pt-1 text-[#737373]">Ready to run example checks.</p>
+              ) : (
+                <>
+                  {trace.checks.map((check, index) => (revealed(index) ? (
+                    <p key={check.id} className="flex gap-2"><span className={modelFailed(check, model.id) ? "text-[#555555]" : "text-[#777777]"}>[{modelFailed(check, model.id) ? "FAIL" : "PASS"}]</span><span>{check.label}</span></p>
+                  ) : null))}
+                  {running ? <p className="pt-1 text-[#737373]">Running checks…</p> : <p className="border-t border-[#DEDEDE] pt-2 tabular-nums">reward: {reward?.toFixed(4)} &nbsp;·&nbsp; {trace.checks.length - failedCount}/{trace.checks.length} checks passed</p>}
+                </>
+              )}
+            </div>
           </div>
 
           <div>
@@ -193,26 +228,12 @@ export function TaskExplorer({
           </div>
 
           <div className="grid gap-4 lg:grid-cols-2">
-            <div className="border border-[#0A0A0A] p-4">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <p className="text-[13px] tracking-[0.16em] text-[#5A5852]">MODEL ANSWER</p>
-                  <p className="mt-2 flex items-center text-[13px]">
-                    <Swatch color={model.color} />
-                    {model.name}
-                  </p>
-                </div>
-                {measuredModel && spans ? (
-                  <button
-                    type="button"
-                    onClick={run}
-                    disabled={running}
-                    className="bg-[#0A0A0A] px-3 py-2 text-[13px] text-white hover:bg-[#262626] disabled:opacity-60"
-                  >
-                    {running ? "[Running]" : "[Run grader]"}
-                  </button>
-                ) : null}
+            <div className="overflow-hidden border border-[#D0D0D0]">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#DEDEDE] bg-[#F6F6F6] px-4 py-2">
+                <p className="font-mono text-[12px] text-[#505050]">model_response.txt</p>
+                <p className="flex items-center text-[12px] text-[#737373]"><Swatch color={model.color} />{model.name} · example</p>
               </div>
+              <div className="p-4">
               {reward === null || !spans ? (
                 <p className="mt-4 text-[13px] leading-relaxed text-[#5A5852]">
                   A graded answer is not available for this model. Switch to GPT-6.1 Sol or GPT-6 Astra to read one.
@@ -249,22 +270,28 @@ export function TaskExplorer({
                   <p className="mt-4 text-[13px] tabular-nums text-[#5A5852]">{reward.toFixed(4)} reward</p>
                 </>
               )}
+              </div>
             </div>
 
-            <div className="border border-[#0A0A0A] p-4">
-              <p className="text-[13px] tracking-[0.16em] text-[#5A5852]">WHAT THE GRADER ACCEPTS</p>
-              <p className="mt-3 text-[13px] leading-snug">{active.label}</p>
-              <p className="mt-3 text-[13px] leading-relaxed">{active.correct}</p>
+            <div className="overflow-hidden border border-[#D0D0D0]">
+              <div className="flex items-center justify-between gap-2 border-b border-[#DEDEDE] bg-[#F6F6F6] px-4 py-2">
+                <p className="font-mono text-[12px] text-[#505050]">grader_feedback.txt</p>
+                <span className="text-[12px] text-[#737373]">example</span>
+              </div>
+              <div className="space-y-3 p-4 text-[13px] leading-relaxed">
+              <p><span className="font-mono text-[12px] text-[#737373]">check: </span>{active.label}</p>
+              <p><span className="font-mono text-[12px] text-[#737373]">expected: </span>{active.correct}</p>
               {spans ? (
-                <p className="mt-4 border-t border-[#0A0A0A]/20 pt-4 text-[13px] leading-relaxed text-[#5A5852]">
-                  {activeFailed ? active.miss : "This check passed."}
+                <p className="border-t border-[#DEDEDE] pt-3 text-[#5A5852]">
+                  <span className="font-mono text-[12px] text-[#737373]">result: </span>{activeFailed ? <>FAIL · {active.miss}</> : "PASS · The model met this requirement."}
                 </p>
               ) : (
-                <p className="mt-4 border-t border-[#0A0A0A]/20 pt-4 text-[13px] leading-relaxed text-[#5A5852]">
+                <p className="border-t border-[#DEDEDE] pt-3 text-[#5A5852]">
                   <Swatch color={referenceColor} />
                   Check results are not available for this model.
                 </p>
               )}
+              </div>
             </div>
           </div>
         </div>

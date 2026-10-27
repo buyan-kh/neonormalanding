@@ -43,7 +43,7 @@ export function DataPartners() {
                 <p className="mt-3 flex-1 text-[12px] leading-relaxed text-[#5A5852]">{track.body}</p>
                 <a
                   href={track.href}
-                  className="mt-5 inline-flex w-fit items-center bg-[#0A0A0A] px-3 py-2 text-[12px] text-white hover:bg-[#262626]"
+                  className="mt-5 inline-flex w-fit items-center bg-[#D9D9D9] px-3 py-2 text-[12px] text-[#303030] hover:bg-[#C9C9C9]"
                   {...(track.external ? { target: "_blank", rel: "noreferrer" } : {})}
                 >
                   {track.cta}

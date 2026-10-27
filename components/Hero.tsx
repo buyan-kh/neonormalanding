@@ -26,7 +26,7 @@ export function Hero() {
       <div className="mt-5 flex flex-wrap gap-2 sm:flex-row sm:flex-wrap">
         <a
           href={CALENDLY_URL}
-          className="inline-flex items-center justify-center bg-[#0A0A0A] px-3 py-2 text-[12px] text-white hover:bg-[#262626]"
+          className="inline-flex items-center justify-center bg-[#D9D9D9] px-3 py-2 text-[12px] text-[#303030] hover:bg-[#C9C9C9]"
           target="_blank"
           rel="noreferrer"
         >
@@ -34,7 +34,7 @@ export function Hero() {
         </a>
         <a
           href={`mailto:${CONTACT_EMAIL}`}
-          className="inline-flex items-center justify-center border border-[#0A0A0A] px-3 py-2 text-[12px] text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white"
+          className="inline-flex items-center justify-center border border-[#0A0A0A] px-3 py-2 text-[12px] text-[#0A0A0A] hover:bg-[#EAEAEA] hover:text-[#303030]"
         >
           Direct desk
         </a>

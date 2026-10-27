@@ -147,7 +147,7 @@ export function RequestForm() {
                       <label
                         key={item.id}
                         className={`cursor-pointer border px-2 py-1 text-[12px] ${
-                          on ? "border-[#0A0A0A] bg-[#0A0A0A] text-white" : "border-[#0A0A0A]/40 text-[#0A0A0A]"
+                          on ? "border-[#C5C5C5] bg-[#E4E4E4] text-[#303030]" : "border-[#0A0A0A]/40 text-[#0A0A0A]"
                         }`}
                       >
                         <input
@@ -212,7 +212,7 @@ export function RequestForm() {
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className="bg-[#0A0A0A] px-3 py-2 text-[12px] text-white hover:bg-[#262626] disabled:opacity-60"
+                className="bg-[#D9D9D9] px-3 py-2 text-[12px] text-[#303030] hover:bg-[#C9C9C9] disabled:opacity-60"
               >
                 {status === "sending" ? "[Sending...]" : cta}
               </button>

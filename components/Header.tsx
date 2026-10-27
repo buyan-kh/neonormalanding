@@ -23,14 +23,14 @@ export function Header() {
             <a
               key={link.href}
               href={link.href}
-              className="px-1.5 py-1 text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white"
+              className="px-1.5 py-1 text-[#0A0A0A] hover:bg-[#EAEAEA] hover:text-[#303030]"
             >
               {link.label}
             </a>
           ))}
           <a
             href={CALENDLY_URL}
-            className="bg-[#0A0A0A] px-2 py-1 text-white hover:bg-[#262626]"
+            className="bg-[#D9D9D9] px-2 py-1 text-[#303030] hover:bg-[#C9C9C9]"
             target="_blank"
             rel="noreferrer"
           >

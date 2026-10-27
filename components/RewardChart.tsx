@@ -132,7 +132,7 @@ function Toggle({
       type="button"
       aria-pressed={pressed}
       onClick={onClick}
-      className={`px-2 py-1 text-[13px] ${pressed ? "bg-[#0A0A0A] text-white" : "text-[#0A0A0A] hover:bg-[#0A0A0A]/5"}`}
+      className={`px-2 py-1 text-[13px] ${pressed ? "bg-[#D9D9D9] text-[#303030]" : "text-[#0A0A0A] hover:bg-[#0A0A0A]/5"}`}
     >
       {label}
     </button>
@@ -324,7 +324,7 @@ export function RewardChart({
                   return next;
                 });
               }}
-              className="peer size-3.5 cursor-pointer appearance-none rounded-[2px] border border-[#8C8982] bg-transparent checked:border-[#0A0A0A] checked:bg-[#0A0A0A]"
+              className="peer size-3.5 cursor-pointer appearance-none rounded-[2px] border border-[#909090] bg-transparent checked:border-[#858585] checked:bg-[#858585]"
             />
             <svg aria-hidden="true" viewBox="0 0 12 12" className="pointer-events-none absolute size-2.5 text-white opacity-0 peer-checked:opacity-100">
               <path d="M2.5 6 5 8.5 9.5 3.5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />

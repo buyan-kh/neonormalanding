@@ -185,7 +185,7 @@ export function Evaluation() {
             Models print success. The biology fails.
           </h2>
           <p className="mt-3 max-w-[58ch] text-[13px] leading-relaxed text-[#5A5852]">
-            Click an underlined sentence to see what the grader accepts. Run the grader to watch the checks land.
+            Run a mock Harbor v1.2 grader to see an example of its output. Click an underlined sentence to see what the model missed and what a correct answer needs.
           </p>
           <div id="trace" className="mt-4 scroll-mt-32">
             <TaskExplorer
