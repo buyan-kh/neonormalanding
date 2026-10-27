@@ -224,7 +224,7 @@ export function TraceInspector() {
                 onClick={() => setRun((count) => count + 1)}
                 className="mt-auto self-start border border-[#0A0A0A] px-2 py-1 text-[12px] hover:bg-[#0A0A0A] hover:text-white"
               >
-                [Replay failure -&gt;]
+                [Replay failure]
               </button>
             </div>
           </TerminalWindow>

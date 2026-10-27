@@ -23,7 +23,7 @@ export function Header() {
             </a>
           ))}
           <a href="#request" className="bg-[#0A0A0A] px-2 py-1 text-white hover:bg-[#262626]">
-            [Get Tasks -&gt;]
+            [Get Tasks]
           </a>
         </nav>
       </div>

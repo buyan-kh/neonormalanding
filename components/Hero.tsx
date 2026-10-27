@@ -27,19 +27,19 @@ export function Hero() {
           href="#labs"
           className="inline-flex items-center justify-center bg-[#0A0A0A] px-3 py-2 text-[12px] text-white hover:bg-[#262626]"
         >
-          [Buy Eval Tasks -&gt;]
+          [Buy Eval Tasks]
         </a>
         <a
           href="#data"
           className="inline-flex items-center justify-center border border-[#0A0A0A] px-3 py-2 text-[12px] text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white"
         >
-          [Sell or Partner Data -&gt;]
+          [Sell or Partner Data]
         </a>
         <a
           href="#investors"
           className="inline-flex items-center justify-center border border-[#0A0A0A]/40 px-3 py-2 text-[12px] text-[#0A0A0A] hover:border-[#0A0A0A]"
         >
-          [Investors -&gt;]
+          [Investors]
         </a>
       </div>
       <div className="mt-10 overflow-x-auto pb-2">
