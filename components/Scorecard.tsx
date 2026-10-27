@@ -2,8 +2,8 @@ import { benchmarkModels, benchmarkTasks, referenceColor } from "@/lib/catalog";
 
 const reference = Number(benchmarkTasks[0]?.reference ?? 1);
 
-function meanReward(modelIndex: number) {
-  const total = benchmarkTasks.reduce((sum, task) => sum + Number(task.frontier[modelIndex]), 0);
+function meanReward(rewardIndex: 0 | 1) {
+  const total = benchmarkTasks.reduce((sum, task) => sum + Number(task.frontier[rewardIndex]), 0);
   return total / benchmarkTasks.length;
 }
 
@@ -31,13 +31,15 @@ function ScoreTrack({ value, color }: { value: number; color: string }) {
 }
 
 export function Scorecard() {
-  const models = benchmarkModels
-    .map((model, index) => {
-      const mean = meanReward(index);
-      return { ...model, index, mean, gap: reference - mean };
+  const measured = benchmarkModels
+    .flatMap((model) => {
+      if (model.rewardIndex === undefined) return [];
+      const mean = meanReward(model.rewardIndex);
+      return [{ ...model, rewardIndex: model.rewardIndex, mean, gap: reference - mean }];
     })
     .sort((a, b) => b.mean - a.mean);
-  const best = models[0];
+  const unmeasured = benchmarkModels.filter((model) => model.rewardIndex === undefined);
+  const best = measured[0];
 
   const stats = [
     {
@@ -107,7 +109,7 @@ export function Scorecard() {
                 <p className="mt-1 text-[10px] text-[#5A5852]">baseline</p>
               </div>
             </li>
-            {models.map((model, rank) => (
+            {measured.map((model, rank) => (
               <li
                 key={model.id}
                 className="grid grid-cols-[4.5rem_minmax(0,1fr)_auto] items-center gap-x-3 border-b border-[#0A0A0A]/15 px-3 py-3 last:border-b-0"
@@ -128,6 +130,24 @@ export function Scorecard() {
                 </div>
               </li>
             ))}
+            {unmeasured.length > 0 ? (
+              <li className="border-b border-[#0A0A0A]/15 px-3 py-2">
+                <p className="text-[10px] tracking-[0.14em] text-[#5A5852]">NOT MEASURED YET</p>
+              </li>
+            ) : null}
+            {unmeasured.map((model) => (
+              <li
+                key={model.id}
+                className="grid grid-cols-[4.5rem_minmax(0,1fr)_auto] items-center gap-x-3 border-b border-[#0A0A0A]/15 px-3 py-3 last:border-b-0"
+              >
+                <p className="text-[13px] text-[#5A5852]">—</p>
+                <p className="text-[13px]">
+                  <ModelSwatch color={model.color} />
+                  {model.name}
+                </p>
+                <p className="text-right text-[11px] text-[#5A5852]">Not measured yet</p>
+              </li>
+            ))}
           </ol>
         </div>
 
@@ -137,7 +157,7 @@ export function Scorecard() {
           </div>
           <div className="hidden grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))_5.5rem] gap-3 border-b border-[#0A0A0A]/20 px-3 py-2 text-[10px] tracking-[0.12em] text-[#5A5852] md:grid">
             <p>TASK</p>
-            {benchmarkModels.map((model) => (
+            {measured.map((model) => (
               <p key={model.id}>
                 <ModelSwatch color={model.color} />
                 {model.name.toUpperCase()}
@@ -151,7 +171,6 @@ export function Scorecard() {
           </div>
           <ul>
             {benchmarkTasks.map((task) => {
-              const scores = task.frontier.map(Number);
               return (
                 <li
                   key={task.id}
@@ -162,18 +181,21 @@ export function Scorecard() {
                       {task.short}
                     </a>
                   </p>
-                  {scores.map((score, index) => (
-                    <div key={benchmarkModels[index].id}>
-                      <p className="text-[10px] tracking-[0.12em] text-[#5A5852] md:hidden">
-                        <ModelSwatch color={benchmarkModels[index].color} />
-                        {benchmarkModels[index].name}
-                      </p>
-                      <p className="mt-1 tabular-nums md:mt-0">{formatReward(score)}</p>
-                      <div className="mt-1">
-                        <ScoreTrack value={score} color={benchmarkModels[index].color} />
+                  {measured.map((model) => {
+                    const score = Number(task.frontier[model.rewardIndex]);
+                    return (
+                      <div key={model.id}>
+                        <p className="text-[10px] tracking-[0.12em] text-[#5A5852] md:hidden">
+                          <ModelSwatch color={model.color} />
+                          {model.name}
+                        </p>
+                        <p className="mt-1 tabular-nums md:mt-0">{formatReward(score)}</p>
+                        <div className="mt-1">
+                          <ScoreTrack value={score} color={model.color} />
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                   <div>
                     <p className="text-[10px] tracking-[0.12em] text-[#5A5852] md:hidden">
                       <ModelSwatch color={referenceColor} />
@@ -195,7 +217,7 @@ export function Scorecard() {
         </div>
 
         <p className="mt-3 max-w-[72ch] text-[11px] leading-relaxed text-[#5A5852]">
-          Mean across the four tasks above. Reward is the deterministic grader, not an LLM judge.
+          Means use the measured runs only. Reward is the deterministic grader, not an LLM judge.
         </p>
       </div>
     </section>

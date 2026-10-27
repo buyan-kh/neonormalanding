@@ -1,6 +1,10 @@
 import { TerminalWindow } from "@/components/TerminalWindow";
 import { benchmarkModels, benchmarkTasks } from "@/lib/catalog";
 
+const scoredModels = benchmarkModels.filter(
+  (model): model is typeof model & { rewardIndex: 0 | 1 } => model.rewardIndex !== undefined,
+);
+
 export function TraceInspector() {
   return (
     <section id="failure-trace" className="scroll-mt-32 border-t border-[#0A0A0A]/20" aria-labelledby="trace-heading">
@@ -29,7 +33,7 @@ export function TraceInspector() {
                   <th className="px-3 py-2 font-normal" scope="col">
                     Tokens
                   </th>
-                  {benchmarkModels.map((model) => (
+                  {scoredModels.map((model) => (
                     <th key={model.id} className="px-3 py-2 font-normal" scope="col">
                       <span
                         aria-hidden="true"
@@ -55,8 +59,11 @@ export function TraceInspector() {
                     </th>
                     <td className="px-3 py-3 text-[#525252]">{task.records}</td>
                     <td className="px-3 py-3 whitespace-nowrap tabular-nums">{task.tokens}</td>
-                    <td className="px-3 py-3 whitespace-nowrap tabular-nums">{task.frontier[0]} (FAIL)</td>
-                    <td className="px-3 py-3 whitespace-nowrap tabular-nums">{task.frontier[1]} (FAIL)</td>
+                    {scoredModels.map((model) => (
+                      <td key={model.id} className="px-3 py-3 whitespace-nowrap tabular-nums">
+                        {task.frontier[model.rewardIndex]} (FAIL)
+                      </td>
+                    ))}
                     <td className="px-3 py-3 whitespace-nowrap tabular-nums">{task.reference} (PASS)</td>
                     <td className="px-3 py-3 text-[#525252]">{task.failure}</td>
                   </tr>

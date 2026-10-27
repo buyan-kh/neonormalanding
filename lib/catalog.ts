@@ -1,7 +1,21 @@
-export const benchmarkModels = [
-  { id: "sol", name: "GPT-6.1 Sol", color: "#10A37F" },
-  { id: "astra", name: "GPT-6 Astra", color: "#10A37F" },
-] as const;
+export type BenchmarkModel = {
+  id: string;
+  name: string;
+  color: string;
+  /** Index into each task's frontier rewards. Absent means this model is not measured yet. */
+  rewardIndex?: 0 | 1;
+};
+
+export const benchmarkModels: BenchmarkModel[] = [
+  { id: "sol", name: "GPT-6.1 Sol", color: "#10A37F", rewardIndex: 0 },
+  { id: "astra", name: "GPT-6 Astra", color: "#10A37F", rewardIndex: 1 },
+  { id: "kimi", name: "Kimi K3.1", color: "#7C3AED" },
+  { id: "opus", name: "Claude Opus 5.5", color: "#D97757" },
+  { id: "wonder", name: "Muse Wonder", color: "#0064E0" },
+  { id: "argon", name: "Gemini 4 Argon", color: "#1A73E8" },
+  { id: "grok", name: "Grok 4.7", color: "#1A1A1A" },
+  { id: "deepseek", name: "DeepSeek V4.1", color: "#4D6BFE" },
+];
 
 export const referenceColor = "#0A0A0A";
 
