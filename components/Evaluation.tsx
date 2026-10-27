@@ -115,7 +115,7 @@ export function Evaluation() {
             <RewardChart taskId={taskId} modelId={modelId} onPick={openMiss} />
           </div>
           <p className="mt-3 max-w-[72ch] text-[11px] leading-relaxed text-[#5A5852]">
-            Each mark is one model on one task. The line at 1.00 is the known-correct answer, and the upright line is how far the model fell short. By length, the horizontal axis is the size of the task in tokens.
+            Each line is one model across the four tasks. The axis stops at 0.40 so the difference between runs is visible. Click a point to open the miss.
           </p>
 
           <div className="mt-6 overflow-x-auto border border-[#0A0A0A]">
