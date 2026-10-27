@@ -1,13 +1,13 @@
-import { FlowLine } from "@/components/FlowLine";
+// import { FlowLine } from "@/components/FlowLine";
 // import { PipelineShowcase } from "@/components/PipelineShowcase";
 
-const stages = [
-  "Raw Clinical & Wet-Lab Data",
-  "Parametric Refinery",
-  "Harbor/Docker RL Sandbox",
-  "Pure-Python Verifier",
-  "Frontier Evaluation",
-];
+// const stages = [
+//   "Raw Clinical & Wet-Lab Data",
+//   "Parametric Refinery",
+//   "Harbor/Docker RL Sandbox",
+//   "Pure-Python Verifier",
+//   "Frontier Evaluation",
+// ];
 
 export function Hero() {
   return (
@@ -42,7 +42,7 @@ export function Hero() {
           [Investors]
         </a>
       </div>
-      <div className="mt-10 overflow-x-auto pb-2">
+      {/* <div className="mt-10 overflow-x-auto pb-2">
         <ol className="flex w-max items-center gap-3">
           {stages.map((stage, index) => (
             <li key={stage} className="flex shrink-0 items-center gap-3">
@@ -53,7 +53,7 @@ export function Hero() {
             </li>
           ))}
         </ol>
-      </div>
+      </div> */}
       <div id="pipeline" className="mt-8 scroll-mt-32">
         {/* <PipelineShowcase /> */}
       </div>
