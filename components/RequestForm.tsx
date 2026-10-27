@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { TerminalWindow } from "@/components/TerminalWindow";
-import { CALENDLY_URL, CONTACT_EMAIL } from "@/lib/contact";
+import { CONTACT_EMAIL } from "@/lib/contact";
 
 type Intent = "labs" | "data" | "investors";
 type Status = "idle" | "sending" | "delivered" | "mailed" | "error";
@@ -121,14 +121,14 @@ export function RequestForm() {
         <div id="investors" className="scroll-mt-32" />
         <p className="text-[11px] tracking-[0.18em] text-[#5A5852]">INTAKE</p>
         <h2 className="mt-3 text-[24px] leading-snug md:text-[30px]">Send an inquiry.</h2>
-        <p className="mt-3 flex flex-col gap-2 text-[13px]">
+        {/* <p className="mt-3 flex flex-col gap-2 text-[13px]">
           <a href={CALENDLY_URL} className={linkClass} target="_blank" rel="noreferrer">
             Book 30-Min Pilot / Partner Call
           </a>
           <a href={`mailto:${CONTACT_EMAIL}`} className={linkClass}>
             Direct Desk {CONTACT_EMAIL}
           </a>
-        </p>
+        </p> */}
         <div className="mt-6 max-w-[760px]">
           <TerminalWindow title="Intake" bodyClassName="p-3 md:p-4">
             <form
