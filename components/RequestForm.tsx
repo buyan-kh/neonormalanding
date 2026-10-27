@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { TerminalWindow } from "@/components/TerminalWindow";
 import { CONTACT_EMAIL } from "@/lib/contact";
 
@@ -43,6 +43,7 @@ function intakeMailto(intent: Intent, brief: string) {
 }
 
 export function RequestForm() {
+  const sectionRef = useRef<HTMLElement>(null);
   const [intent, setIntent] = useState<Intent>("labs");
   const [name, setName] = useState("");
   const [organization, setOrganization] = useState("");
@@ -51,6 +52,21 @@ export function RequestForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
   const [mailtoHref, setMailtoHref] = useState(`mailto:${CONTACT_EMAIL}`);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || !("IntersectionObserver" in window)) return;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("intake-active");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    section.querySelectorAll("[data-intake-reveal]").forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const sync = () => {
@@ -108,19 +124,21 @@ export function RequestForm() {
   }
 
   const field =
-    "w-full border border-[#0A0A0A]/40 bg-white px-2 py-1.5 text-[13px] text-[#0A0A0A] outline-none placeholder:text-[#5A5852] focus:border-[#0A0A0A]";
+    "w-full border border-[#0A0A0A]/40 bg-white px-2 py-1.5 text-[13px] text-[#0A0A0A] outline-none transition-colors duration-200 placeholder:text-[#5A5852] hover:border-[#0A0A0A]/70 focus:border-[#0A0A0A] focus:bg-[#fafafa]";
   const cta = intents.find((item) => item.id === intent)?.cta ?? "[Send]";
 
   return (
-    <section className="border-t border-[#0A0A0A]/20">
+    <section ref={sectionRef} className="border-t border-[#0A0A0A]/20">
       <div id="request" className="mx-auto w-full max-w-[1080px] scroll-mt-32 px-4 py-10 md:px-6">
         <div id="labs" className="scroll-mt-32" />
         <div id="sample" className="scroll-mt-32" />
         <div id="data" className="scroll-mt-32" />
         <div id="partner" className="scroll-mt-32" />
         <div id="investors" className="scroll-mt-32" />
-        <p className="text-[11px] tracking-[0.18em] text-[#5A5852]">INTAKE</p>
-        <h2 className="mt-3 text-[24px] leading-snug md:text-[26px]">Send an inquiry.</h2>
+        <div data-intake-reveal>
+          <p className="text-[11px] tracking-[0.18em] text-[#5A5852]">INTAKE</p>
+          <h2 className="mt-3 text-[24px] leading-snug md:text-[26px]">Send an inquiry.</h2>
+        </div>
         {/* <p className="mt-3 flex flex-col gap-2 text-[13px]">
           <a href={CALENDLY_URL} className={linkClass} target="_blank" rel="noreferrer">
             Book 30-Min Pilot / Partner Call
@@ -129,7 +147,7 @@ export function RequestForm() {
             Direct Desk {CONTACT_EMAIL}
           </a>
         </p> */}
-        <div className="mt-6 max-w-[760px]">
+        <div data-intake-reveal className="mt-6 max-w-[760px]">
           <TerminalWindow title="Intake" bodyClassName="p-3 md:p-4">
             <form
               action={`mailto:${CONTACT_EMAIL}`}
@@ -138,7 +156,7 @@ export function RequestForm() {
               onSubmit={onSubmit}
               className="space-y-3"
             >
-              <fieldset>
+              <fieldset className="intake-item">
                 <legend className="text-[11px] text-[#5A5852]">Intent</legend>
                 <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-label="Intent">
                   {intents.map((item) => {
@@ -146,7 +164,7 @@ export function RequestForm() {
                     return (
                       <label
                         key={item.id}
-                        className={`cursor-pointer border px-2 py-1 text-[12px] ${
+                        className={`cursor-pointer border px-2 py-1 text-[12px] transition-colors duration-200 focus-within:outline focus-within:outline-1 focus-within:outline-offset-2 focus-within:outline-[#0A0A0A] ${
                           on ? "border-[#C5C5C5] bg-[#E4E4E4] text-[#303030]" : "border-[#0A0A0A]/40 text-[#0A0A0A]"
                         }`}
                       >
@@ -164,7 +182,7 @@ export function RequestForm() {
                   })}
                 </div>
               </fieldset>
-              <label className="block text-[11px] text-[#5A5852]">
+              <label className="intake-item block text-[11px] text-[#5A5852]">
                 Name
                 <input
                   className={`mt-1 ${field}`}
@@ -175,7 +193,7 @@ export function RequestForm() {
                   maxLength={120}
                 />
               </label>
-              <label className="block text-[11px] text-[#5A5852]">
+              <label className="intake-item block text-[11px] text-[#5A5852]">
                 Organization
                 <input
                   className={`mt-1 ${field}`}
@@ -186,7 +204,7 @@ export function RequestForm() {
                   maxLength={160}
                 />
               </label>
-              <label className="block text-[11px] text-[#5A5852]">
+              <label className="intake-item block text-[11px] text-[#5A5852]">
                 Email
                 <input
                   className={`mt-1 ${field}`}
@@ -198,7 +216,7 @@ export function RequestForm() {
                   maxLength={180}
                 />
               </label>
-              <label className="block text-[11px] text-[#5A5852]">
+              <label className="intake-item block text-[11px] text-[#5A5852]">
                 Note
                 <textarea
                   className={`mt-1 min-h-24 ${field}`}
@@ -208,11 +226,11 @@ export function RequestForm() {
                   maxLength={2000}
                 />
               </label>
-              <p className="text-[11px] text-[#5A5852]">Raw records stay off this form.</p>
+              <p className="intake-item text-[11px] text-[#5A5852]">Raw records stay off this form.</p>
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className="bg-[#D9D9D9] px-3 py-2 text-[12px] text-[#303030] hover:bg-[#C9C9C9] disabled:opacity-60"
+                className="intake-item bg-[#D9D9D9] px-3 py-2 text-[12px] text-[#303030] transition-colors duration-200 hover:bg-[#C9C9C9] disabled:opacity-60"
               >
                 {status === "sending" ? "[Sending...]" : cta}
               </button>

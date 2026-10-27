@@ -66,6 +66,91 @@ body {
   animation: rl-flow 1.4s linear infinite;
 }
 
+.benchmark-revealed {
+  animation: benchmark-enter 650ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.refinery-active {
+  animation: refinery-enter 700ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.intake-active {
+  animation: refinery-enter 700ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.intake-active .intake-item {
+  animation: refinery-enter 550ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.intake-active .intake-item:nth-child(2) { animation-delay: 50ms; }
+.intake-active .intake-item:nth-child(3) { animation-delay: 100ms; }
+.intake-active .intake-item:nth-child(4) { animation-delay: 150ms; }
+.intake-active .intake-item:nth-child(5) { animation-delay: 200ms; }
+.intake-active .intake-item:nth-child(6) { animation-delay: 250ms; }
+.intake-active .intake-item:nth-child(7) { animation-delay: 300ms; }
+
+.refinery-active .refinery-input,
+.refinery-active .refinery-step,
+.refinery-active .refinery-case {
+  animation: refinery-enter 620ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.refinery-active .refinery-input:nth-child(2),
+.refinery-active .refinery-step:nth-child(2),
+.refinery-active .refinery-case:nth-child(2) { animation-delay: 90ms; }
+.refinery-active .refinery-input:nth-child(3),
+.refinery-active .refinery-step:nth-child(3),
+.refinery-active .refinery-case:nth-child(3) { animation-delay: 180ms; }
+.refinery-active .refinery-step:nth-child(4) { animation-delay: 270ms; }
+
+.refinery-active .refinery-metric {
+  animation: refinery-metric 750ms cubic-bezier(.22, 1, .36, 1) 200ms both;
+}
+
+.refinery-signal {
+  animation: refinery-signal 1.8s linear infinite;
+}
+
+.refinery-active .refinery-node {
+  animation: rl-appear 650ms ease both;
+}
+
+@keyframes refinery-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes refinery-metric {
+  from { opacity: 0; transform: translateY(4px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes refinery-signal {
+  to { stroke-dashoffset: -22; }
+}
+
+.benchmark-revealed .benchmark-stat {
+  animation: benchmark-enter 600ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.benchmark-revealed .benchmark-stat:nth-child(2) { animation-delay: 80ms; }
+.benchmark-revealed .benchmark-stat:nth-child(3) { animation-delay: 160ms; }
+
+.benchmark-revealed .benchmark-bar {
+  transform-origin: left center;
+  animation: benchmark-grow 900ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+@keyframes benchmark-enter {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes benchmark-grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
 .rl-pulse {
   animation: rl-pulse 2.2s ease-in-out infinite;
 }
@@ -170,6 +255,18 @@ body {
   .rl-duplex-line,
   .rl-point,
   .rl-reveal,
+  .benchmark-revealed,
+  .benchmark-revealed .benchmark-stat,
+  .benchmark-revealed .benchmark-bar,
+  .refinery-active,
+  .refinery-active .refinery-input,
+  .refinery-active .refinery-step,
+  .refinery-active .refinery-case,
+  .refinery-active .refinery-metric,
+  .refinery-active .refinery-node,
+  .refinery-signal,
+  .intake-active,
+  .intake-active .intake-item,
   .cursor-block,
   .arm-line {
     animation: none;

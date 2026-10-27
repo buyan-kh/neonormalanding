@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { RewardChart } from "@/components/RewardChart";
 import { TaskExplorer } from "@/components/TaskExplorer";
 import { benchmarkModels, benchmarkTasks, isMeasured, referenceColor, type RewardIndex } from "@/lib/catalog";
@@ -29,6 +29,25 @@ function ModelSwatch({ color, onDark = false }: { color: string; onDark?: boolea
       style={{ backgroundColor: color }}
     />
   );
+}
+
+function Reveal({ children, className = "" }: { children: ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element || !("IntersectionObserver" in window)) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        element.classList.add("benchmark-revealed");
+        observer.disconnect();
+      }
+    }, { threshold: 0.08 });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  return <div ref={ref} className={className}>{children}</div>;
 }
 
 export function Evaluation() {
@@ -82,6 +101,7 @@ export function Evaluation() {
     <>
       <section id="calibration" className="scroll-mt-32 border-t border-[#0A0A0A]/20">
         <div className="mx-auto w-full max-w-[1080px] px-4 py-10 md:px-6">
+          <Reveal>
           <p className="text-[13px] tracking-[0.18em] text-[#525252]">02 // BENCHMARKS</p>
           <h2 className="mt-4 max-w-[30em] text-[24px] leading-[1.15] md:text-[28px]">
             {best ? `The highest estimated score reaches ${formatShare(best.mean)} of the reference.` : "Benchmarks"}
@@ -91,13 +111,15 @@ export function Evaluation() {
               ? `${best.name} has an estimated average reward of ${formatReward(best.mean)} across four mock tasks. The reference answer scores 1.0000.`
               : "No models have been measured yet."}
           </p>
+          </Reveal>
 
           {stats.length > 0 ? (
-            <dl className="mt-5 grid border border-[#0A0A0A]/10 sm:grid-cols-3">
+            <Reveal className="mt-5">
+            <dl className="grid border border-[#0A0A0A]/10 sm:grid-cols-3">
               {stats.map((stat, index) => (
                 <div
                   key={stat.label}
-                  className={`px-3 py-3 ${index < stats.length - 1 ? "border-b border-[#0A0A0A]/20 sm:border-r sm:border-b-0" : ""}`}
+                  className={`benchmark-stat px-3 py-3 ${index < stats.length - 1 ? "border-b border-[#0A0A0A]/20 sm:border-r sm:border-b-0" : ""}`}
                 >
                   <dt className="text-[13px] tracking-[0.14em] text-[#5A5852]">{stat.label}</dt>
                   <dd className="mt-2 text-[22px] leading-none tabular-nums">{stat.value}</dd>
@@ -108,16 +130,17 @@ export function Evaluation() {
                 </div>
               ))}
             </dl>
+            </Reveal>
           ) : null}
 
-          <div className="mt-4">
+          <Reveal className="mt-4">
             <RewardChart taskId={taskId} modelId={modelId} onPick={(task, model) => openMiss(task, model, false)} />
-          </div>
+          </Reveal>
           <p className="mt-3 max-w-[72ch] text-[13px] leading-relaxed text-[#5A5852]">
             Scores across four tasks. Click a point to explore the task.
           </p>
 
-          <div className="mt-6 border border-[#0A0A0A]/10">
+          <Reveal className="mt-6 border border-[#0A0A0A]/10">
             <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[#0A0A0A]/10 px-4 py-3">
               <h3 className="text-[15px] font-medium">Reward by task examples</h3>
               <p className="text-[13px] text-[#5A5852]">1.0000 is the reference</p>
@@ -143,7 +166,7 @@ export function Evaluation() {
                           >
                             <span className="truncate">{model.name}</span>
                             <span className="h-2 overflow-hidden rounded-full bg-[#0A0A0A]/[0.06]" aria-hidden="true">
-                              <span className="block h-full rounded-full" style={{ width: `${Math.max(0, Math.min(1, score / reference)) * 100}%`, backgroundColor: model.color }} />
+                              <span className="benchmark-bar block h-full rounded-full" style={{ width: `${Math.max(0, Math.min(1, score / reference)) * 100}%`, backgroundColor: model.color }} />
                             </span>
                             <span className="text-right tabular-nums text-[#5A5852]">{formatReward(score)}</span>
                           </div>
@@ -169,7 +192,7 @@ export function Evaluation() {
                 );
               })}
             </div>
-          </div>
+          </Reveal>
           <p className="mt-3 max-w-[72ch] text-[13px] leading-relaxed text-[#5A5852]">
           Means use the measured runs only. Reward is the deterministic grader, not an LLM judge. {" "}
           </p>
