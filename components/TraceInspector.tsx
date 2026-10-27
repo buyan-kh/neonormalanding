@@ -1,5 +1,5 @@
 import { TerminalWindow } from "@/components/TerminalWindow";
-import { benchmarkTasks } from "@/lib/catalog";
+import { benchmarkModels, benchmarkTasks } from "@/lib/catalog";
 
 export function TraceInspector() {
   return (
@@ -29,12 +29,11 @@ export function TraceInspector() {
                   <th className="px-3 py-2 font-normal" scope="col">
                     Tokens
                   </th>
-                  <th className="px-3 py-2 font-normal" scope="col">
-                    Frontier 1
-                  </th>
-                  <th className="px-3 py-2 font-normal" scope="col">
-                    Frontier 2
-                  </th>
+                  {benchmarkModels.map((model) => (
+                    <th key={model.id} className="px-3 py-2 font-normal" scope="col">
+                      {model.name}
+                    </th>
+                  ))}
                   <th className="px-3 py-2 font-normal" scope="col">
                     Reference
                   </th>

@@ -1,6 +1,12 @@
+export const benchmarkModels = [
+  { id: "sol", name: "GPT-6.1 Sol" },
+  { id: "astra", name: "GPT-6 Astra" },
+] as const;
+
 export type BenchmarkTask = {
   id: string;
   name: string;
+  short: string;
   records: string;
   tokens: string;
   frontier: [string, string];
@@ -12,6 +18,7 @@ export const benchmarkTasks: BenchmarkTask[] = [
   {
     id: "longitudinal-ehr",
     name: "Longitudinal EHR + Wet-Lab + Radiology (10-Year Holdout)",
+    short: "10-year EHR + radiology",
     records:
       "5 linked clinical, flow cytometry, ctDNA, and RECIST tables (Years 1 to 3 exposed, Years 4 to 10 held out in Grader)",
     tokens: "38,400+",
@@ -23,6 +30,7 @@ export const benchmarkTasks: BenchmarkTask[] = [
   {
     id: "mrd-duplex",
     name: "Molecular Residual Disease (MRD) Duplex Sequencing",
+    short: "MRD duplex sequencing",
     records: "Raw UMI family reads, oxidative damage panels, and longitudinal plasma draws",
     tokens: "41,200+",
     frontier: ["0.1810", "0.0000"],
@@ -32,6 +40,7 @@ export const benchmarkTasks: BenchmarkTask[] = [
   {
     id: "perturb-seq",
     name: "CRISPR Perturb-Seq + Drug Combination Synergy",
+    short: "Perturb-seq synergy",
     records: "Single-cell guide assignments, dose-response matrices, and batch viability controls",
     tokens: "45,800+",
     frontier: ["0.2150", "0.1940"],
@@ -42,6 +51,7 @@ export const benchmarkTasks: BenchmarkTask[] = [
   {
     id: "oncology-trial",
     name: "Oncology Trial Biostatistics (Competing Risks & RMST)",
+    short: "Competing risks & RMST",
     records: "Multi-center censoring logs, crossover events, and biomarker-stratified survival cohorts",
     tokens: "52,600+",
     frontier: ["0.2890", "0.3120"],
