@@ -21,6 +21,9 @@ export function InsideHeader({ onNavigate }: { onNavigate: (id: string) => void 
         </a>
         <div className="flex max-w-full flex-wrap items-center justify-end gap-x-2 gap-y-2">
           <nav className="flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 text-[11px]" aria-label="Inside sections">
+            <a href="/inside/buyan" className="px-1.5 py-1 text-[#0A0A0A] hover:bg-[#EAEAEA] hover:text-[#303030]">
+              [COMMAND CENTER]
+            </a>
             {navLinks.map((link) => (
               <a
                 key={link.id}

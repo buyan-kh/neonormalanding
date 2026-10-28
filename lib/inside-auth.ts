@@ -89,3 +89,17 @@ export function requestIsSecure(request: Request) {
   if (forwarded) return forwarded.split(",")[0]?.trim() === "https";
   return new URL(request.url).protocol === "https:";
 }
+
+export function safeInsideNext(value: string | null | undefined) {
+  if (!value || value.length > 200) return null;
+  if (!/^\/inside\/[a-z0-9][a-z0-9/_-]*$/.test(value)) return null;
+  if (value.includes("//") || value.includes("..")) return null;
+  return value;
+}
+
+export function publicInsidePath(nextPath: string, onInsideHost: boolean) {
+  if (!onInsideHost) return nextPath;
+  if (nextPath === "/inside") return "/";
+  if (nextPath.startsWith("/inside/")) return nextPath.slice("/inside".length) || "/";
+  return "/";
+}
