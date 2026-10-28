@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { Grain } from "@/components/Grain";
 import { CONTACT_EMAIL } from "@/lib/contact";
 import "./globals.css";
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           Skip to content
         </a>
         {children}
+        <Analytics />
       </body>
     </html>
   );
