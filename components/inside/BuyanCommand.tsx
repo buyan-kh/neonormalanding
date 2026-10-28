@@ -27,8 +27,8 @@ import {
   type SeedScenario,
 } from "@/components/inside/buyan-data";
 
-const chipOn = "border border-[#D9D9D9] bg-[#D9D9D9] px-2 py-1 text-left text-[11px] text-[#303030]";
-const chipOff = "border border-[#0A0A0A] px-2 py-1 text-left text-[11px] text-[#0A0A0A] hover:bg-[#EAEAEA]";
+const chipOn = "inline-flex min-h-11 shrink-0 items-center border border-[#D9D9D9] bg-[#D9D9D9] px-3 py-2 text-left text-[12px] text-[#303030] md:min-h-0 md:px-2 md:py-1 md:text-[11px]";
+const chipOff = "inline-flex min-h-11 shrink-0 items-center border border-[#0A0A0A] px-3 py-2 text-left text-[12px] text-[#0A0A0A] hover:bg-[#EAEAEA] md:min-h-0 md:px-2 md:py-1 md:text-[11px]";
 const th = "border-b border-[#0A0A0A] bg-[#F5F5F4] px-2 py-2 text-[10px] font-medium tracking-[0.12em] text-[#5A5852]";
 const td = "border-t border-[#0A0A0A]/15 px-2 py-2 align-top text-[12px] leading-relaxed";
 
@@ -48,9 +48,9 @@ function RateBar({ label, pct, display }: { label: string; pct: number | null; d
   const width = pct == null ? 0 : Math.max(0, Math.min(100, pct));
   return (
     <div>
-      <div className="flex items-baseline justify-between gap-3 text-[10px]">
-        <span className="text-[#5A5852]">{label}</span>
-        <span className="font-mono tabular-nums text-[#0A0A0A]">{display}</span>
+      <div className="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3">
+        <span className="text-[10px] text-[#5A5852]">{label}</span>
+        <span className="font-mono text-[11px] leading-snug text-[#0A0A0A] sm:text-right">{display}</span>
       </div>
       <div className="mt-1 h-1.5 bg-[#EAEAEA]">
         <div className="h-full bg-[#0A0A0A]" style={{ width: `${width}%` }} />
@@ -59,9 +59,18 @@ function RateBar({ label, pct, display }: { label: string; pct: number | null; d
   );
 }
 
+function Field({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className="min-w-0">
+      <p className="text-[10px] tracking-[0.12em] text-[#5A5852]">{label}</p>
+      <div className="mt-1 break-words text-[12px] leading-relaxed">{children}</div>
+    </div>
+  );
+}
+
 function Section({ id, kicker, title, lede, children }: { id: string; kicker: string; title: string; lede: string; children: ReactNode }) {
   return (
-    <section id={id} className="scroll-mt-56 border-t border-[#0A0A0A]/20">
+    <section id={id} className="scroll-mt-[22rem] border-t border-[#0A0A0A]/20 md:scroll-mt-56">
       <div className="mx-auto w-full max-w-[1080px] px-4 py-10 md:px-6">
         <p className="text-[11px] tracking-[0.18em] text-[#5A5852]">{kicker}</p>
         <h2 className="mt-3 max-w-[24em] text-[24px] leading-snug md:text-[26px]">{title}</h2>
@@ -72,17 +81,17 @@ function Section({ id, kicker, title, lede, children }: { id: string; kicker: st
   );
 }
 
-function ChipRow({ label, children }: { label: string; children: ReactNode }) {
+function ChipRow({ label, children, role = "group" }: { label: string; children: ReactNode; role?: "group" | "radiogroup" }) {
   return (
-    <div className="flex flex-wrap gap-2" role="group" aria-label={label}>
+    <div className="-mx-4 flex min-w-0 max-w-full gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:max-w-none md:flex-wrap md:overflow-visible md:px-0" role={role} aria-label={label}>
       {children}
     </div>
   );
 }
 
-function TableWrap({ caption, children }: { caption: string; children: ReactNode }) {
+function TableWrap({ caption, children, className = "" }: { caption: string; children: ReactNode; className?: string }) {
   return (
-    <div className="overflow-x-auto border border-[#0A0A0A]">
+    <div className={`hidden overflow-x-auto border border-[#0A0A0A] md:block ${className}`}>
       <table className="w-full min-w-[760px] border-collapse text-left">
         <caption className="sr-only">{caption}</caption>
         {children}
@@ -151,37 +160,59 @@ export function BuyanCommand({ signedInName }: { signedInName: string }) {
     setQuery("");
     const anchor = id === "all" ? "top" : id;
     window.setTimeout(() => {
+      const target = document.getElementById(anchor);
+      const header = document.querySelector("header");
+      if (!target) return;
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      document.getElementById(anchor)?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+      const offset = (header?.getBoundingClientRect().height ?? 0) + 12;
+      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top: Math.max(0, top), behavior: reduce ? "auto" : "smooth" });
     }, 0);
   }
 
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-[#0A0A0A]/20 bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto flex w-full min-w-0 max-w-[1080px] flex-col gap-3 px-4 py-3 md:px-6">
+        <div
+          className="mx-auto flex w-full min-w-0 max-w-[1080px] flex-col gap-3 px-4 py-3 md:px-6"
+          style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top))" }}
+        >
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <a href="#top" className="flex min-w-0 items-center gap-2">
               <Logo size={30} />
-              <span className="flex flex-col gap-1">
-                <span className="text-[16px] tracking-[0.18em]">Neo Norma // COMMAND</span>
+              <span className="flex min-w-0 flex-col gap-1">
+                <span className="text-[14px] leading-tight tracking-[0.12em] sm:text-[16px] sm:tracking-[0.18em]">Neo Norma // COMMAND</span>
                 <span className="text-[10px] leading-relaxed text-[#5A5852]">[SAN FRANCISCO, CA]</span>
               </span>
             </a>
             <div className="flex flex-wrap items-center gap-2 text-[11px]">
               <span className="font-mono text-[11px] tracking-[0.12em]">{`[SIGNED IN: ${signedInName.toUpperCase()}]`}</span>
-              <a href="/inside" className="px-1.5 py-1 hover:bg-[#EAEAEA]">
+              <a href="/inside" className="inline-flex min-h-11 items-center px-2 hover:bg-[#EAEAEA] md:min-h-0 md:px-1.5 md:py-1">
                 [GTM DESK]
               </a>
               <form method="post" action="/api/inside-auth">
                 <input type="hidden" name="intent" value="lock" />
-                <button type="submit" className="bg-[#D9D9D9] px-2 py-1 text-[#303030] hover:bg-[#C9C9C9]">
+                <button type="submit" className="inline-flex min-h-11 items-center bg-[#D9D9D9] px-3 text-[#303030] hover:bg-[#C9C9C9] md:min-h-0 md:px-2 md:py-1">
                   [Lock / Sign out]
                 </button>
               </form>
             </div>
           </div>
-          <nav className="flex flex-wrap gap-2" aria-label="Command modules">
+          <label className="grid gap-1 md:hidden">
+            <span className="text-[10px] tracking-[0.14em] text-[#5A5852]">MODULE</span>
+            <select
+              value={module}
+              onChange={(event) => pickModule(event.target.value as ModuleId)}
+              className="w-full border border-[#0A0A0A] bg-white px-2 py-2.5 text-base text-[#0A0A0A]"
+            >
+              {modules.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <nav className="hidden flex-wrap gap-2 md:flex" aria-label="Command modules">
             {modules.map((item) => (
               <button key={item.id} type="button" aria-pressed={module === item.id} onClick={() => pickModule(item.id)} className={module === item.id ? chipOn : chipOff}>
                 {item.label}
@@ -201,7 +232,8 @@ export function BuyanCommand({ signedInName }: { signedInName: string }) {
               autoComplete="off"
               autoCapitalize="off"
               spellCheck={false}
-              className="w-full border border-[#0A0A0A]/40 bg-white px-2 py-1.5 text-[13px] text-[#0A0A0A] outline-none placeholder:text-[#5A5852] hover:border-[#0A0A0A]/70 focus:border-[#0A0A0A] focus:bg-[#fafafa]"
+              enterKeyHint="search"
+              className="w-full min-w-0 border border-[#0A0A0A]/40 bg-white px-2 py-2.5 text-base text-[#0A0A0A] outline-none placeholder:text-[#5A5852] hover:border-[#0A0A0A]/70 focus:border-[#0A0A0A] focus:bg-[#fafafa] md:py-1.5 md:text-[13px]"
             />
             {query ? (
               <button type="button" onClick={() => setQuery("")} className={chipOff}>
@@ -215,7 +247,7 @@ export function BuyanCommand({ signedInName }: { signedInName: string }) {
         </div>
       </header>
       <main id="content">
-        <div id="top" className="mx-auto w-full max-w-[1080px] scroll-mt-56 px-4 pb-8 pt-8 md:px-6 md:pt-9">
+        <div id="top" className="mx-auto w-full max-w-[1080px] scroll-mt-[22rem] px-4 pb-8 pt-8 md:scroll-mt-56 md:px-6 md:pt-9">
           <p className="text-[11px] tracking-[0.16em] text-[#5A5852]">INSIDE // NEO NORMA COMMAND CENTER</p>
           <h1 className="mt-4 max-w-[20em] text-[26px] leading-[1.2] md:text-[32px]">The Buyan desk for HQ, worlds, buyers, and the seed.</h1>
           <p className="mt-4 max-w-[74ch] text-[13px] leading-relaxed text-[#5A5852] md:text-sm">
@@ -284,9 +316,9 @@ export function BuyanCommand({ signedInName }: { signedInName: string }) {
             <div className="mt-4 grid gap-3 lg:grid-cols-2">
               {protoRows.map((item) => (
                 <article key={item.id} className="border border-[#0A0A0A] p-3">
-                  <div className="flex items-baseline justify-between gap-3">
+                  <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3">
                     <h3 className="text-[14px]">{item.n}</h3>
-                    <p className="font-mono text-[10px] text-[#5A5852]">{item.folder}</p>
+                    <p className="break-all font-mono text-[10px] text-[#5A5852]">{item.folder}</p>
                   </div>
                   <p className="mt-1 text-[12px]">{item.title}</p>
                   <div className="mt-3 grid gap-2">
@@ -302,7 +334,7 @@ export function BuyanCommand({ signedInName }: { signedInName: string }) {
               ))}
             </div>
             {protoRows.length > 0 ? (
-              <div className="mt-4">
+              <div className="mt-4 hidden md:block">
                 <TableWrap caption="Oct 27 stateful prototype scorecard">
                   <thead>
                     <tr>
@@ -350,6 +382,35 @@ export function BuyanCommand({ signedInName }: { signedInName: string }) {
               ))}
             </ChipRow>
             {rows.length === 0 ? <p className="mt-4 text-[13px] text-[#5A5852]">No catalog rows in this filter.</p> : null}
+            {rows.length > 0 ? (
+              <div className="mt-4 grid gap-3 md:hidden">
+                {rows.map((item) => (
+                  <article key={item.id} className="border border-[#0A0A0A] p-3">
+                    <p className="break-all font-mono text-[12px]">{item.id}</p>
+                    {item.flagship ? <p className="mt-1 text-[10px] tracking-[0.12em] text-[#5A5852]">FLAGSHIP</p> : null}
+                    <p className="mt-2 text-[12px] leading-relaxed">{item.name}</p>
+                    <div className="mt-3 grid grid-cols-2 gap-3">
+                      <Field label="TIER">{catalogTiers.find((tier) => tier.id === item.tier)?.label}</Field>
+                      <Field label="BAND">{item.band}</Field>
+                      <Field label="PACKAGED">{item.packaged}</Field>
+                      <Field label="TRANCHE">{item.tranche}</Field>
+                    </div>
+                    <div className="mt-3">
+                      <Field label="FRONTIER PASS">{item.passes}</Field>
+                    </div>
+                    <div className="mt-3">
+                      <Field label="SHORTCUTS">{item.shortcuts}</Field>
+                    </div>
+                    {item.covers ? (
+                      <details className="mt-3">
+                        <summary className="min-h-11 cursor-pointer text-[12px] text-[#5A5852]">Family list</summary>
+                        <p className="mt-1 text-[12px] leading-relaxed text-[#5A5852]">{item.covers}</p>
+                      </details>
+                    ) : null}
+                  </article>
+                ))}
+              </div>
+            ) : null}
             {rows.length > 0 ? (
               <div className="mt-4">
                 <TableWrap caption="Environment families and benchmark lots">
@@ -412,7 +473,41 @@ export function BuyanCommand({ signedInName }: { signedInName: string }) {
             title="Six open rooms. Status, owner, and the next move."
             lede="Google, Diffuse Labs, Dominik Scherm's stealth lab-in-the-loop company, State Machines, the 15-year hospital partnership with Quarry and Anthroly, and the DataVendor / SF Traces listing."
           >
-            <TableWrap caption="Buyer and partner rooms">
+            <div className="grid gap-3 md:hidden">
+              {rooms.map((room) => {
+                const open = openBuyers[room.id] === true;
+                return (
+                  <article key={room.id} className="border border-[#0A0A0A] p-3">
+                    <h3 className="text-[14px] leading-snug">{room.room}</h3>
+                    <p className="mt-2 text-[12px]">{room.who}</p>
+                    <p className="mt-1 break-all font-mono text-[11px] text-[#5A5852]">{room.contact}</p>
+                    <div className="mt-3">
+                      <Field label="STATUS">{room.status}</Field>
+                    </div>
+                    <div className="mt-3">
+                      <Field label="NEXT">{room.next}</Field>
+                    </div>
+                    <button
+                      type="button"
+                      aria-expanded={open}
+                      aria-controls={`buyer-mobile-${room.id}`}
+                      onClick={() => setOpenBuyers((current) => ({ ...current, [room.id]: !current[room.id] }))}
+                      className={`${chipOff} mt-3 w-full justify-center`}
+                    >
+                      {open ? "Hide" : "Details"}
+                    </button>
+                    {open ? (
+                      <ul id={`buyer-mobile-${room.id}`} className="mt-3 grid gap-2 text-[12px] leading-relaxed">
+                        {room.details.map((detail) => (
+                          <li key={detail}>{detail}</li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </article>
+                );
+              })}
+            </div>
+            <TableWrap caption="Buyer and partner rooms" className="mt-0 md:mt-0">
               <thead>
                 <tr>
                   <th className={th} scope="col">Room</th>
@@ -443,7 +538,7 @@ export function BuyanCommand({ signedInName }: { signedInName: string }) {
                           <button
                             type="button"
                             aria-expanded={open}
-                            aria-controls={`buyer-${room.id}`}
+                            aria-controls={`buyer-desk-${room.id}`}
                             onClick={() => setOpenBuyers((current) => ({ ...current, [room.id]: !current[room.id] }))}
                             className={chipOff}
                           >
@@ -453,7 +548,7 @@ export function BuyanCommand({ signedInName }: { signedInName: string }) {
                       </tr>
                       {open ? (
                         <tr>
-                          <td id={`buyer-${room.id}`} colSpan={5} className={td}>
+                          <td id={`buyer-desk-${room.id}`} colSpan={5} className={td}>
                             <ul className="grid gap-2">
                               {room.details.map((detail) => (
                                 <li key={detail}>{detail}</li>
@@ -481,9 +576,9 @@ export function BuyanCommand({ signedInName }: { signedInName: string }) {
               <div className="grid gap-3">
                 {prices.map((item) => (
                   <article key={item.name}>
-                    <div className="flex items-baseline justify-between gap-3 text-[12px]">
-                      <h3>{item.name}</h3>
-                      <p className="font-mono tabular-nums">{formatDollars(item.amount)}</p>
+                    <div className="flex flex-col gap-1 text-[12px] sm:flex-row sm:items-baseline sm:justify-between sm:gap-3">
+                      <h3 className="min-w-0 leading-snug">{item.name}</h3>
+                      <p className="shrink-0 font-mono tabular-nums">{formatDollars(item.amount)}</p>
                     </div>
                     <div className="mt-1 h-2 bg-[#EAEAEA]">
                       <div className="h-full bg-[#0A0A0A]" style={{ width: `${(item.amount / priceCeiling) * 100}%` }} />
@@ -521,7 +616,7 @@ export function BuyanCommand({ signedInName }: { signedInName: string }) {
           >
             {allocationHit || needle.length === 0 ? (
               <div>
-                <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Seed scenario">
+                <ChipRow label="Seed scenario" role="radiogroup">
                   {seedScenarios.map((item) => (
                     <button
                       key={item.id}
@@ -534,14 +629,14 @@ export function BuyanCommand({ signedInName }: { signedInName: string }) {
                       {item.label}
                     </button>
                   ))}
-                </div>
+                </ChipRow>
                 <p className="mt-4 max-w-[74ch] text-[13px] leading-relaxed text-[#5A5852]">{shownScenario.summary}</p>
                 <div className="mt-4 grid gap-3">
                   {shownScenario.lines.map((line) => (
                     <article key={line.label}>
-                      <div className="flex items-baseline justify-between gap-3 text-[12px]">
-                        <h3>{line.label}</h3>
-                        <p className="font-mono tabular-nums">
+                      <div className="flex flex-col gap-1 text-[12px] sm:flex-row sm:items-baseline sm:justify-between sm:gap-3">
+                        <h3 className="min-w-0 leading-snug">{line.label}</h3>
+                        <p className="shrink-0 font-mono tabular-nums">
                           {formatMillions(line.amount)}
                           <span className="ml-2 text-[#5A5852]">{Math.round((line.amount / shownScenario.total) * 100)}%</span>
                         </p>
@@ -579,6 +674,21 @@ export function BuyanCommand({ signedInName }: { signedInName: string }) {
             {people.length > 0 ? (
               <div className="mt-8">
                 <h3 className="text-[13px] tracking-[0.14em] text-[#5A5852]">INVESTOR CRM AND JTBD OPS</h3>
+                <div className="mt-3 grid gap-3 md:hidden">
+                  {people.map((person) => (
+                    <article key={person.name} className="border border-[#0A0A0A] p-3">
+                      <h4 className="text-[14px]">{person.name}</h4>
+                      <p className="mt-2 break-words font-mono text-[11px] leading-relaxed">{person.who}</p>
+                      <p className="mt-2 text-[12px] leading-relaxed text-[#5A5852]">{person.profile}</p>
+                      <div className="mt-3">
+                        <Field label="STATUS">{person.status}</Field>
+                      </div>
+                      <div className="mt-3">
+                        <Field label="NEXT">{person.next}</Field>
+                      </div>
+                    </article>
+                  ))}
+                </div>
                 <div className="mt-3">
                   <TableWrap caption="Seed investor CRM">
                     <thead>
@@ -620,7 +730,24 @@ export function BuyanCommand({ signedInName }: { signedInName: string }) {
 
 function RadarTable({ caption, rows }: { caption: string; rows: Array<{ name: string; stage: string; offering: string; meaning: string }> }) {
   return (
-    <TableWrap caption={caption}>
+    <>
+      <div className="grid gap-3 md:hidden">
+        {rows.map((row) => (
+          <article key={row.name} className="border border-[#0A0A0A] p-3">
+            <h4 className="text-[14px] leading-snug">{row.name}</h4>
+            <div className="mt-3">
+              <Field label="STAGE AND BACKING">{row.stage}</Field>
+            </div>
+            <div className="mt-3">
+              <Field label="WHAT THEY SHIP">{row.offering}</Field>
+            </div>
+            <div className="mt-3">
+              <Field label="WHAT IT MEANS HERE">{row.meaning}</Field>
+            </div>
+          </article>
+        ))}
+      </div>
+      <TableWrap caption={caption}>
       <thead>
         <tr>
           <th className={th} scope="col">Name</th>
@@ -642,5 +769,6 @@ function RadarTable({ caption, rows }: { caption: string; rows: Array<{ name: st
         ))}
       </tbody>
     </TableWrap>
+    </>
   );
 }
