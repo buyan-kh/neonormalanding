@@ -11,13 +11,7 @@ const BAYER = [
 
 const PAPER = "#F6F4EF";
 const INK = "#0A0A0A";
-const SAMPLES = 96;
-const TURNS = 2.35;
-const RADIUS = 0.62;
-
-function shadeOf(z: number) {
-  return 0.16 + 0.84 * (z + RADIUS) / (RADIUS * 2);
-}
+const TURNS = 1.85;
 
 export function DitherHelix({
   still = false,
@@ -56,66 +50,71 @@ export function DitherHelix({
       ctx.fillStyle = PAPER;
       ctx.fillRect(0, 0, w, h);
 
-      const yaw = reduce ? 0.85 : now / 1000 * 0.22;
-      const breath = reduce ? 1 : 0.82 + 0.18 * Math.sin(now / 1600);
-      const cosY = Math.cos(yaw);
-      const sinY = Math.sin(yaw);
-      const scale = Math.min(w, h) * 0.4;
-      const step = 3;
+      const yaw = reduce ? 0.7 : now / 1000 * 0.18;
+      const breath = reduce ? 1 : 0.9 + 0.1 * Math.sin(now / 1700);
+      const top = h * 0.06;
+      const bottom = h * 0.94;
+      const radius = Math.min(w * 0.34, (bottom - top) * 0.2);
+      const strandRadius = Math.max(3.5, Math.min(w, h) * 0.012);
+      const rungRadius = Math.max(1.6, strandRadius * 0.42);
+      const step = 2;
       const cols = Math.ceil(w / step);
       const rows = Math.ceil(h / step);
       const density = new Float32Array(cols * rows);
 
-      const splat = (sx: number, sy: number, shade: number) => {
-        const gx = Math.round(sx / step);
-        const gy = Math.round(sy / step);
-        if (gx < 1 || gy < 1 || gx >= cols - 1 || gy >= rows - 1) return;
-        const write = (x: number, y: number, value: number) => {
-          const index = y * cols + x;
-          if (value > density[index]) density[index] = value;
-        };
-        write(gx, gy, shade);
-        write(gx + 1, gy, shade * 0.72);
-        write(gx - 1, gy, shade * 0.72);
-        write(gx, gy + 1, shade * 0.72);
-        write(gx, gy - 1, shade * 0.72);
-      };
-
-      const project = (x: number, y: number, z: number) => {
-        const xr = x * cosY + z * sinY;
-        const zr = -x * sinY + z * cosY;
-        const depth = 1 + zr * 0.22;
-        return {
-          sx: w / 2 + xr * scale * depth,
-          sy: h / 2 - y * scale * 1.05,
-          z: zr,
-        };
-      };
-
-      const strand = (phase: number, index: number) => {
-        const y = -1 + (2 * index) / (SAMPLES - 1);
-        const theta = y * Math.PI * TURNS + phase;
-        return { x: Math.cos(theta) * RADIUS, y, z: Math.sin(theta) * RADIUS };
-      };
-
-      for (let i = 0; i < SAMPLES; i += 1) {
-        for (const phase of [0, Math.PI]) {
-          const point = strand(phase, i);
-          const view = project(point.x, point.y, point.z);
-          splat(view.sx, view.sy, shadeOf(view.z));
-        }
-        if (i % 7 === 0) {
-          const a = strand(0, i);
-          const b = strand(Math.PI, i);
-          for (let t = 0; t <= 6; t += 1) {
-            const u = t / 6;
-            const view = project(
-              a.x + (b.x - a.x) * u,
-              a.y,
-              a.z + (b.z - a.z) * u,
-            );
-            splat(view.sx, view.sy, shadeOf(view.z) * 0.92);
+      const stamp = (sx: number, sy: number, shade: number, rad: number) => {
+        const r2 = rad * rad;
+        const gx0 = Math.max(0, Math.floor((sx - rad) / step));
+        const gx1 = Math.min(cols - 1, Math.ceil((sx + rad) / step));
+        const gy0 = Math.max(0, Math.floor((sy - rad) / step));
+        const gy1 = Math.min(rows - 1, Math.ceil((sy + rad) / step));
+        for (let gy = gy0; gy <= gy1; gy += 1) {
+          for (let gx = gx0; gx <= gx1; gx += 1) {
+            const px = gx * step + step * 0.5;
+            const py = gy * step + step * 0.5;
+            const dx = px - sx;
+            const dy = py - sy;
+            if (dx * dx + dy * dy > r2) continue;
+            const index = gy * cols + gx;
+            if (shade > density[index]) density[index] = shade;
           }
+        }
+      };
+
+      const at = (phase: number, yNorm: number) => {
+        const theta = yNorm * Math.PI * TURNS + phase + yaw;
+        const z = Math.sin(theta);
+        const x = Math.cos(theta);
+        const foreshorten = 1 + z * 0.16;
+        return {
+          sx: w / 2 + x * radius * foreshorten,
+          sy: top + ((yNorm + 1) / 2) * (bottom - top),
+          z,
+        };
+      };
+
+      const strandShade = (z: number) => (z >= 0 ? 0.97 + 0.03 * z : 0.3 + 0.22 * (z + 1));
+
+      const ySteps = Math.max(80, Math.round((bottom - top) / 1.5));
+      for (let i = 0; i <= ySteps; i += 1) {
+        const yNorm = -1 + (2 * i) / ySteps;
+        for (const phase of [0, Math.PI]) {
+          const point = at(phase, yNorm);
+          stamp(point.sx, point.sy, strandShade(point.z), strandRadius);
+        }
+      }
+
+      const rungs = 8;
+      for (let r = 0; r < rungs; r += 1) {
+        const yNorm = -0.86 + (1.72 * r) / (rungs - 1);
+        const a = at(0, yNorm);
+        const b = at(Math.PI, yNorm);
+        const dist = Math.hypot(b.sx - a.sx, b.sy - a.sy);
+        const n = Math.max(2, Math.round(dist / 2));
+        for (let t = 0; t <= n; t += 1) {
+          const u = t / n;
+          const z = a.z + (b.z - a.z) * u;
+          stamp(a.sx + (b.sx - a.sx) * u, a.sy + (b.sy - a.sy) * u, strandShade(z) * 0.9, rungRadius);
         }
       }
 

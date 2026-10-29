@@ -99,7 +99,7 @@ export function AccessForm({ preset }: { preset?: string }) {
         Note
         <textarea className={`${field} min-h-32 py-3`} name="note" value={note} onChange={(event) => setNote(event.target.value)} maxLength={2000} />
       </label>
-      <button type="submit" disabled={status === "sending"} className="nu-tap border border-[#0A0A0A] px-4 text-[18px] disabled:opacity-50">
+      <button type="submit" disabled={status === "sending"} className="nu-btn disabled:opacity-50">
         {status === "sending" ? "Sending" : "Send"}
       </button>
       {error ? <p className="text-[16px]">{error}</p> : null}

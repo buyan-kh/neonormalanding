@@ -52,7 +52,8 @@ const sections = [
 
 export default function ThesisPage() {
   return (
-    <article className="mx-auto w-full max-w-[680px] px-5 py-16 md:py-24">
+    <article className="nu-page w-full py-16 md:py-24">
+      <div className="mx-auto max-w-[680px]">
       <p className="nu-label">The Standard</p>
       <h1 className="mt-4 text-[44px] leading-[1.05] md:text-[64px]">The Standard</h1>
       <p className="nu-ink-60 mt-4 text-[18px]">Buyan Khurelbaatar · October 2026</p>
@@ -71,6 +72,7 @@ export default function ThesisPage() {
           hi@neonorma.si
         </a>
       </p>
+      </div>
     </article>
   );
 }

@@ -9,7 +9,7 @@ const BAYER = [
   [15, 7, 13, 5],
 ];
 
-type Motif = "record" | "home" | "grade" | "standard";
+type Motif = "record" | "home" | "grade" | "standard" | "path" | "vault";
 
 function field(motif: Motif, x: number, y: number) {
   const nx = x * 2 - 1;
@@ -27,6 +27,18 @@ function field(motif: Motif, x: number, y: number) {
     const arm = Math.abs(ny - nx * 0.15 + 0.05) < 0.08 && nx > -0.2;
     const stem = Math.abs(nx + 0.35) < 0.07 && ny > -0.35 && ny < 0.15;
     return arm || stem ? 0.92 : 0.07;
+  }
+  if (motif === "path") {
+    const wave = Math.sin(x * Math.PI * 3) * 0.28;
+    const on = Math.abs(ny - wave) < 0.07 && x > 0.08 && x < 0.92;
+    const dot = Math.hypot(nx - 0.35, ny - 0.35) < 0.08 || Math.hypot(nx + 0.4, ny + 0.2) < 0.07;
+    return on || dot ? 0.94 : 0.05;
+  }
+  if (motif === "vault") {
+    const box = Math.abs(nx) < 0.55 && Math.abs(ny) < 0.48;
+    const edge = Math.abs(Math.abs(nx) - 0.55) < 0.06 || Math.abs(Math.abs(ny) - 0.48) < 0.06;
+    const latch = Math.hypot(nx, ny + 0.02) < 0.12;
+    return (box && edge) || latch ? 0.94 : 0.05;
   }
   const ring = Math.abs(Math.hypot(nx, ny) - 0.46);
   return ring < 0.08 ? 0.94 : 0.05;
