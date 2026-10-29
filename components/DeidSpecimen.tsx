@@ -67,7 +67,7 @@ export function DeidSpecimen() {
           Identifiers leave at the source. The Grader keeps the signal.
         </h2>
         <div className="mt-6 grid gap-4 lg:grid-cols-2">
-          <article className="border border-[#0A0A0A] bg-white p-4">
+          <article className="min-w-0 max-w-full border border-[#0A0A0A] bg-white p-4">
             <p className="text-[10px] tracking-[0.14em] text-[#5A5852]">CLINICAL & WET-LAB SPECIMEN</p>
             <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="De-identification view">
               {(
@@ -81,7 +81,7 @@ export function DeidSpecimen() {
                   type="button"
                   aria-pressed={mode === id}
                   onClick={() => choose(id)}
-                  className={`border px-2 py-1 text-[12px] ${mode === id ? "border-[#0A0A0A] bg-[#0A0A0A] text-white" : "border-[#0A0A0A]/40 text-[#0A0A0A]"}`}
+                  className={`inline-flex min-h-11 max-w-full items-center whitespace-normal border px-3 py-2 text-left text-[12px] leading-snug lg:min-h-0 lg:px-2 lg:py-1 ${mode === id ? "border-[#0A0A0A] bg-[#0A0A0A] text-white" : "border-[#0A0A0A]/40 text-[#0A0A0A]"}`}
                 >
                   {label}
                 </button>
@@ -97,7 +97,8 @@ export function DeidSpecimen() {
                 </div>
               ))}
             </dl>
-            <table className="mt-4 w-full border-collapse text-left font-mono text-[11px]">
+            <div className="mt-4 max-w-full overflow-x-auto">
+            <table className="w-full min-w-[280px] border-collapse text-left font-mono text-[11px]">
               <thead>
                 <tr className="border-b border-[#0A0A0A] text-[#5A5852]">
                   <th className="py-1 pr-2 font-normal">Draw</th>
@@ -116,6 +117,7 @@ export function DeidSpecimen() {
                 ))}
               </tbody>
             </table>
+            </div>
             {mode === "clean" ? (
               <dl className="mt-4 grid gap-2 border border-[#0A0A0A] p-2 text-[11px] sm:grid-cols-3">
                 <div>
@@ -136,10 +138,10 @@ export function DeidSpecimen() {
             )}
           </article>
 
-          <article className="border border-[#0A0A0A] bg-white p-4">
+          <article className="min-w-0 max-w-full border border-[#0A0A0A] bg-white p-4">
             <p className="text-[10px] tracking-[0.14em] text-[#5A5852]">PREFLIGHT VERIFICATION & PROVENANCE</p>
             <p className="mt-2 font-mono text-[12px]">provenance_and_preflight.json</p>
-            <pre className="mt-3 overflow-x-auto border border-[#0A0A0A] p-3 font-mono text-[11px] leading-relaxed">{manifest}</pre>
+            <pre className="mt-3 max-w-full overflow-x-auto whitespace-pre-wrap break-words border border-[#0A0A0A] p-3 font-mono text-[11px] leading-relaxed">{manifest}</pre>
             <ul className="mt-4 grid gap-2 sm:grid-cols-2">
               {ships.map(([index, label]) => (
                 <li key={index} className="border border-[#0A0A0A]/30 px-2 py-2 text-[12px]">

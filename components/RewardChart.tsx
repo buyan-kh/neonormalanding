@@ -132,7 +132,7 @@ function Toggle({
       type="button"
       aria-pressed={pressed}
       onClick={onClick}
-      className={`px-2 py-1 text-[13px] ${pressed ? "bg-[#D9D9D9] text-[#303030]" : "text-[#0A0A0A] hover:bg-[#0A0A0A]/5"}`}
+      className={`inline-flex min-h-11 items-center px-3 py-2 text-[13px] lg:min-h-0 lg:px-2 lg:py-1 ${pressed ? "bg-[#D9D9D9] text-[#303030]" : "text-[#0A0A0A] hover:bg-[#0A0A0A]/5"}`}
     >
       {label}
     </button>
@@ -285,7 +285,7 @@ export function RewardChart({
                 onMouseEnter={() => setHoverKey(point.key)}
                 onFocus={() => setHoverKey(point.key)}
                 onBlur={() => setHoverKey((current) => (current === point.key ? null : current))}
-                className="absolute z-10 size-8 -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+                className="absolute z-10 size-11 -translate-x-1/2 -translate-y-1/2 cursor-pointer lg:size-8"
                 style={{ left: `${(point.x / VB_W) * 100}%`, top: `${(point.y / VB_H) * 100}%` }}
               />
             );
@@ -310,7 +310,7 @@ export function RewardChart({
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-[#0A0A0A]/[0.06] px-5 py-3 text-[13px]">
         {measured.map((model, index) => (
-          <label key={model.id} className="inline-flex cursor-pointer items-center gap-1.5">
+          <label key={model.id} className="relative inline-flex min-h-11 cursor-pointer items-center gap-1.5 lg:min-h-0">
             <span className="relative inline-flex size-3.5 shrink-0 items-center justify-center">
             <input
               type="checkbox"

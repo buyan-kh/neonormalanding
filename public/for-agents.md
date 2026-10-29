@@ -13,14 +13,14 @@ Neo Norma builds RL evaluation tasks and verifiable Harbor/Docker environments f
 
 Rewards below are the estimates published on the site. 1.0000 is the reference solver.
 
-| Task | GPT-6.1 Sol | GPT-6 Astra | Reference solver |
-| --- | --- | --- | --- |
-| Plasma cfDNA liquid biopsy and aging-blood filtering | 0.5000 | 0.4500 | 1.0000 |
-| Molecular Residual Disease (MRD) Duplex Sequencing | 0.4500 | 0.2000 | 1.0000 |
-| CRISPR Perturb-Seq and Drug Combination Synergy | 0.4500 | 0.7000 | 1.0000 |
-| Oncology Trial Biostatistics (Competing Risks and RMST) | 0.5000 | 0.7500 | 1.0000 |
+| Task | Fable 5.1 | Claude Opus 5.5 | GPT-6.1 Sol | GPT-6 Astra | Reference solver |
+| --- | --- | --- | --- | --- | --- |
+| Plasma cfDNA liquid biopsy and aging-blood filtering | 0.7800 | 0.7000 | 0.5000 | 0.4500 | 1.0000 |
+| Molecular Residual Disease (MRD) Duplex Sequencing | 0.7300 | 0.6500 | 0.4500 | 0.2000 | 1.0000 |
+| CRISPR Perturb-Seq and Drug Combination Synergy | 0.7800 | 0.7000 | 0.4500 | 0.7000 | 1.0000 |
+| Oncology Trial Biostatistics (Competing Risks and RMST) | 0.7300 | 0.6500 | 0.5000 | 0.7500 | 1.0000 |
 
-Mean reward across the four tasks: GPT-6.1 Sol 0.4750 (47.5%), GPT-6 Astra 0.5250 (52.5%), reference solver 1.0000.
+Estimated mean reward across the four tasks: Fable 5.1 0.7550 (75.5%), Claude Opus 5.5 0.6750 (67.5%), GPT-6.1 Sol 0.4750 (47.5%), GPT-6 Astra 0.5250 (52.5%), reference solver 1.0000.
 
 ## Container datacards
 

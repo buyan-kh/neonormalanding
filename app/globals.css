@@ -21,6 +21,12 @@ body {
   color: #0a0a0a;
 }
 
+@media (max-width: 1023px) {
+  body {
+    overflow-x: clip;
+  }
+}
+
 ::selection {
   background: #0a0a0a;
   color: #ffffff;

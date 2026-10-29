@@ -1,6 +1,6 @@
 import { CALENDLY_URL, CONTACT_EMAIL } from "@/lib/contact";
 
-const linkClass = "underline decoration-[#0A0A0A]/30 underline-offset-4 hover:decoration-[#0A0A0A]";
+const linkClass = "inline-flex min-h-11 items-center underline decoration-[#0A0A0A]/30 underline-offset-4 hover:decoration-[#0A0A0A] lg:min-h-0";
 
 export function Footer() {
   return (

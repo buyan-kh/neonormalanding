@@ -37,7 +37,7 @@ export function ContainerDatacard({ taskName, card }: { taskName: string; card: 
           <dd className="mt-1 font-mono">{card.preflight}</dd>
         </div>
       </dl>
-      <pre className="mt-3 overflow-x-auto border border-[#0A0A0A] bg-white p-3 font-mono text-[11px] leading-relaxed text-[#0A0A0A]">
+      <pre className="mt-3 max-w-full overflow-x-auto whitespace-pre-wrap break-words border border-[#0A0A0A] bg-white p-3 font-mono text-[11px] leading-relaxed text-[#0A0A0A]">
         {`${card.ref}/\n${card.tree
           .map((entry, index) => `${index === card.tree.length - 1 ? "└──" : "├──"} ${entry.name}\n    ${entry.note}`)
           .join("\n")}`}
@@ -46,11 +46,11 @@ export function ContainerDatacard({ taskName, card }: { taskName: string; card: 
         <button
           type="button"
           onClick={copy}
-          className="bg-[#0A0A0A] px-3 py-2 text-[12px] text-white hover:bg-[#262626]"
+          className="inline-flex min-h-11 items-center bg-[#0A0A0A] px-3 py-2 text-[12px] text-white hover:bg-[#262626] lg:min-h-0"
         >
           {copied ? "[Copied Datacard]" : "[Copy Datacard]"}
         </button>
-        <a href="#intake" className="border border-[#0A0A0A] px-3 py-2 text-[12px] hover:bg-[#0A0A0A] hover:text-white">
+        <a href="#intake" className="inline-flex min-h-11 items-center border border-[#0A0A0A] px-3 py-2 text-[12px] hover:bg-[#0A0A0A] hover:text-white lg:min-h-0">
           [Request NDA Sample -&gt;]
         </a>
       </div>

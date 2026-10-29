@@ -16,13 +16,13 @@ There is no LLM judge in the Grader.
 These are the estimated rewards shown on https://www.neonorma.si/ for the four held-out tasks.
 Reward 1.0000 is the reference solver. Means below are the average of the four public task rewards.
 
-Task | GPT-6.1 Sol | GPT-6 Astra | Reference solver
-Plasma cfDNA liquid biopsy and aging-blood filtering | 0.5000 | 0.4500 | 1.0000
-Molecular Residual Disease (MRD) Duplex Sequencing | 0.4500 | 0.2000 | 1.0000
-CRISPR Perturb-Seq and Drug Combination Synergy | 0.4500 | 0.7000 | 1.0000
-Oncology Trial Biostatistics (Competing Risks and RMST) | 0.5000 | 0.7500 | 1.0000
+Task | Fable 5.1 | Claude Opus 5.5 | GPT-6.1 Sol | GPT-6 Astra | Reference solver
+Plasma cfDNA liquid biopsy and aging-blood filtering | 0.7800 | 0.7000 | 0.5000 | 0.4500 | 1.0000
+Molecular Residual Disease (MRD) Duplex Sequencing | 0.7300 | 0.6500 | 0.4500 | 0.2000 | 1.0000
+CRISPR Perturb-Seq and Drug Combination Synergy | 0.7800 | 0.7000 | 0.4500 | 0.7000 | 1.0000
+Oncology Trial Biostatistics (Competing Risks and RMST) | 0.7300 | 0.6500 | 0.5000 | 0.7500 | 1.0000
 
-Mean | GPT-6.1 Sol 0.4750 (47.5%) | GPT-6 Astra 0.5250 (52.5%) | Reference solver 1.0000
+Mean | Fable 5.1 0.7550 (75.5%) | Claude Opus 5.5 0.6750 (67.5%) | GPT-6.1 Sol 0.4750 (47.5%) | GPT-6 Astra 0.5250 (52.5%) | Reference solver 1.0000
 
 ## Container datacards
 NN-ENV-01  Plasma cfDNA liquid biopsy and aging-blood filtering

@@ -85,7 +85,7 @@ function ScientificVisual({ environment }: { environment: Environment }) {
         <span className="rounded-full border border-[#dedede] px-2 py-1 font-mono text-[10px] text-[#888]">SCHEMATIC</span>
       </div>
       <div className="overflow-x-auto px-3 pb-2">
-        <svg viewBox="0 0 760 200" role="img" aria-label={`${environment.visualTitle}. ${environment.visualNote}`} className="block h-auto w-full min-w-[560px]">
+        <svg viewBox="0 0 760 200" role="img" aria-label={`${environment.visualTitle}. ${environment.visualNote}`} className="block h-auto w-full min-w-0 md:min-w-0">
           <g stroke="#e6e6e6" strokeWidth="1">{grid.map((i) => <line key={i} x1="44" x2="716" y1={40 + i * 30} y2={40 + i * 30} />)}</g>
           {environment.visual === "copy" && <>
             <text x="45" y="23" fill="#999" fontSize="10" fontFamily="inherit">RELATIVE COPY SIGNAL</text>
@@ -129,7 +129,7 @@ function ScientificVisual({ environment }: { environment: Environment }) {
 
 function EnvironmentGraph({ environment }: { environment: Environment }) {
   return (
-    <svg viewBox="0 0 840 296" role="img" aria-labelledby="env-graph-title env-graph-desc" className="block h-auto w-full min-w-[560px]">
+    <svg viewBox="0 0 840 296" role="img" aria-labelledby="env-graph-title env-graph-desc" className="block h-auto w-full min-w-0">
       <title id="env-graph-title">{`${environment.eyebrow}: environment flow`}</title>
       <desc id="env-graph-desc">{environment.stages.map((stage) => `${stage.title}: ${stage.lines.join(", ")}`).join(". ")}. The verifier checks {environment.checks.join(", ")}.</desc>
       <defs><pattern id="env-grid" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="0.8" fill="#dfdfdf" /></pattern></defs>
@@ -167,7 +167,7 @@ export function TaskExplorer({ taskId, onTask }: { taskId: string; onTask: (task
       <div>
         <p className="mb-2 text-[11px] tracking-[0.12em] text-[#777]">ENVIRONMENTS</p>
         <ol className="border-t border-[#0A0A0A]/15">
-          {benchmarkTasks.map((item, index) => <li key={item.id} className="border-b border-[#0A0A0A]/15"><button type="button" aria-pressed={item.id === task.id} onClick={() => onTask(item.id)} className={`flex w-full items-baseline gap-3 rounded-sm px-2 py-3 text-left text-[13px] transition-colors duration-200 ${item.id === task.id ? "bg-[#f1f1f1] font-medium text-[#111]" : "text-[#777] hover:bg-[#f8f8f8] hover:text-[#111]"}`}><span className="font-mono text-[11px] text-[#999]">{String(index + 1).padStart(2, "0")}</span><span>{traceFor(item.id).title}</span></button></li>)}
+          {benchmarkTasks.map((item, index) => <li key={item.id} className="border-b border-[#0A0A0A]/15"><button type="button" aria-pressed={item.id === task.id} onClick={() => onTask(item.id)} className={`flex min-h-11 w-full items-center gap-3 rounded-sm px-2 py-3 text-left text-[13px] transition-colors duration-200 lg:min-h-0 lg:items-baseline ${item.id === task.id ? "bg-[#f1f1f1] font-medium text-[#111]" : "text-[#777] hover:bg-[#f8f8f8] hover:text-[#111]"}`}><span className="font-mono text-[11px] text-[#999]">{String(index + 1).padStart(2, "0")}</span><span>{traceFor(item.id).title}</span></button></li>)}
         </ol>
       </div>
       <div key={task.id} className="rl-enter min-w-0 border border-[#0A0A0A]/15">
@@ -187,7 +187,7 @@ export function TaskExplorer({ taskId, onTask }: { taskId: string; onTask: (task
                 type="button"
                 aria-pressed={panel === id}
                 onClick={() => setPanel(id)}
-                className={`border px-2 py-1 text-[12px] ${panel === id ? "border-[#0A0A0A] bg-[#0A0A0A] text-white" : "border-[#0A0A0A]/40"}`}
+                className={`inline-flex min-h-11 max-w-full items-center whitespace-normal border px-3 py-2 text-left text-[12px] leading-snug lg:min-h-0 lg:px-2 lg:py-1 ${panel === id ? "border-[#0A0A0A] bg-[#0A0A0A] text-white" : "border-[#0A0A0A]/40"}`}
               >
                 {label}
               </button>

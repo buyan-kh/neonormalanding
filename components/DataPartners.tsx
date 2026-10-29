@@ -71,7 +71,7 @@ export function DataPartners() {
                 <p className="mt-3 flex-1 text-[12px] leading-relaxed text-[#5A5852]">{track.body}</p>
                 <a
                   href={track.href}
-                  className="mt-5 inline-flex w-fit items-center bg-[#D9D9D9] px-3 py-2 text-[12px] text-[#303030] hover:bg-[#C9C9C9]"
+                  className="mt-5 inline-flex min-h-11 w-fit items-center bg-[#D9D9D9] px-3 py-2 text-[12px] text-[#303030] hover:bg-[#C9C9C9] lg:min-h-0"
                   {...(track.external ? { target: "_blank", rel: "noreferrer" } : {})}
                 >
                   {track.cta}
@@ -88,7 +88,7 @@ export function DataPartners() {
         </div>
         <div className="mt-8 border border-[#0A0A0A] bg-white p-4">
           <p className="text-[10px] tracking-[0.14em] text-[#5A5852]">5-STEP DEAL PROCESS</p>
-          <div className="mt-3 flex flex-col gap-2 sm:flex-row" role="tablist" aria-label="Deal process">
+          <div className="mt-3 flex flex-col gap-2 lg:flex-row" role="tablist" aria-label="Deal process">
             {(Object.keys(deals) as Array<keyof typeof deals>).map((key) => (
               <button
                 key={key}
@@ -96,13 +96,13 @@ export function DataPartners() {
                 role="tab"
                 aria-selected={side === key}
                 onClick={() => setSide(key)}
-                className={`border px-2 py-2 text-left text-[12px] ${side === key ? "border-[#0A0A0A] bg-[#0A0A0A] text-white" : "border-[#0A0A0A]/40"}`}
+                className={`inline-flex min-h-11 w-full items-center whitespace-normal border px-3 py-2 text-left text-[12px] leading-snug lg:w-auto lg:min-h-0 ${side === key ? "border-[#0A0A0A] bg-[#0A0A0A] text-white" : "border-[#0A0A0A]/40"}`}
               >
                 {deals[key].label}
               </button>
             ))}
           </div>
-          <ol className="mt-4 grid gap-3 md:grid-cols-5">
+          <ol className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             {active.steps.map(([title, body]) => (
               <li key={title} className="border border-[#0A0A0A]/30 p-2">
                 <p className="text-[12px]">{title}</p>

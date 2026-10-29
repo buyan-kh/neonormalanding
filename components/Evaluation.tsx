@@ -162,7 +162,7 @@ export function Evaluation() {
                         return (
                           <div
                             key={model.id}
-                            className="grid w-full grid-cols-[110px_minmax(0,1fr)_50px] items-center gap-2 px-2 py-1 text-left text-[12px] sm:grid-cols-[135px_minmax(0,1fr)_52px]"
+                            className="grid w-full min-w-0 grid-cols-[92px_minmax(0,1fr)_46px] items-center gap-2 px-2 py-1 text-left text-[12px] sm:grid-cols-[135px_minmax(0,1fr)_52px]"
                           >
                             <span className="truncate">{model.name}</span>
                             <span className="h-2 overflow-hidden rounded-full bg-[#0A0A0A]/[0.06]" aria-hidden="true">
@@ -183,7 +183,7 @@ export function Evaluation() {
                           else next.add(task.id);
                           return next;
                         })}
-                        className="mt-3 px-2 text-[12px] text-[#5A5852] underline decoration-[#0A0A0A]/30 underline-offset-4 hover:text-[#0A0A0A]"
+                        className="mt-3 inline-flex min-h-11 items-center px-2 text-[12px] text-[#5A5852] underline decoration-[#0A0A0A]/30 underline-offset-4 hover:text-[#0A0A0A] lg:min-h-0"
                       >
                         {expanded ? "Show less" : `Show ${models.length - 3} more`}
                       </button>

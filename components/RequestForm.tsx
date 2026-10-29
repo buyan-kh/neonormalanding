@@ -165,7 +165,7 @@ export function RequestForm() {
                     return (
                       <label
                         key={item.id}
-                        className={`cursor-pointer border px-2 py-1 text-[12px] transition-colors duration-200 focus-within:outline focus-within:outline-1 focus-within:outline-offset-2 focus-within:outline-[#0A0A0A] ${
+                        className={`inline-flex min-h-11 max-w-full cursor-pointer items-center whitespace-normal border px-3 py-2 text-left text-[12px] leading-snug transition-colors duration-200 focus-within:outline focus-within:outline-1 focus-within:outline-offset-2 focus-within:outline-[#0A0A0A] lg:min-h-0 lg:px-2 lg:py-1 ${
                           on ? "border-[#C5C5C5] bg-[#E4E4E4] text-[#303030]" : "border-[#0A0A0A]/40 text-[#0A0A0A]"
                         }`}
                       >
@@ -186,7 +186,7 @@ export function RequestForm() {
               <label className="intake-item block text-[11px] text-[#5A5852]">
                 Name
                 <input
-                  className={`mt-1 ${field}`}
+                  className={`mt-1 min-h-11 lg:min-h-0 ${field}`}
                   name="name"
                   value={name}
                   onChange={(event) => setName(event.target.value)}
@@ -197,7 +197,7 @@ export function RequestForm() {
               <label className="intake-item block text-[11px] text-[#5A5852]">
                 Organization
                 <input
-                  className={`mt-1 ${field}`}
+                  className={`mt-1 min-h-11 lg:min-h-0 ${field}`}
                   name="organization"
                   value={organization}
                   onChange={(event) => setOrganization(event.target.value)}
@@ -208,7 +208,7 @@ export function RequestForm() {
               <label className="intake-item block text-[11px] text-[#5A5852]">
                 Email
                 <input
-                  className={`mt-1 ${field}`}
+                  className={`mt-1 min-h-11 lg:min-h-0 ${field}`}
                   type="email"
                   name="email"
                   value={email}
@@ -231,7 +231,7 @@ export function RequestForm() {
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className="intake-item bg-[#D9D9D9] px-3 py-2 text-[12px] text-[#303030] transition-colors duration-200 hover:bg-[#C9C9C9] disabled:opacity-60"
+                className="intake-item inline-flex min-h-11 items-center bg-[#D9D9D9] px-3 py-2 text-[12px] text-[#303030] transition-colors duration-200 hover:bg-[#C9C9C9] disabled:opacity-60 lg:min-h-0"
               >
                 {status === "sending" ? "[Sending...]" : cta}
               </button>
