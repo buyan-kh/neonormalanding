@@ -292,14 +292,18 @@ export function DitherTile({ motif }: { motif: ServiceMotif }) {
       ctx.fillRect(0, 0, size, size);
       const turn = reduce ? 0.6 : now / 2200;
       const shade = renderShade(motif, turn);
-      const shimmer = reduce ? 0 : Math.sin(now / 900) * 0.035;
+      const shimmer = reduce ? 0 : Math.sin(now / 900) * 0.03;
       ctx.fillStyle = INK;
       for (let gy = 0; gy < cells; gy += 1) {
         for (let gx = 0; gx < cells; gx += 1) {
           const sx = Math.min(RES - 1, Math.floor((gx + 0.5) * (RES / cells)));
           const sy = Math.min(RES - 1, Math.floor((gy + 0.5) * (RES / cells)));
-          const value = shade[sy * RES + sx];
-          const threshold = (BAYER8[gy & 7][gx & 7] + 0.5) / 64 + shimmer;
+          let value = shade[sy * RES + sx];
+          if (value < 0.08) value = 0;
+          if (value <= 0) continue;
+          value = Math.min(1, Math.max(0, value + shimmer));
+          if (value < 0.08) continue;
+          const threshold = (BAYER8[gy & 7][gx & 7] + 0.5) / 64;
           if (value > threshold) ctx.fillRect(gx * dot, gy * dot, dot, dot);
         }
       }
