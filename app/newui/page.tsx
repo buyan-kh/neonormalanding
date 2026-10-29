@@ -1,6 +1,6 @@
 import { DitherTile } from "@/components/newui/DitherTile";
 import { FrayLines } from "@/components/newui/FrayLines";
-import { PaperCube } from "@/components/newui/PaperCube";
+import { DitherHelix } from "@/components/newui/DitherHelix";
 import { ResolveMark } from "@/components/newui/ResolveMark";
 
 const tiles = [
@@ -30,7 +30,7 @@ export default function NewuiHome() {
           <p className="mt-6 text-[22px] italic md:text-[28px]">A new standard for intelligence.</p>
         </div>
         <div className="mx-auto h-64 w-64 md:h-72 md:w-72">
-          <PaperCube />
+          <DitherHelix />
         </div>
       </section>
 
@@ -81,7 +81,7 @@ export default function NewuiHome() {
 
       <section className="nu-reveal flex flex-col items-start gap-6 py-20">
         <div className="h-24 w-24">
-          <PaperCube still />
+          <DitherHelix still />
         </div>
         <p className="text-[28px] leading-snug">Neo Norma. The new standard.</p>
         <a className="nu-tap nu-label border-b nu-rule" href="mailto:hi@neonorma.si">
