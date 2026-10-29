@@ -25,6 +25,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={ibm.variable}>
+      <head>
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Specification" />
+        <link rel="alternate" type="text/markdown" href="/for-agents.md" title="Agent Instructions" />
+      </head>
       <body className="bg-white font-sans text-[#0A0A0A] antialiased">
         <Grain />
         <a

@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { ContainerDatacard } from "@/components/ContainerDatacard";
 import { benchmarkTasks } from "@/lib/catalog";
 import { traceFor } from "@/lib/traces";
 
@@ -158,6 +160,7 @@ function EnvironmentGraph({ environment }: { environment: Environment }) {
 export function TaskExplorer({ taskId, onTask }: { taskId: string; onTask: (taskId: string) => void }) {
   const task = benchmarkTasks.find((item) => item.id === taskId) ?? benchmarkTasks[0];
   const environment = environments[task.id];
+  const [panel, setPanel] = useState<"trace" | "datacard">("trace");
 
   return (
     <div className="grid gap-4 md:grid-cols-[210px_minmax(0,1fr)] md:gap-6">
@@ -172,12 +175,36 @@ export function TaskExplorer({ taskId, onTask }: { taskId: string; onTask: (task
           <p className="text-[10px] tracking-[0.12em] text-[#888]">{environment.eyebrow}</p>
           <h3 className="mt-2 text-[19px] leading-snug">{traceFor(task.id).title}</h3>
           <p className="mt-2 max-w-[70ch] text-[13px] leading-relaxed text-[#666]">{environment.summary}</p>
+          <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Task view">
+            {(
+              [
+                ["trace", "[Grade & Failure Trace]"],
+                ["datacard", "[Container Datacard]"],
+              ] as const
+            ).map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                aria-pressed={panel === id}
+                onClick={() => setPanel(id)}
+                className={`border px-2 py-1 text-[12px] ${panel === id ? "border-[#0A0A0A] bg-[#0A0A0A] text-white" : "border-[#0A0A0A]/40"}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
-        <ScientificVisual environment={environment} />
-        <div className="overflow-x-auto"><EnvironmentGraph environment={environment} /></div>
-        <div className="flex flex-wrap items-baseline justify-between gap-2 border-t border-[#0A0A0A]/10 px-4 py-3 text-[12px] text-[#666] md:px-5">
-          <p>{environment.output}</p><span className="shrink-0 font-mono text-[10px] text-[#999]">HARBOR / TASK → VERIFIER</span>
-        </div>
+        {panel === "trace" ? (
+          <>
+            <ScientificVisual environment={environment} />
+            <div className="overflow-x-auto"><EnvironmentGraph environment={environment} /></div>
+            <div className="flex flex-wrap items-baseline justify-between gap-2 border-t border-[#0A0A0A]/10 px-4 py-3 text-[12px] text-[#666] md:px-5">
+              <p>{environment.output}</p><span className="shrink-0 font-mono text-[10px] text-[#999]">HARBOR / TASK → VERIFIER</span>
+            </div>
+          </>
+        ) : (
+          <ContainerDatacard taskName={traceFor(task.id).title} card={task.datacard} />
+        )}
       </div>
     </div>
   );

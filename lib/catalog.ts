@@ -31,6 +31,19 @@ export function isMeasured(
   return model.rewardIndex !== undefined;
 }
 
+export type DatacardEntry = {
+  name: string;
+  note: string;
+};
+
+export type TaskDatacard = {
+  ref: string;
+  harnesses: string;
+  graderRuntime: string;
+  preflight: string;
+  tree: DatacardEntry[];
+};
+
 export type BenchmarkTask = {
   id: string;
   name: string;
@@ -43,7 +56,44 @@ export type BenchmarkTask = {
   frontier: FrontierRewards;
   reference: string;
   failure: string;
+  datacard: TaskDatacard;
 };
+
+const graderRuntime = "<50ms deterministic Python Grader (zero LLM judge)";
+const preflight =
+  "Passed (Reference solver 1.0000 · 5x shortcut traps <= 0.42 · 0% web contamination)";
+const harnesses = "Harbor · Docker · Gym";
+
+function datacard(ref: string, environmentNote: string): TaskDatacard {
+  return {
+    ref,
+    harnesses,
+    graderRuntime,
+    preflight,
+    tree: [
+      { name: "instruction.md", note: "Task prompt and clinical or assay objective" },
+      { name: "task.toml", note: "Harbor runner config, resource limits, and timeout" },
+      { name: "environment/", note: environmentNote },
+      { name: "verification/", note: "Deterministic Python Grader and Preflight verification suite" },
+      { name: "provenance/", note: "At-source de-identification report and chain-of-title manifest" },
+    ],
+  };
+}
+
+export function datacardPlainText(taskName: string, card: TaskDatacard) {
+  const tree = card.tree
+    .map((entry, index) => `${index === card.tree.length - 1 ? "└──" : "├──"} ${entry.name}  ${entry.note}`)
+    .join("\n");
+  return [
+    `${card.ref}  ${taskName}`,
+    `Harnesses: ${card.harnesses}`,
+    `Grader: ${card.graderRuntime}`,
+    `Preflight verification: ${card.preflight}`,
+    "",
+    `${card.ref}/`,
+    tree,
+  ].join("\n");
+}
 
 export const benchmarkTasks: BenchmarkTask[] = [
   {
@@ -58,6 +108,10 @@ export const benchmarkTasks: BenchmarkTask[] = [
     reference: "1.0000",
     failure:
       "Confuses clonal hematopoiesis with tumor variants or misestimates tumor fraction, ploidy, and subclonal copy number",
+    datacard: datacard(
+      "NN-ENV-01",
+      "Docker image plus 3 tables, about 1,510 rows (segments, heterozygous SNPs, targeted panel variants)",
+    ),
   },
   {
     id: "neonorma/mrd-duplex",
@@ -70,6 +124,10 @@ export const benchmarkTasks: BenchmarkTask[] = [
     frontier: ["0.4500", "0.2000", "0.1650", "0.7000", "0.1400", "0.2050", "0.1550", "0.1450", "0.1950"],
     reference: "1.0000",
     failure: "Treats 8-oxoG strand artifacts and clonal hematopoiesis variants as true tumor recurrence",
+    datacard: datacard(
+      "NN-ENV-02",
+      "Docker image plus 4 tables, about 12,000 read-family rows (duplex UMIs, damage panel, longitudinal draws)",
+    ),
   },
   {
     id: "perturb-seq",
@@ -83,6 +141,10 @@ export const benchmarkTasks: BenchmarkTask[] = [
     reference: "1.0000",
     failure:
       "Uses unadjusted Loewe/Bliss averages without correcting for guide knockdown efficiency or plate-edge drift",
+    datacard: datacard(
+      "NN-ENV-03",
+      "Docker image plus 5 tables, about 80,000 single-cell rows (guides, dose matrix, viability controls)",
+    ),
   },
   {
     id: "oncology-trial",
@@ -96,6 +158,10 @@ export const benchmarkTasks: BenchmarkTask[] = [
     reference: "1.0000",
     failure:
       "Applies standard Cox PH under non-proportional delayed separation instead of covariate-adjusted RMST",
+    datacard: datacard(
+      "NN-ENV-04",
+      "Docker image plus 6 tables, about 4,200 interval rows (censoring, crossover, biomarker cohorts)",
+    ),
   },
 ];
 

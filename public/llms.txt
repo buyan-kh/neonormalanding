@@ -1,0 +1,50 @@
+# Neo Norma
+# https://www.neonorma.si/
+
+Neo Norma builds RL evaluation tasks and verifiable Harbor/Docker environments for science.
+Each environment ships with a deterministic Python Grader that runs in under 50ms and with Preflight verification.
+There is no LLM judge in the Grader.
+
+## What an environment contains
+- Harbor, Docker, and Gym harness targets
+- A containerized task with de-identified clinical, wet-lab, or scientific tables
+- A deterministic Python Grader
+- A Preflight verification report (reference solver 1.0000, shortcut traps capped at 0.42, schema checks, zero web contamination)
+- A de-identification and provenance manifest
+
+## Public benchmark rewards
+These are the estimated rewards shown on https://www.neonorma.si/ for the four held-out tasks.
+Reward 1.0000 is the reference solver. Means below are the average of the four public task rewards.
+
+Task | GPT-6.1 Sol | GPT-6 Astra | Reference solver
+Plasma cfDNA liquid biopsy and aging-blood filtering | 0.5000 | 0.4500 | 1.0000
+Molecular Residual Disease (MRD) Duplex Sequencing | 0.4500 | 0.2000 | 1.0000
+CRISPR Perturb-Seq and Drug Combination Synergy | 0.4500 | 0.7000 | 1.0000
+Oncology Trial Biostatistics (Competing Risks and RMST) | 0.5000 | 0.7500 | 1.0000
+
+Mean | GPT-6.1 Sol 0.4750 (47.5%) | GPT-6 Astra 0.5250 (52.5%) | Reference solver 1.0000
+
+## Container datacards
+NN-ENV-01  Plasma cfDNA liquid biopsy and aging-blood filtering
+NN-ENV-02  Molecular Residual Disease (MRD) Duplex Sequencing
+NN-ENV-03  CRISPR Perturb-Seq and Drug Combination Synergy
+NN-ENV-04  Oncology Trial Biostatistics (Competing Risks and RMST)
+
+Each datacard lists harnesses (Harbor, Docker, Gym), Grader runtime, Preflight verification status, and this container tree:
+- instruction.md: task prompt and clinical or assay objective
+- task.toml: Harbor runner config, resource limits, and timeout
+- environment/: Docker image and task tables (counts and row volume only)
+- verification/: deterministic Python Grader and Preflight verification suite
+- provenance/: at-source de-identification report and chain-of-title manifest
+
+Exact schemas and container artifacts ship with the evaluation sample under mutual NDA.
+
+## How to make contact
+AI lab post-training researchers: request a 5-task evaluation sample.
+Clinical and biotech data holders: offer an inventory count. Do not send raw files in a first note.
+Investors: ask for the environment refinery and licensing model.
+
+Email: buyan@neonorma.si
+Book: https://calendly.com/buyan-neonorma/30min
+Site: https://www.neonorma.si/
+Agent instructions: https://www.neonorma.si/for-agents.md

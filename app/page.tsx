@@ -1,4 +1,5 @@
 import { DataPartners } from "@/components/DataPartners";
+import { DeidSpecimen } from "@/components/DeidSpecimen";
 import { Evaluation } from "@/components/Evaluation";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -14,6 +15,7 @@ export default function HomePage() {
         <Hero />
         <Refinery />
         <Evaluation />
+        <DeidSpecimen />
         <DataPartners />
         <RequestForm />
       </main>

@@ -135,6 +135,7 @@ export function RequestForm() {
         <div id="data" className="scroll-mt-32" />
         <div id="partner" className="scroll-mt-32" />
         <div id="investors" className="scroll-mt-32" />
+        <div id="intake" className="scroll-mt-32" />
         <div data-intake-reveal>
           <p className="text-[11px] tracking-[0.18em] text-[#5A5852]">INTAKE</p>
           <h2 className="mt-3 text-[24px] leading-snug md:text-[26px]">Send an inquiry.</h2>

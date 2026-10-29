@@ -23,6 +23,12 @@ export function Footer() {
           <a href="https://www.linkedin.com/in/buyankh" className={linkClass} target="_blank" rel="noreferrer">
             linkedin.com/in/buyankh
           </a>
+          <a href="/llms.txt" className={linkClass}>
+            [llms.txt]
+          </a>
+          <a href="/for-agents.md" className={linkClass}>
+            [for-agents.md]
+          </a>
         </nav>
       </div>
     </footer>
