@@ -136,9 +136,6 @@ export default function NewuiHome() {
       </section>
 
       <section className="nu-reveal flex flex-col items-start gap-6 py-20">
-        <div className="h-36 w-36">
-          <DitherHelix still />
-        </div>
         <p className="text-[28px] leading-snug">Neo Norma. The new standard.</p>
         <a className="nu-tap nu-label border-b nu-rule" href="mailto:hi@neonorma.si">
           hi@neonorma.si
