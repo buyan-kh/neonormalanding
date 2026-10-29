@@ -61,8 +61,7 @@ export function AccessForm({ preset }: { preset?: string }) {
     return <p className="mt-10 text-[28px] leading-snug">Received. We will write back.</p>;
   }
 
-  const field =
-    "mt-2 min-h-11 w-full border border-[#E4E1DA] bg-transparent px-3 text-[18px] text-[#0A0A0A] outline-none focus:border-[#0A0A0A]";
+  const field = "nu-field";
 
   return (
     <form onSubmit={onSubmit} className="mt-10 max-w-[36rem] space-y-6">
@@ -99,8 +98,8 @@ export function AccessForm({ preset }: { preset?: string }) {
         Note
         <textarea className={`${field} min-h-32 py-3`} name="note" value={note} onChange={(event) => setNote(event.target.value)} maxLength={2000} />
       </label>
-      <button type="submit" disabled={status === "sending"} className="nu-btn disabled:opacity-50">
-        {status === "sending" ? "Sending" : "Send"}
+      <button type="submit" disabled={status === "sending"} className="nu-btn nu-btn-wide disabled:opacity-50">
+        {status === "sending" ? "Sending" : "Send"} <span className="nu-arr" aria-hidden="true">→</span>
       </button>
       {error ? <p className="text-[16px]">{error}</p> : null}
     </form>

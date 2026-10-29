@@ -4,11 +4,11 @@ import { FrayLines } from "@/components/newui/FrayLines";
 import { ResolveMark } from "@/components/newui/ResolveMark";
 
 const services = [
-  { motif: "record" as const, title: "RL Environments", line: "Proving grounds scored by what actually happened." },
-  { motif: "grade" as const, title: "RL Evals", line: "Hard scientific tasks with answers nature already gave." },
-  { motif: "home" as const, title: "SFT Data", line: "Expert reasoning traces from working scientists." },
-  { motif: "standard" as const, title: "Rubrics + Graders", line: "Every answer checked, not guessed." },
-  { motif: "path" as const, title: "Agent Trajectories", line: "Long horizon work across real tools and records." },
+  { motif: "lattice" as const, title: "RL Environments", line: "Proving grounds scored by what actually happened." },
+  { motif: "target" as const, title: "RL Evals", line: "Hard scientific tasks with answers nature already gave." },
+  { motif: "pages" as const, title: "SFT Data", line: "Expert reasoning traces from working scientists." },
+  { motif: "checks" as const, title: "Rubrics + Graders", line: "Every answer checked, not guessed." },
+  { motif: "trail" as const, title: "Agent Trajectories", line: "Long horizon work across real tools and records." },
   { motif: "vault" as const, title: "Private Data Partnerships", line: "Records that never leave home, put to work." },
 ];
 
@@ -30,9 +30,11 @@ export default function NewuiHome() {
             Nature was never asked.
           </h1>
           <p className="mt-6 text-[22px] italic md:text-[28px]">A new standard for intelligence.</p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a className="nu-btn" href="/newui/access?as=lab">Request access</a>
-            <a className="nu-btn nu-btn-line" href="/newui/thesis">Read the thesis</a>
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <a className="nu-btn" href="/newui/access?as=lab">
+              Request access <span className="nu-arr" aria-hidden="true">→</span>
+            </a>
+            <a className="nu-link" href="/newui/thesis">Read the thesis</a>
           </div>
         </div>
         <div className="mx-auto h-[60vw] w-[60vw] max-w-[520px] lg:mx-0 lg:h-[75vh] lg:w-full lg:max-w-none">
@@ -80,12 +82,15 @@ export default function NewuiHome() {
         </p>
       </section>
 
-      <section className="border-t nu-rule">
+      <section className="nu-door">
         {doors.map((door) => (
-          <div key={door.href} className="flex flex-col items-start gap-4 border-b nu-rule py-8 sm:flex-row sm:items-center sm:justify-between">
-            <p className="max-w-[16em] text-[26px] leading-snug md:text-[34px]">{door.kicker}</p>
-            <a className="nu-btn shrink-0" href={door.href}>{door.action}</a>
-          </div>
+          <a key={door.href} className="nu-door-link" href={door.href}>
+            <span>{door.kicker}</span>
+            <span className="nu-door-tag">
+              {door.action}
+              <span className="nu-arr" aria-hidden="true">→</span>
+            </span>
+          </a>
         ))}
       </section>
 

@@ -74,48 +74,169 @@
 .nu-btn,
 .newui a.nu-btn,
 .newui button.nu-btn {
-  font-family: var(--font-ibm), ui-monospace, monospace;
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  line-height: 1;
-  min-height: 48px;
-  padding: 0 18px;
-  border-radius: 2px;
-  border: 1px solid #0a0a0a;
-  background: #0a0a0a;
-  color: #f6f4ef;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  white-space: nowrap;
+  gap: 10px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid #0a0a0a;
+  border-radius: 999px;
+  background: transparent;
+  color: #0a0a0a;
+  font-family: var(--font-news), Georgia, serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1;
+  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s, transform 0.2s;
+}
+
+.nu-arr {
+  font-family: ui-monospace, monospace;
+  transition: transform 0.25s;
 }
 
 .nu-btn:hover,
 .newui a.nu-btn:hover,
 .newui button.nu-btn:hover {
-  background: #f6f4ef;
-  color: #0a0a0a;
-}
-
-.nu-btn-line,
-.newui a.nu-btn-line,
-.newui button.nu-btn-line {
-  background: transparent;
-  color: #0a0a0a;
-}
-
-.nu-btn-line:hover,
-.newui a.nu-btn-line:hover,
-.newui button.nu-btn-line:hover {
   background: #0a0a0a;
   color: #f6f4ef;
 }
 
-.nu-btn-small {
-  min-height: 40px;
+.nu-btn:hover .nu-arr,
+.newui a.nu-btn:hover .nu-arr {
+  transform: translateX(3px);
+}
+
+.nu-btn:active,
+.newui a.nu-btn:active,
+.newui button.nu-btn:active {
+  transform: scale(0.98);
+}
+
+.nu-btn:focus-visible,
+.newui a.nu-btn:focus-visible,
+.newui button.nu-btn:focus-visible {
+  outline: 1px solid #0a0a0a;
+  outline-offset: 3px;
+}
+
+.nu-btn-wide {
+  width: 100%;
+  height: 48px;
+}
+
+.nu-link,
+.newui a.nu-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: #0a0a0a;
+  font-family: var(--font-news), Georgia, serif;
+  font-size: 18px;
+  text-decoration: underline;
+  text-decoration-color: rgb(10 10 10 / 0.3);
+  text-underline-offset: 4px;
+}
+
+.nu-link:hover,
+.newui a.nu-link:hover {
+  text-decoration-color: #0a0a0a;
+}
+
+.nu-pill,
+.newui a.nu-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  min-height: 44px;
   padding: 0 12px;
+  border-radius: 999px;
+  background: rgb(10 10 10 / 0.05);
+  color: #0a0a0a;
+  font-family: var(--font-ibm), ui-monospace, monospace;
   font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.nu-pill:hover,
+.newui a.nu-pill:hover {
+  background: rgb(10 10 10 / 0.1);
+}
+
+.nu-door {
+  border-top: 1px solid rgb(10 10 10 / 0.22);
+}
+
+.nu-door-link,
+.newui a.nu-door-link {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  min-height: 44px;
+  padding: 22px 0;
+  border-bottom: 1px solid rgb(10 10 10 / 0.22);
+  color: #0a0a0a;
+  font-size: 22px;
+  line-height: 1.25;
+  text-decoration: none;
+}
+
+.nu-door-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  color: rgb(10 10 10 / 0.45);
+  font-family: var(--font-ibm), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.nu-door-link:hover .nu-door-tag {
+  color: #0a0a0a;
+}
+
+.nu-door-link:hover .nu-arr {
+  transform: translateX(4px);
+}
+
+.nu-field {
+  margin-top: 8px;
+  min-height: 44px;
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid rgb(10 10 10 / 0.22);
+  border-radius: 0;
+  background: transparent;
+  padding: 12px 0;
+  color: #0a0a0a;
+  font: 400 18px/1.4 var(--font-news), Georgia, serif;
+  outline: none;
+}
+
+.nu-field:focus {
+  border-bottom-color: #0a0a0a;
+}
+
+@media (min-width: 640px) {
+  .nu-btn-wide {
+    width: auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .nu-pill,
+  .newui a.nu-pill {
+    height: 32px;
+    min-height: 32px;
+  }
 }
 
 @media (min-width: 1024px) {

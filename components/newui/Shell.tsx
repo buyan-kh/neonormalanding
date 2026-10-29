@@ -11,7 +11,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <nav className="nu-label flex flex-wrap items-center gap-x-4 gap-y-1" aria-label="New">
             <a className="nu-tap" href="/newui/thesis">thesis</a>
             <a className="nu-tap" href="/newui/contact">contact</a>
-            <a className="nu-btn nu-btn-line nu-btn-small" href="/newui/access">access</a>
+            <a className="nu-pill" href="/newui/access">access</a>
           </nav>
         </div>
       </header>
