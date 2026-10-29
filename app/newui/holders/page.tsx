@@ -4,6 +4,6 @@ import { roomIsOpen } from "@/lib/newui-gate";
 
 export default async function HoldersPage({ searchParams }: { searchParams: Promise<{ k?: string }> }) {
   const params = await searchParams;
-  const open = await roomIsOpen(params.k, "/newui/holders");
+  const open = await roomIsOpen(params.k, "/holders");
   return open ? <OpenRoom /> : <LockedRoom />;
 }

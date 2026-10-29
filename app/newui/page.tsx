@@ -13,9 +13,9 @@ const services = [
 ];
 
 const doors = [
-  { kicker: "For those building intelligence.", action: "Request access", href: "/newui/access?as=lab" },
-  { kicker: "For those who hold the record.", action: "Begin a conversation", href: "/newui/access?as=holder" },
-  { kicker: "For those who fund what comes next.", action: "Read the thesis", href: "/newui/thesis" },
+  { kicker: "For those building intelligence.", action: "Request access", href: "/access?as=lab" },
+  { kicker: "For those who hold the record.", action: "Begin a conversation", href: "/access?as=holder" },
+  { kicker: "For those who fund what comes next.", action: "Read the thesis", href: "/thesis" },
 ];
 
 export default function NewuiHome() {
@@ -31,10 +31,10 @@ export default function NewuiHome() {
           </h1>
           <p className="mt-6 text-[22px] italic md:text-[28px]">A new standard for intelligence.</p>
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-            <a className="nu-btn" href="/newui/access?as=lab">
+            <a className="nu-btn" href="/access?as=lab">
               Request access <span className="nu-arr" aria-hidden="true">→</span>
             </a>
-            <a className="nu-link" href="/newui/thesis">Read the thesis</a>
+            <a className="nu-link" href="/thesis">Read the thesis</a>
           </div>
         </div>
         <div className="mx-auto h-[60vw] w-[60vw] max-w-[520px] lg:mx-0 lg:h-[75vh] lg:w-full lg:max-w-none">

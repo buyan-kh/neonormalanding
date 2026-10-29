@@ -40,7 +40,7 @@ export function MarketplaceCatalog() {
                 <span className="text-[#0A0A0A]/55">{entry.type}</span>
               </p>
               {entry.soon ? <p className="nu-label mt-3 text-[#0A0A0A]/55">Coming soon</p> : null}
-              <a className="nu-btn mt-6 self-start" href="/newui/access?as=lab&source=/marketplace">
+              <a className="nu-btn mt-6 self-start" href="/access?as=lab&source=/marketplace">
                 Request sample <span className="nu-arr" aria-hidden="true">→</span>
               </a>
             </article>

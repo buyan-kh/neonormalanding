@@ -56,4 +56,4 @@ Ask for the environment refinery: how clinical and wet-lab archives become verif
 
 - Email: buyan@neonorma.si
 - 30-minute booking: https://calendly.com/buyan-neonorma/30min
-- Intake form: https://www.neonorma.si/#intake
+- Intake form: https://www.neonorma.si/oldui#intake

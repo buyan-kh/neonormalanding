@@ -25,7 +25,7 @@ const tracks = [
     kicker: "03 // FOR INVESTORS",
     title: "Invest in Neo Norma",
     body: "Frontier labs have exhausted the public internet. We are building the verifiable post-training environment refinery for empirical science.",
-    href: "/#investors",
+    href: "/oldui#investors",
     external: false,
     cta: "[Direct Desk]",
   },

@@ -7,7 +7,7 @@ export function LockedRoom() {
         <DitherHelix still />
       </div>
       <h1 className="mt-10 text-[40px] leading-[1.1] md:text-[56px]">This room is closed.</h1>
-      <a href="/newui/access" className="nu-btn mt-8">
+      <a href="/access" className="nu-btn mt-8">
         Request access <span className="nu-arr" aria-hidden="true">→</span>
       </a>
     </section>

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { DataPartners } from "@/components/DataPartners";
 import { DeidSpecimen } from "@/components/DeidSpecimen";
 import { Evaluation } from "@/components/Evaluation";
@@ -7,7 +8,11 @@ import { Hero } from "@/components/Hero";
 import { Refinery } from "@/components/Refinery";
 import { RequestForm } from "@/components/RequestForm";
 
-export default function HomePage() {
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
+
+export default function OldHomePage() {
   return (
     <>
       <Header />
