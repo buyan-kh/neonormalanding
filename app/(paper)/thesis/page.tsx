@@ -1,1 +1,1 @@
-export { default } from "../../newui/thesis/page";
+export { default, metadata } from "../../newui/thesis/page";
