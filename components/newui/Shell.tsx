@@ -11,6 +11,7 @@ export function Shell({ children }: { children: ReactNode }) {
             Neo Norma
           </a>
           <nav className="nu-label flex flex-wrap items-center gap-x-4 gap-y-1" aria-label="New">
+            <a className="nu-tap" href="/marketplace">marketplace</a>
             <a className="nu-tap" href="/newui/thesis">thesis</a>
             <a className="nu-tap" href="/newui/contact">contact</a>
             <a className="nu-pill" href="/newui/access">access</a>
@@ -24,6 +25,8 @@ export function Shell({ children }: { children: ReactNode }) {
             <Logo size={20} />
             Neo Norma
           </a>
+          <span aria-hidden="true">·</span>
+          <a className="nu-tap" href="/marketplace">marketplace</a>
           <span aria-hidden="true">·</span>
           <a className="nu-tap" href="/newui/thesis">thesis</a>
           <span aria-hidden="true">·</span>
