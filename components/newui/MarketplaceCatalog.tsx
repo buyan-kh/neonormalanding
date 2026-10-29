@@ -17,9 +17,9 @@ export function MarketplaceCatalog() {
 
   return (
     <>
-      <div className="mt-12 border-t nu-rule">
-        <FilterRow label="Domain" value={domain} options={marketDomains} onChange={setDomain} />
-        <FilterRow label="Type" value={kind} options={marketTypes} onChange={setKind} />
+      <div className="nu-filters" role="group" aria-label="Filters">
+        <FilterSelect label="Domain" value={domain} options={marketDomains} onChange={setDomain} />
+        <FilterSelect label="Type" value={kind} options={marketTypes} onChange={setKind} />
       </div>
 
       {shown.length === 0 ? (
@@ -51,7 +51,7 @@ export function MarketplaceCatalog() {
   );
 }
 
-function FilterRow<T extends string>({
+function FilterSelect<T extends string>({
   label,
   value,
   options,
@@ -62,23 +62,15 @@ function FilterRow<T extends string>({
   options: readonly T[];
   onChange: (next: typeof ALL | T) => void;
 }) {
-  const choices: Array<typeof ALL | T> = [ALL, ...options];
   return (
-    <div className="border-b nu-rule py-4">
-      <p className="nu-label" id={`market-${label}`}>{label}</p>
-      <div className="mt-3 flex flex-wrap gap-2" role="group" aria-labelledby={`market-${label}`}>
-        {choices.map((choice) => (
-          <button
-            key={choice}
-            type="button"
-            className="nu-chip"
-            aria-pressed={value === choice}
-            onClick={() => onChange(choice)}
-          >
-            {choice}
-          </button>
+    <label className="nu-select">
+      <span className="nu-label">{label}</span>
+      <select value={value} onChange={(event) => onChange(event.target.value as typeof ALL | T)}>
+        <option value={ALL}>{ALL}</option>
+        {options.map((option) => (
+          <option key={option} value={option}>{option}</option>
         ))}
-      </div>
-    </div>
+      </select>
+    </label>
   );
 }
