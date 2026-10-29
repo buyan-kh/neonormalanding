@@ -2,12 +2,10 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { TerminalWindow } from "@/components/TerminalWindow";
-import { CONTACT_EMAIL } from "@/lib/contact";
+import { postRequest, REQUEST_ERROR, REQUEST_THANKS, requestContext } from "@/lib/submit-request";
 
 type Intent = "labs" | "data" | "investors";
-type Status = "idle" | "sending" | "delivered" | "mailed" | "error";
-
-const linkClass = "underline decoration-[#0A0A0A]/30 underline-offset-4 hover:decoration-[#0A0A0A]";
+type Status = "idle" | "sending" | "delivered" | "error";
 
 const intents: Array<{ id: Intent; label: string; subject: string; cta: string }> = [
   {
@@ -37,11 +35,6 @@ function intentFromHash(hash: string): Intent | null {
   return null;
 }
 
-function intakeMailto(intent: Intent, brief: string) {
-  const subject = intents.find((item) => item.id === intent)?.subject ?? "Neo Norma intake";
-  return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(brief)}`;
-}
-
 export function RequestForm() {
   const sectionRef = useRef<HTMLElement>(null);
   const [intent, setIntent] = useState<Intent>("labs");
@@ -49,9 +42,9 @@ export function RequestForm() {
   const [organization, setOrganization] = useState("");
   const [email, setEmail] = useState("");
   const [note, setNote] = useState("");
+  const [honey, setHoney] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
-  const [mailtoHref, setMailtoHref] = useState(`mailto:${CONTACT_EMAIL}`);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -78,49 +71,28 @@ export function RequestForm() {
     return () => window.removeEventListener("hashchange", sync);
   }, []);
 
-  const intentLabel = intents.find((item) => item.id === intent)?.label ?? intent;
-  const brief = [
-    "Neo Norma intake",
-    `Intent: ${intentLabel}`,
-    `Name: ${name}`,
-    `Organization: ${organization}`,
-    `Email: ${email}`,
-    `Note: ${note || "(none)"}`,
-  ].join("\n");
-
-  function openMailto() {
-    const href = intakeMailto(intent, brief);
-    setMailtoHref(href);
-    setStatus("mailed");
-    setMessage("");
-    window.location.href = href;
-  }
-
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("sending");
     setMessage("");
-    try {
-      const response = await fetch("/api/intake", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ name, organization, email, intent, note }),
-      });
-      const data = (await response.json()) as { ok?: boolean; delivered?: boolean; error?: string };
-      if (data.ok === false) {
-        setStatus("error");
-        setMessage(data.error ?? "Intake rejected the request.");
-        return;
-      }
-      if (data.delivered) {
-        setStatus("delivered");
-        setMessage("Request delivered to the Neo Norma intake.");
-        return;
-      }
-      openMailto();
-    } catch {
-      openMailto();
+    const context = requestContext();
+    const ok = await postRequest({
+      name,
+      email,
+      organization,
+      role: intent,
+      message: note,
+      source: context.source,
+      as: context.as,
+      nn_leave_blank: honey,
+    });
+    if (ok) {
+      setStatus("delivered");
+      setMessage(REQUEST_THANKS);
+      return;
     }
+    setStatus("error");
+    setMessage(REQUEST_ERROR);
   }
 
   const field =
@@ -140,23 +112,9 @@ export function RequestForm() {
           <p className="text-[11px] tracking-[0.18em] text-[#5A5852]">INTAKE</p>
           <h2 className="mt-3 text-[24px] leading-snug md:text-[26px]">Send an inquiry.</h2>
         </div>
-        {/* <p className="mt-3 flex flex-col gap-2 text-[13px]">
-          <a href={CALENDLY_URL} className={linkClass} target="_blank" rel="noreferrer">
-            Book 30-Min Pilot / Partner Call
-          </a>
-          <a href={`mailto:${CONTACT_EMAIL}`} className={linkClass}>
-            Direct Desk {CONTACT_EMAIL}
-          </a>
-        </p> */}
         <div data-intake-reveal className="mt-6 max-w-[760px]">
           <TerminalWindow title="Intake" bodyClassName="p-3 md:p-4">
-            <form
-              action={`mailto:${CONTACT_EMAIL}`}
-              method="POST"
-              encType="text/plain"
-              onSubmit={onSubmit}
-              className="space-y-3"
-            >
+            <form onSubmit={onSubmit} className="space-y-3">
               <fieldset className="intake-item">
                 <legend className="text-[11px] text-[#5A5852]">Intent</legend>
                 <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-label="Intent">
@@ -227,6 +185,18 @@ export function RequestForm() {
                   maxLength={2000}
                 />
               </label>
+              <p className="sr-only" aria-hidden="true">
+                <label>
+                  Leave blank
+                  <input
+                    name="nn_leave_blank"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={honey}
+                    onChange={(event) => setHoney(event.target.value)}
+                  />
+                </label>
+              </p>
               <p className="intake-item text-[11px] text-[#5A5852]">Raw records stay off this form.</p>
               <button
                 type="submit"
@@ -236,23 +206,8 @@ export function RequestForm() {
                 {status === "sending" ? "[Sending...]" : cta}
               </button>
               <p className="min-h-5 text-[12px]" role="status">
-                {status === "mailed" ? (
-                  <>
-                    Draft opened for{" "}
-                    <a href={mailtoHref} className={linkClass}>
-                      {CONTACT_EMAIL}
-                    </a>
-                    .
-                  </>
-                ) : (
-                  message
-                )}
+                {message}
               </p>
-              {status === "mailed" || status === "delivered" ? (
-                <pre className="overflow-x-auto border border-[#0A0A0A]/30 p-2 text-[11px] leading-relaxed text-[#5A5852]">
-                  {brief}
-                </pre>
-              ) : null}
             </form>
           </TerminalWindow>
         </div>

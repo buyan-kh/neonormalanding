@@ -1,4 +1,4 @@
-import { CALENDLY_URL, CONTACT_EMAIL } from "@/lib/contact";
+import { CALENDLY_URL } from "@/lib/contact";
 // import { FlowLine } from "@/components/FlowLine";
 // import { PipelineShowcase } from "@/components/PipelineShowcase";
 
@@ -33,13 +33,13 @@ export function Hero() {
           Book a partner call
         </a>
         <a
-          href={`mailto:${CONTACT_EMAIL}`}
+          href="/#request"
           className="inline-flex min-h-11 items-center justify-center border border-[#0A0A0A] px-3 py-2 text-[12px] text-[#0A0A0A] hover:bg-[#EAEAEA] hover:text-[#303030] lg:min-h-0"
         >
           Direct desk
         </a>
         <a
-          href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Investor inquiry")}`}
+          href="/#investors"
           className="inline-flex min-h-11 items-center justify-center border border-[#0A0A0A]/40 px-3 py-2 text-[12px] text-[#0A0A0A] hover:border-[#0A0A0A] lg:min-h-0"
         >
           Investors

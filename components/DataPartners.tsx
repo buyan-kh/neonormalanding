@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { FlowLine } from "@/components/FlowLine";
-import { CALENDLY_URL, CONTACT_EMAIL } from "@/lib/contact";
+import { CALENDLY_URL } from "@/lib/contact";
 
 const tracks = [
   {
@@ -25,7 +25,7 @@ const tracks = [
     kicker: "03 // FOR INVESTORS",
     title: "Invest in Neo Norma",
     body: "Frontier labs have exhausted the public internet. We are building the verifiable post-training environment refinery for empirical science.",
-    href: `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Investor inquiry")}`,
+    href: "/#investors",
     external: false,
     cta: "[Direct Desk]",
   },

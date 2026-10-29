@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-
-const MAIL = "hi@neonorma.si";
+import { postRequest, REQUEST_ERROR, REQUEST_THANKS, requestContext } from "@/lib/submit-request";
 
 const roles = [
   { id: "labs", as: "lab", label: "building intelligence" },
@@ -19,46 +18,28 @@ export function AccessForm({ preset }: { preset?: string }) {
   const [email, setEmail] = useState("");
   const [organization, setOrganization] = useState("");
   const [note, setNote] = useState("");
+  const [honey, setHoney] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
-  const [error, setError] = useState("");
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("sending");
-    setError("");
-    const label = roles.find((item) => item.id === role)?.label ?? role;
-    const brief = [
-      "Neo Norma",
-      `I am: ${label}`,
-      `Name: ${name}`,
-      `Email: ${email}`,
-      `Organization: ${organization}`,
-      `Note: ${note || "(none)"}`,
-    ].join("\n");
-    try {
-      const response = await fetch("/api/intake", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ name, email, organization, intent: role, note }),
-      });
-      const data = (await response.json()) as { ok?: boolean; delivered?: boolean; error?: string };
-      if (data.ok === false) {
-        setStatus("error");
-        setError(data.error ?? "The note did not send.");
-        return;
-      }
-      if (!data.delivered) {
-        window.location.href = `mailto:${MAIL}?subject=${encodeURIComponent("Neo Norma")}&body=${encodeURIComponent(brief)}`;
-      }
-      setStatus("done");
-    } catch {
-      window.location.href = `mailto:${MAIL}?subject=${encodeURIComponent("Neo Norma")}&body=${encodeURIComponent(brief)}`;
-      setStatus("done");
-    }
+    const context = requestContext();
+    const ok = await postRequest({
+      name,
+      email,
+      organization,
+      role,
+      message: note,
+      source: context.source,
+      as: context.as,
+      nn_leave_blank: honey,
+    });
+    setStatus(ok ? "done" : "error");
   }
 
   if (status === "done") {
-    return <p className="mt-10 text-[28px] leading-snug">Received. We will write back.</p>;
+    return <p className="mt-10 text-[28px] leading-snug">{REQUEST_THANKS}</p>;
   }
 
   const field = "nu-field";
@@ -98,10 +79,22 @@ export function AccessForm({ preset }: { preset?: string }) {
         Note
         <textarea className={`${field} min-h-32 py-3`} name="note" value={note} onChange={(event) => setNote(event.target.value)} maxLength={2000} />
       </label>
+      <p className="sr-only" aria-hidden="true">
+        <label>
+          Leave blank
+          <input
+            name="nn_leave_blank"
+            tabIndex={-1}
+            autoComplete="off"
+            value={honey}
+            onChange={(event) => setHoney(event.target.value)}
+          />
+        </label>
+      </p>
       <button type="submit" disabled={status === "sending"} className="nu-btn nu-btn-wide disabled:opacity-50">
         {status === "sending" ? "Sending" : "Send"} <span className="nu-arr" aria-hidden="true">→</span>
       </button>
-      {error ? <p className="text-[16px]">{error}</p> : null}
+      {status === "error" ? <p className="text-[16px]">{REQUEST_ERROR}</p> : null}
     </form>
   );
 }

@@ -12,6 +12,7 @@
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
+    "resend": "^6.35.0",
     "server-only": "^0.0.1"
   },
   "devDependencies": {
