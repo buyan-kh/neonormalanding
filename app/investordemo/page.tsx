@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Logo } from "@/components/Logo";
 import { benchmarkTasks } from "@/lib/catalog";
 import { Evaluation } from "@/components/Evaluation";
+import { HowItWorks } from "./HowItWorks";
 import "./investordemo.css";
 
 export const metadata: Metadata = {
@@ -23,6 +24,8 @@ export default function InvestorDemo() {
       <header className="topbar"><div className="wrap topbar-inner"><div className="brand"><Logo size={30} /><span>Neo Norma</span></div><span className="label">Investor brief / 2026</span></div></header>
       <main id="content" className="wrap">
         <section className="hero"><p className="label">Training AI for science</p><h1>Training AI to do<br />real science.</h1><p className="hero-copy">We make science tests that help AI labs train their models and see what they get wrong.</p><div className="hero-meta"><span>01 / REAL DATA</span><span>02 / AI DOES THE WORK</span><span>03 / WE CHECK THE ANSWER</span></div></section>
+
+        <HowItWorks />
 
         <Evaluation showExplorer={false} />
 
