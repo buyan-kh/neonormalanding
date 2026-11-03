@@ -50,7 +50,7 @@ function Reveal({ children, className = "" }: { children: ReactNode; className?:
   return <div ref={ref} className={className}>{children}</div>;
 }
 
-export function Evaluation() {
+export function Evaluation({ showExplorer = true }: { showExplorer?: boolean }) {
   const measured = benchmarkModels.filter(isMeasured);
   const ranked = measured
     .map((model) => {
@@ -199,7 +199,7 @@ export function Evaluation() {
         </div>
       </section>
 
-      <section id="failure-trace" className="scroll-mt-32 border-t border-[#0A0A0A]/20" aria-labelledby="trace-heading">
+      {showExplorer && <section id="failure-trace" className="scroll-mt-32 border-t border-[#0A0A0A]/20" aria-labelledby="trace-heading">
         <div className="mx-auto w-full max-w-[1080px] px-4 py-6 md:px-6">
           <p className="text-[13px] tracking-[0.18em] text-[#525252]">INSIDE THE ENVIRONMENT</p>
           <h2 id="trace-heading" className="mt-2 max-w-[30em] text-[24px] leading-[1.15] md:text-[28px]">
@@ -215,7 +215,7 @@ export function Evaluation() {
             />
           </div>
         </div>
-      </section>
+      </section>}
     </>
   );
 }

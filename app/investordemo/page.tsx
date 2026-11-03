@@ -24,7 +24,7 @@ export default function InvestorDemo() {
       <main id="content" className="wrap">
         <section className="hero"><p className="label">Training AI for science</p><h1>Training AI to do<br />real science.</h1><p className="hero-copy">We make science tests that help AI labs train their models and see what they get wrong.</p><div className="hero-meta"><span>01 / REAL DATA</span><span>02 / AI DOES THE WORK</span><span>03 / WE CHECK THE ANSWER</span></div></section>
 
-        <Evaluation />
+        <Evaluation showExplorer={false} />
 
         <section className="section"><div className="section-heading"><span className="label">02 / The product</span><h2>Real science.<br />Answers we can check.</h2></div><div className="product-grid"><div><span className="label">01 / THE DATA</span><h3>Real records</h3><p>Data from medicine, biology, and experiments.</p></div><div><span className="label">02 / THE TEST</span><h3>A task for AI</h3><p>The AI works through the data and solves a problem.</p></div><div><span className="label">03 / THE ANSWER</span><h3>An automatic score</h3><p>Our software checks the answer against the correct result.</p></div></div><div className="technical-note"><span>RUNS ON</span><strong>Harbor + Docker</strong><span>CHECKED BY</span><strong>Python code</strong><span>USED FOR</span><strong>Training + testing</strong></div></section>
 
